@@ -3,7 +3,7 @@ package sys
 import (
 	"encoding/json"
 
-	"../util"
+	"github.com/gesaodin/bdse/util"
 )
 
 var (

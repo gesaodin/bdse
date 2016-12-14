@@ -13,5 +13,5 @@ func init() {
 }
 
 func main() {
-	fmt.Println("Cargando Bus de servicio empresarial")
+	fmt.Println("Cargando Bus de Servicio Empresarial")
 }

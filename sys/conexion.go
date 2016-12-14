@@ -7,7 +7,7 @@ package sys
 import (
 	"database/sql"
 
-	"../util"
+	"github.com/gesaodin/bdse/util"
 	_ "github.com/lib/pq"
 )
 

@@ -21,7 +21,7 @@ const (
 	DesactivarRoles            = false
 	ActivarLimitEnConsultas    = true
 	DesactivarLimitEnConsultas = false
-	Puerto                     = 260804
+	Puerto                     = 260813
 	CodificacionDeArchivo      = "UTF-8"
 	MaximoLimiteDeUsuarios     = 100
 	MaximoLimiteDeConsultas    = 10

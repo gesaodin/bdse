@@ -2,19 +2,19 @@
 // a las cuales el usuario se enfrenta a diario. Recurrencia
 package logs
 
-import "time"
+import (
+	"fmt"
+	"time"
+)
 
 const (
 	Irregular = 0
 	Regular   = 1
 )
 
-type ValorEsperado struct{}
-
 type Comportamiento struct {
 	tipo   int
 	Accion string
-	ValorEsperado
 }
 
 type Anomalia struct {
@@ -27,6 +27,13 @@ func (r *Anomalia) Agregar() {
 
 }
 
-func (r *Anomalia) Notificar() {
-
+func (r *Anomalia) Notificar(ValorEsperado interface{}) {
+	switch v := ValorEsperado.(type) {
+	case string:
+		fmt.Println(v)
+	case int32, int64:
+		fmt.Println(v)
+	default:
+		fmt.Println("Valor Inesperado")
+	}
 }

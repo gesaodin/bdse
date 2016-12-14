@@ -1,0 +1,22 @@
+[{
+  "Usuario" : "postgres",
+  "Basedatos": "pace",
+  "Clave" : "za63qj2p",
+  "Host" : "localhost",
+  "Puerto" : "5432"
+},
+{
+  "Usuario" : "mysql",
+  "Basedatos": "pace",
+  "Clave" : "za63qj2p",
+  "Host" : "localhost",
+  "Puerto" : "3306"
+},
+{
+  "Usuario" : "mongodb",
+  "Basedatos": "pace",
+  "Clave" : "za63qj2p",
+  "Host" : "localhost",
+  "Puerto" : "27017"
+}
+]

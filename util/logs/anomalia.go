@@ -12,6 +12,10 @@ const (
 	Regular   = 1
 )
 
+type ValorEsperado struct {
+	Parametro string
+	Resultado interface{}
+}
 type Comportamiento struct {
 	tipo   int
 	Accion string
@@ -27,13 +31,17 @@ func (r *Anomalia) Agregar() {
 
 }
 
-func (r *Anomalia) Notificar(ValorEsperado interface{}) {
-	switch v := ValorEsperado.(type) {
+func (r *Anomalia) Notificar(v ValorEsperado) {
+
+	switch r := v.Resultado.(type) {
 	case string:
-		fmt.Println(v)
-	case int32, int64:
-		fmt.Println(v)
+		fmt.Println("String: ", r)
+	case int, int64:
+		fmt.Println("Entero: ", r)
+	case float32, float64:
+		fmt.Println("Float: ", r)
 	default:
-		fmt.Println("Valor Inesperado")
+
+		fmt.Println("Valor Inesperado", r)
 	}
 }

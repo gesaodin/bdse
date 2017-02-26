@@ -3,38 +3,26 @@
   "nombre" : "Carlos",
   "clave": "secret(md5)",
   "correo": "api@restfull.com"
+  "rol": {
+    "nombre": "Administrador",
+  },
   "perfil": {
     "nombre" : "Administrador Web",
     "privilegios" : [
       {
-        1:"Salvar"
+        "_id": ObjectID("1"),
+        "metodo":"Salvar",
+        "accion":"Salvar()",
+        "controlador":"http://localhost/bdse.api.system/{salvar}",
       },
       {
-        2:"Imprimir"
-      },
-      {
-        3:"Reporte"
+        "_id": ObjectID("1"),
+        "metodo":"Estadistica",
+        "accion":"Estadistica()",
+        "controlador":"http://localhost/bdse.api.system/{estadistica}",
       }
     ],
 
-  },
-  "rol": {
-    "nombre": "Administrador",
-    "metodoseguro":
-      {
-        "Consultar"  : "boolean",
-        "Insertar"   : "boolean",
-        "Actualizar" : "boolean",
-        "Eliminar"   : "boolean",
-        "Crud"       : "boolean",
-        "CrearSQL"   : "boolean",
-        "Todo"       : "boolean",
-        "Prueba"     : "boolean",
-        "Hack"       : "boolean",
-        "Desarrollo" : "boolean",
-        "Consola"    : "boolean",
-        "Funcion"    : "boolean"
-      },
   },
   "grupo": "root",
   "ip": "127.0.0.1|%|192.168.0.1/256",

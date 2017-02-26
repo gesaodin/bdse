@@ -1,0 +1,92 @@
+****************************
+*** Archivos para incluir
+****************************
+
+pkg [*.github]
+  http/net (depende):
+    > go get github.com/gorilla/mux
+    > go get github.com/gorilla/request
+    > go get github.com/gorilla/session
+
+  postgres:
+    > go get github.com/lib/pq
+
+  mongodb:
+    > go get gopkg.in/mgo.v2
+
+  xlsx:
+    > go get github.com/tealeg/xlsx
+
+
+  sys/config.json:
+  Debe mantener un orden correlativo iniciando en:
+    0: PostgreSQL,
+    1: MySQL,
+    2: MongoDB
+
+
+  Configurar e instalar Angular
+    > NodeJS
+    > npm
+    > angular-seed
+    > ng-boilerplate
+
+
+Los Archivos
+-----
+Ma: Maticlo     : Formato (.xlsx)
+Mo: Morpheus    : Formato (.txt)
+P1: Pos (1,2,3) : Formato (.txt)
+-----
+cy: CyberParley : Formato (.xls|csv)
+Il: Ilbanquero  : Formato (.csv)
+Sp: Sport17     : Formato (.txt)
+
+
+Arquitectura de Seguridad Basada en Roles
+Los roles permiten definir la estructura de consumo o uso de las API del sistema
+
+Existen cinco modelos (administrador, auditor, consumidor, programador, root),
+que  se encuentran bajo el siguiente esquema de archivos.
+
+rol/
+├── administrador
+│   ├── alertas
+│   ├── archivos
+│   ├── historial.log
+│   ├── img
+│   ├── notificaciones.txt
+│   ├── papelera
+│   ├── reportes
+│   └── seguridad.json
+├── auditor
+│   ├── api
+│   ├── historial.log
+│   ├── notificaciones.txt
+│   ├── reportes
+│   └── seguridad.json
+├── consumidor
+│   ├── api
+│   ├── historial.log
+│   ├── notificaciones.txt
+│   ├── seguridad.json
+│   └── sftp
+├── programador
+│   ├── ftp
+│   │   └── pub
+│   ├── historial.log
+│   ├── notificaciones.txt
+│   ├── papelera
+│   ├── seguridad.json
+│   └── sftp
+│       ├── bin
+│       ├── inc
+│       └── src
+└── root
+    ├── archivos
+    ├── historial.log
+    ├── img
+    ├── notificaciones.txt
+    ├── papelera
+    └── seguridad.json
+24 directories, 15 files

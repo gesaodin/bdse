@@ -1,11 +1,13 @@
 [{
-  "Usuario" : "postgres",
-  "Basedatos": "pace",
-  "Clave" : "za63qj2p",
+  "Driver" : "postgres",
+  "Usuario" : "bdse",
+  "Basedatos": "bdse",
+  "Clave" : "bdseza63#",
   "Host" : "localhost",
   "Puerto" : "5432"
 },
 {
+  "Driver" : "mysql",
   "Usuario" : "mysql",
   "Basedatos": "pace",
   "Clave" : "za63qj2p",
@@ -13,6 +15,7 @@
   "Puerto" : "3306"
 },
 {
+  "Driver" : "mongodb",
   "Usuario" : "mongodb",
   "Basedatos": "pace",
   "Clave" : "za63qj2p",

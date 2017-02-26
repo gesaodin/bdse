@@ -1,4 +1,4 @@
-package util
+package fichero
 
 import (
 	"database/sql"
@@ -19,16 +19,6 @@ func ValidarNullString(b sql.NullString) (s string) {
 		s = b.String
 	} else {
 		s = "null"
-	}
-	return
-}
-
-//Validar los campos nulos de la base de datos y retornar su valor original
-func ValidarNullFloat64(b sql.NullFloat64) (f float64) {
-	if b.Valid {
-		f = b.Float64
-	} else {
-		f = 0
 	}
 	return
 }

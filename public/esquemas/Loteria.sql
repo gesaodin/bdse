@@ -50,6 +50,11 @@ CREATE TABLE zh_agencia_saldo
 
 INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00400');
 INSERT INTO agencia (obse) VALUES ('APMEMMPPJR00100');
+INSERT INTO agencia (obse) VALUES ('APMEMMPPAP00500');
+INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00100');
+INSERT INTO agencia (obse) VALUES ('APMEMMPPCD05500');
+
+select * from zr_agencia;
 /**
 * DESCRIBE LA RELACION ENTRE LA AGENCIA Y LAS TAQUILLAS
 */
@@ -62,6 +67,11 @@ CREATE TABLE zr_agencia
 );
 INSERT INTO zr_agencia (oida,codi) VALUES (1,'APMEMMPPCD00400'), (1,'APMEMMPPCD00401');
 INSERT INTO zr_agencia (oida,codi) VALUES (2,'APMEMMPPJR00100'), (2,'APMEMMPPJR00101');
+INSERT INTO zr_agencia (oida,codi) VALUES (3,'APMEMMPPAP00500'), (3,'APMEMMPPAP00501');
+INSERT INTO zr_agencia (oida,codi) VALUES (3,'MAMEMMPPAP00500'), (3,'MAMEMMPPAP00501');
+INSERT INTO zr_agencia (oida,codi) VALUES (3,'MMAMEMMPPAP00500'), (3,'MMAMEMMPPAP00501');
+INSERT INTO zr_agencia (oida,codi) VALUES (4,'APMEMMPPCD00100');     
+INSERT INTO zr_agencia (oida,codi) VALUES (5,'APMEMMPPCD05500'), (5,'MAMEMMPPCD05500'), (5,'MMAMEMMPPCD05500'),(5,'MAMEMMPPCD005500');
 
 
 INSERT INTO zh_agencia_saldo (codi, fech, saldo) VALUES ('APMEMMPPCD00400', now(), 20000);
@@ -212,13 +222,20 @@ INSERT INTO usuario (nomb,ncom,corr,clav,fech,esta,rol, toke) VALUES
 	
 ),
 (
+	'admin', 'Administrador Del Sistema','carlos@admin.com',md5('za63qj2p'),
+	Now(), 1, 'Administrador', md5('admin123')
+	
+),
+(
 	'APMEMMPPCD00400', 'APMEMMPPCD00400','carlos@admin.com',md5('123'),
 	Now(), 1, 'Consumidor', md5('APMEMMPPCD00400123')
 	
-)
-
-
-;
+),
+(
+	'APMEMMPPAP00500', 'APMEMMPPAP00500','carlos@admin.com',md5('123'),
+	Now(), 1, 'Consumidor', md5('APMEMMPPAP00500123')
+	
+);
 
 DROP TABLE IF EXISTS archivo;
 CREATE TABLE archivo
@@ -308,3 +325,5 @@ select * from sistema;
 select * from loteria where agen='APMEBAPPRY00200';
 
 select * from haber;
+
+select * from archivo where nomb like 'MA-0%'

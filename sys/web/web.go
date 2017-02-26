@@ -69,6 +69,7 @@ func WAPI() {
 
 	Enrutador.HandleFunc(base_api+"balance/registrarpago", Pago.Salvar).Methods("POST")
 	Enrutador.HandleFunc(base_api+"balance/cobrosypagos", Pago.GenerarCobrosYPagos).Methods("POST")
+	Enrutador.HandleFunc(base_api+"balance/listarpagos", Pago.ListarPagos).Methods("POST")
 
 	// API DE LISTADOS
 	Enrutador.HandleFunc(base_api+"listasistema", Listar.Sistemas).Methods("POST")

@@ -29,6 +29,7 @@ type Pago struct {
 	Egreso      float64 `json:"egreso,omitempty"`
 	Prestamo    float64 `json:"prestamo,omitempty"`
 	Cuota       float64 `json:"cuota,omitempty"`
+	Estatus     int     `json:"estatus,omitempty"`
 	Observacion string  `json:"observacion,omitempty"`
 }
 
@@ -46,7 +47,7 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	s += "('" + data.Agencia + "'," + monto + ",'" + data.Voucher + "',"
 	s += "'" + data.Deposito + "',now()," + forma
 	s += "," + banco + ",0,'" + data.Observacion + "');"
-	fmt.Println(s)
+	//fmt.Println(s)
 	rs, err := sys.PostgreSQL.Exec(s)
 	if err != nil {
 		return
@@ -57,6 +58,45 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	res.Msj = "Se inserto correctamente"
 	jSon, _ = json.Marshal(res)
 
+	return
+}
+
+func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
+	var s string
+	s = `
+			SELECT fdep,vouc,fapr,esta, mont FROM agencia
+			INNER JOIN haber ON haber.agen=agencia.obse
+			WHERE agencia.obse='` + data.Agencia + `'
+			ORDER BY haber.fdep`
+
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	var lst []interface{}
+	for row.Next() {
+		var fdep, vouc, fapr sql.NullString
+		var esta int
+		var mont float64
+
+		var pago Pago
+		e := row.Scan(&fdep, &vouc, &fapr, &esta, &mont)
+		if e != nil {
+			fmt.Println(e.Error())
+			return
+		}
+		var dep = util.ValidarNullString(fdep)
+		var apr = util.ValidarNullString(fapr)
+
+		pago.Deposito = dep[0:10]
+		pago.Voucher = util.ValidarNullString(vouc)
+		pago.Fecha = apr
+		pago.Monto = mont
+		pago.Estatus = esta
+		lst = append(lst, pago)
+	}
+
+	jSon, _ = json.Marshal(lst)
 	return
 }
 
@@ -73,6 +113,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 			s = generarCobrosYPagosGeneral(fecha)
 		}
 	}
+	fmt.Println(s)
 
 	row, err := sys.PostgreSQL.Query(s)
 

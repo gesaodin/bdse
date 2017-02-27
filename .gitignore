@@ -23,4 +23,4 @@ _testmain.go
 *.test
 *.prof
 
-public/tmp/*.*
+public/temp/loteria/*.*

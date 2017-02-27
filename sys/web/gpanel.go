@@ -246,47 +246,44 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	archivo.NombreDelArchivo = s
 	sys.PostgreSQL.SetMaxOpenConns(10)
 	archivo.PostgreSQL = sys.PostgreSQL
-	archivo.Ch = Mensajeria.Usuario[usuario].ch
+	archivo.Canal = Mensajeria.Usuario["gpanel"].ch
 	archivo.Fecha = f
-
-	// t := strings.Split(s, ".")
-	// switch strings.ToLower(t[0]) {
 	switch strings.ToLower(codigo) {
 	case "ma":
-		go archivo.LeerMaticlo(Mensajeria.Usuario["gpanel"].ch)
+		go archivo.LeerMaticlo(Mensajeria.Usuario[usuario].ch)
 		return
 	case "mo":
-		go archivo.LeerMorpheus(Mensajeria.Usuario["gpanel"].ch)
+		go archivo.LeerMorpheus(Mensajeria.Usuario[usuario].ch)
 		return
 	case "p1":
-		go archivo.LeerPos(Mensajeria.Usuario["gpanel"].ch, 2)
+		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 2)
 		return
 	case "p2":
-		go archivo.LeerPos(Mensajeria.Usuario["gpanel"].ch, 3)
+		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 3)
 		return
 	case "p3":
-		go archivo.LeerPos(Mensajeria.Usuario["gpanel"].ch, 4)
+		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 4)
 		return
 	case "sp":
-		go archivo.LeerSport(Mensajeria.Usuario["gpanel"].ch)
+		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
 		return
 	case "il":
-		go archivo.LeerIlbanquero(Mensajeria.Usuario["gpanel"].ch)
+		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch)
 		return
 	case "cy":
-		go archivo.LeerCyberParley(Mensajeria.Usuario["gpanel"].ch)
+		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)
 		return
 	case "a1":
-		go archivo.LeerPos(Mensajeria.Usuario["gpanel"].ch, 9)
+		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 9)
 		return
 	case "a2":
-		go archivo.LeerPos(Mensajeria.Usuario["gpanel"].ch, 10)
+		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 10)
 		return
 	case "a3":
-		go archivo.LeerPos(Mensajeria.Usuario["gpanel"].ch, 11)
+		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 11)
 		return
 	case "t1":
-		go archivo.LeerPos(Mensajeria.Usuario["gpanel"].ch, 12)
+		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 12)
 		return
 	default:
 

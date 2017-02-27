@@ -85,7 +85,7 @@ func main() {
 
 	web.CargarModulosWeb()
 	go http.ListenAndServeTLS(":3000", "sys/seguridad/https/cert.pem", "sys/seguridad/https/key.pem", web.WsEnrutador)
-	fmt.Println("Servidor Escuchando en el puerto: 3000")
+	fmt.Println("Servidor Escuchando en el puerto:  3000")
 
 	//http://dominigy o.com/*
 	srv := &http.Server{

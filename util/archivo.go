@@ -39,7 +39,7 @@ type Archivo struct {
 	CantidadLineas   int
 	Registros        int
 	PostgreSQL       *sql.DB
-	Ch               chan []byte
+	Canal            chan []byte
 }
 
 var m mensaje.WChat
@@ -104,7 +104,7 @@ func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
 		ch <- j
-		a.Ch <- j
+		a.Canal <- j
 		return false, ""
 	}
 	archivo, err := os.Open(a.Ruta + a.NombreDelArchivo)
@@ -154,7 +154,7 @@ func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 	j, _ := json.Marshal(m)
 	ch <- j
 	//fmt.Println(ch)
-	a.Ch <- j
+	a.Canal <- j
 	//web.Mensajeria.Usuario["gpanel"].ch <- j
 
 	return true, insertar
@@ -174,7 +174,7 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
 		ch <- j
-		a.Ch <- j
+		a.Canal <- j
 		return false, ""
 	}
 	archivo, err := os.Open(a.Ruta + a.NombreDelArchivo)
@@ -234,7 +234,7 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
 	m.Tiempo = time.Now()
 	j, _ := json.Marshal(m)
 	ch <- j
-	a.Ch <- j
+	a.Canal <- j
 	return true, insertar
 }
 
@@ -252,7 +252,7 @@ func (a *Archivo) LeerMaticlo(ch chan []byte) (bool, string) {
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
 		ch <- j
-		a.Ch <- j
+		a.Canal <- j
 		return false, ""
 	}
 	excelFileName := a.Ruta + a.NombreDelArchivo
@@ -317,7 +317,7 @@ func (a *Archivo) LeerMaticlo(ch chan []byte) (bool, string) {
 	m.Tiempo = time.Now()
 	j, _ := json.Marshal(m)
 	ch <- j
-	a.Ch <- j
+	a.Canal <- j
 	return true, insertar
 }
 
@@ -334,7 +334,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte) (bool, string) {
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
 		ch <- j
-		a.Ch <- j
+		a.Canal <- j
 		return false, ""
 	}
 	archivo, err := os.Open(a.Ruta + a.NombreDelArchivo)
@@ -390,7 +390,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte) (bool, string) {
 	m.Tiempo = time.Now()
 	j, _ := json.Marshal(m)
 	ch <- j
-	a.Ch <- j
+	a.Canal <- j
 	return true, insertar
 }
 
@@ -406,7 +406,7 @@ func (a *Archivo) LeerCyberParley(ch chan []byte) (bool, string) {
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
 		ch <- j
-		a.Ch <- j
+		a.Canal <- j
 		return false, ""
 	}
 	archivo, err := os.Open(a.Ruta + a.NombreDelArchivo)
@@ -466,7 +466,7 @@ func (a *Archivo) LeerCyberParley(ch chan []byte) (bool, string) {
 	m.Tiempo = time.Now()
 	j, _ := json.Marshal(m)
 	ch <- j
-	a.Ch <- j
+	a.Canal <- j
 	return true, insertar
 }
 
@@ -483,7 +483,7 @@ func (a *Archivo) LeerSport(ch chan []byte) (bool, string) {
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
 		ch <- j
-		a.Ch <- j
+		a.Canal <- j
 		return false, ""
 	}
 	archivo, err := os.Open(a.Ruta + a.NombreDelArchivo)
@@ -546,7 +546,7 @@ func (a *Archivo) LeerSport(ch chan []byte) (bool, string) {
 	m.Tiempo = time.Now()
 	j, _ := json.Marshal(m)
 	ch <- j
-	a.Ch <- j
+	a.Canal <- j
 	return true, insertar
 }
 

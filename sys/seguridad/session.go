@@ -16,7 +16,7 @@ var Stores = sessions.NewCookieStore([]byte("#za63qj2p-6pt33pSUz#"))
 
 func init() {
 	Stores.Options = &sessions.Options{
-		Domain:   "192.168.1.100",
+		Domain:   "200.82.247.58",
 		Path:     "/",
 		MaxAge:   3600 * 8, // 8 hours
 		HttpOnly: true,

@@ -3,7 +3,9 @@ CREATE TABLE persona
 (
 	oid serial NOT NULL,
 	cedu char varying(32),
-	nomb char varying(256)
+	nomb char varying(256),
+	CONSTRAINT loteria_pkey PRIMARY KEY (oid),
+	
 );
 
 
@@ -12,10 +14,10 @@ CREATE TABLE agencia
 (
 	oid serial NOT NULL,
 	obse char varying(256),
-	resp int,
-	
+	resp int,	
 	telf char varying(16),
-	saldoactual numeric --AL CIERRE	
+	saldoactual numeric, --AL CIERRE	
+	CONSTRAINT agencia_pkey PRIMARY KEY (oid)
 );
 
 DROP TABLE IF EXISTS zr_agencia_taquilla;
@@ -24,8 +26,8 @@ CREATE TABLE zr_agencia_taquilla
 	oid serial NOT NULL,
 	oida int,
 	nomb char varying(256),
-	fech timestamp without time zone
-	
+	fech timestamp without time zone,
+	CONSTRAINT zr_agencia_pkey PRIMARY KEY (oid)
 );
 
 
@@ -319,11 +321,11 @@ INSERT INTO haber (agen,mont,vouc,fdep,freg,fope,tipo,banc,esta)
 VALUES ('APMEBAPPRY00200',500,'VLO009888','2017-01-21',now(),'2017-01-21',1,1,0),
 ('APMEMMPPJR00100',7500,'VLO009888','2017-01-23',now(),'2017-01-23',1,1,0);
 
-
-select * from sistema;
-
-select * from loteria where agen='APMEBAPPRY00200';
-
-select * from haber;
-
-select * from archivo where nomb like 'MA-0%'
+CREATE TABLE saldos
+(
+  oid serial NOT NULL,
+  obse character varying(128),
+  resp integer,  
+  saldoactual numeric,
+  CONSTRAINT agencia_pkey PRIMARY KEY (oid)
+)

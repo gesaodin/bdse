@@ -1,0 +1,162 @@
+
+<section class="content-header">
+  <h1>
+    Registro
+    <small>Pago</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="principal"><i class="fa fa-dashboard"></i> Principal</a></li>
+    <li class="active">Registro</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <!-- Your Page Content Here -->
+
+<!-- formulario de registro de pago-->
+        <div class="box box-solid box-success">
+          <div class="box-header with-border">
+            <h3 class="box-title">Registrar Pago:</h3>
+            <div class="box-tools pull-right">
+            </div><!-- /.box-tools -->
+          </div><!-- /.box-header -->
+          <div class="box-body">
+            <div class="row">
+              
+              <div class="col-xs-6">
+                <label>Fecha del depósito</label>
+                <div class="input-group date">
+                        <input type="text" class="form-control" 
+                        placeholder="Fecha Depósito:" value="" id="fechade" required>
+                        <div class="input-group-addon">
+                        <span class="fa fa-calendar"></span>
+                    </div>
+                    </div>
+                </div>
+                
+                
+            </div>
+            <br>
+            <div class="row">
+                <div class="col-xs-6">
+                  <label>Entidad Bancaria</label>
+                    
+                      <div class="input-group">
+
+                      <select class="form-control" placeholder="Banco:" id="banc" 
+                        required="">
+                        <option value="-">Seleccionar Banco:</option>
+                          <option value=0>Venezuela</option>
+                          <option value=1>Provincial</option>
+                          <option value=2>Mercantil</option>
+                          <option value=3>Bicentenario</option>
+                          <option value=4>Banesco</option>
+                          <option value=5>BOD</option>
+                      </select>  <div class="input-group-addon">  
+                        <span class="fa fa-bank "></span></div>
+                  </div>
+
+            
+          </div>
+
+              <div class="col-xs-6">
+                <label>Forma de pago</label>
+                <div class="input-group">
+                  
+                    <select class="form-control" id="form" 
+                    placeholder="Forma de Pago:" required="">
+                      <option>Forma de Pago:</option>
+                        <option value=0>Depósito</option>
+                        <option value=1>Transferencia</option>                    
+                        <option value=2>Efectivo</option>
+                    </select>  
+                    <div class="input-group-addon">
+                      <span class="fa fa-credit-card"></span></div>
+                </div>
+              
+
+            </div>
+            </div><br>
+            <div class="row">
+              <div class="col-xs-6">
+                    <label>Voucher o Número de Operación</label>
+                    <div class="input-group">
+                        <span class="input-group-addon"><span class="fa  fa-pencil-square-o"></span></span>
+                        <input type="text" id="vouc" class="form-control" placeholder="N° de Voucher:" required="Debe ingresar un N° de Baucher">
+                    </div>
+                  
+                </div>
+            <div class="col-xs-6">
+              <label>Monto del depósito</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" placeholder="Cantidad" id="mont" required="">
+                    <span class="input-group-addon"> <span class="fa fa-money"></span>
+                </div>
+              
+            </div>
+          </div>
+          <br>
+          <div class="row">
+            <div class="col-xs-12">
+              <label>Observaciones (opcional)</label>
+                <div class="input-group">
+                    <input type="text" class="form-control" 
+                    placeholder="Observaciones opcional" id="obse" required="">
+                    <span class="input-group-addon"> <span class="fa fa-quote-right"></span>
+                </div>
+              
+            </div>
+          </div>
+            
+
+          </div><!-- /.box-body -->
+          <div class="box-footer">
+            
+            <div class="row">
+              <div class="col-md-12 pull-right">
+                <button type="button" class="btn btn-primary" 
+                onclick="LPago()"><i class="fa fa-print"></i>&nbsp;&nbsp;Listar Pagos</button>
+                <button type="button" class="btn btn-success" 
+                onclick="RPago()"><i class="fa fa-save"></i>&nbsp;&nbsp;Guardar Pago</button>
+               
+              </div>
+              
+            </div>
+              
+            
+            </form>
+          </div><!-- box-footer -->
+        </div><!-- /.box fin de formulario registro de pago-->
+
+        <div id="divReporte" style="display: none">
+
+          <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Listado de Pagos</h3>
+              <div class="box-tools pull-right">
+              </div><!-- /.box-tools -->
+            </div><!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered" cellspacing="0" id="lstReporte" width="100%">
+                <thead>
+                  <tr>
+                    <th>#</th>
+                    <th>Fecha</th>
+                    <th>Voucher</th>
+                    <th>Monto</th>
+                    <th>Estatus</th>
+                  </tr>
+                </thead>
+              </table>
+
+
+            </div><!-- /.box-body -->
+            <div class="box-footer">
+              
+            </div><!-- box-footer -->
+          </div><!-- /.box -->
+    </div>
+
+</section>
+
+

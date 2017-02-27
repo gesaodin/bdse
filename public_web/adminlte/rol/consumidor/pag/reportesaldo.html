@@ -1,0 +1,90 @@
+<section class="content-header">
+  <h1>
+    Reportes
+    <small>Banca</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="principal"><i class="fa fa-dashboard"></i> Principal</a></li>
+    <li >Reporte</li><li class="active">Loteria</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <!-- Your Page Content Here -->
+  <div class="row">
+    <div class="col-md-12">
+      <div class="box">
+        <div class="box-header with-border">
+          <h3 class="box-title">Saldos por Agencia</h3>
+        </div>
+        <div class="box-body">
+        
+        
+          <div class="row">        
+           <div class="col-md-4"> 
+
+            <div class="input-group">
+              <button type="button" class="btn btn-default " id="daterange-btn">
+                <span><i class="fa fa-calendar -"></i>&nbsp;&nbsp;&nbsp;Seleccionar el rango &nbsp;&nbsp;</span>
+                <i class="fa fa-caret-down"></i>
+              </button>
+            </div>
+          </div>
+          <div class="col-md-3">
+            <select id="tipo"
+              onchange="LSistema()" 
+              class="form-control select2 select2-hidden-accessible" 
+              style="width:100%">
+              <option value="0" >Seleccionar</option>
+              <option value="loteria">Loteria</option>
+              <option value="parley">Parley</option>
+            </select>
+          </div>
+          <div class="col-md-3">
+            <select id="sistema" class="form-control select2 select2-hidden-accessible" style="width:100%">
+              
+            </select>
+          </div>
+          <div class="col-md-2 ">
+             <button type="button" onclick="LstSaldo()" class="btn btn-success " id="consultar" style="width:100%">
+               <span><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Listar&nbsp;</span>
+             </button>
+          </div>
+        </div>  
+        
+          <br>
+          Fecha: <label id="lblfecha"></label><br>
+          Nombre del Sistema:<label id="lblnombre"></label> <br>
+          Saldo Total: <label id="lblsaldo"></label> <br>
+          <br>
+            <table class="table table-bordered" id="reporteSaldos" width="100%">
+              <thead>
+                <tr>
+                  <th style="width: 5px">#</th>
+                  <th>Agencia</th>
+                  <th>Venta</th>
+                  <th>Premio</th>
+                  <th>Comisión</th>
+                  <th >Saldos</th>
+                  <th>Fecha Procesado</th>
+                </tr>
+              </thead>
+              <tfoot>
+                <tr>
+                  <th style="width: 5px"></th>
+                  <th>Totales</th>
+                  <th id="tfventa"></th>
+                  <th id="tfpremio"></th>
+                  <th id="tfcomision"></th>
+                  <th id="tfsaldo" ></th>
+                  <th >Bs.</th>
+                </tr>
+              </tfoot>
+            </table>
+          
+        </div>
+      </div>
+    </div>
+  </div>
+
+</section>

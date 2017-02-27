@@ -1,0 +1,12 @@
+{{define "cabecera"}}
+  {{template "cabecera.html" .}}
+{{end}}
+{{define "menu"}}      
+  {{template "menu.html"  .Usuario}}
+{{end}}
+{{define "contenido"}}
+  {{template "subirparley.html"}}
+{{end}}
+{{define "pie"}}
+  {{template "pie.html" .}}
+{{end}}

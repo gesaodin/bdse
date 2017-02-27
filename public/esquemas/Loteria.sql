@@ -1,33 +1,56 @@
 ﻿DROP TABLE IF EXISTS persona;
 CREATE TABLE persona 
 (
-	oid serial NOT NULL,
+	oid serial NOT NULL PRIMARY KEY,
 	cedu char varying(32),
-	nomb char varying(256),
-	CONSTRAINT loteria_pkey PRIMARY KEY (oid),
-	
+	nomb char varying(256) 	
 );
 
 
 DROP TABLE IF EXISTS agencia;
 CREATE TABLE agencia 
 (
-	oid serial NOT NULL,
-	obse char varying(256),
+	oid serial NOT NULL PRIMARY KEY,
+	obse char varying(128),
 	resp int,	
 	telf char varying(16),
-	saldoactual numeric, --AL CIERRE	
-	CONSTRAINT agencia_pkey PRIMARY KEY (oid)
+	saldoactual numeric --AL CIERRE
 );
+CREATE INDEX agencia_obse_idx ON agencia USING btree (obse COLLATE pg_catalog."default");
+
+INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00400');
+INSERT INTO agencia (obse) VALUES ('APMEMMPPJR00100');
+INSERT INTO agencia (obse) VALUES ('APMEMMPPAP00500');
+INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00100');
+INSERT INTO agencia (obse) VALUES ('APMEMMPPCD05500');
+
+/**
+* DESCRIBE LA RELACION ENTRE LA AGENCIA Y LAS TAQUILLAS
+*/
+DROP TABLE IF EXISTS zr_agencia;
+CREATE TABLE zr_agencia 
+(
+	oida int NOT NULL,
+	codi char varying(128) 
+);
+CREATE INDEX zr_agencia_oida_idx ON zr_agencia USING btree (oida);
+CREATE INDEX zr_agencia_codi_idx ON zr_agencia USING btree (codi COLLATE pg_catalog."default");
+
+INSERT INTO zr_agencia (oida,codi) VALUES (1,'APMEMMPPCD00400'), (1,'APMEMMPPCD00401');
+INSERT INTO zr_agencia (oida,codi) VALUES (2,'APMEMMPPJR00100'), (2,'APMEMMPPJR00101');
+INSERT INTO zr_agencia (oida,codi) VALUES (3,'APMEMMPPAP00500'), (3,'APMEMMPPAP00501'), (3,'APMEMMPPAP00502'), (3,'APMEMMPPAP00503'), (3,'APMEMMPPAP00504');
+INSERT INTO zr_agencia (oida,codi) VALUES (3,'MAMEMMPPAP00500'), (3,'MAMEMMPPAP00501');
+INSERT INTO zr_agencia (oida,codi) VALUES (3,'MMAMEMMPPAP00500'),(3,'MMAMEMMPPAP00501');
+INSERT INTO zr_agencia (oida,codi) VALUES (4,'APMEMMPPCD00100');     
+INSERT INTO zr_agencia (oida,codi) VALUES (5,'APMEMMPPCD05500'), (5,'MAMEMMPPCD05500'), (5,'MMAMEMMPPCD05500'),(5,'MAMEMMPPCD005500');
+
 
 DROP TABLE IF EXISTS zr_agencia_taquilla;
-CREATE TABLE zr_agencia_taquilla
-(
-	oid serial NOT NULL,
+CREATE TABLE zr_agencia_taquilla(
+	oid serial NOT NULL PRIMARY KEY,
 	oida int,
-	nomb char varying(256),
-	fech timestamp without time zone,
-	CONSTRAINT zr_agencia_pkey PRIMARY KEY (oid)
+	nomb char varying(128),
+	fech timestamp without time zone
 );
 
 
@@ -44,36 +67,12 @@ DROP TABLE IF EXISTS zh_agencia_saldo;
 CREATE TABLE zh_agencia_saldo 
 (
 	oid serial NOT NULL,
-	codi char varying(256),
+	codi char varying(128),
 	fech timestamp without time zone,
 	saldo numeric
 	
 );
 
-INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00400');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPJR00100');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPAP00500');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00100');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPCD05500');
-
-select * from zr_agencia;
-/**
-* DESCRIBE LA RELACION ENTRE LA AGENCIA Y LAS TAQUILLAS
-*/
-DROP TABLE IF EXISTS zr_agencia;
-CREATE TABLE zr_agencia 
-(
-	oida int,
-	codi char varying(256)
-	
-);
-INSERT INTO zr_agencia (oida,codi) VALUES (1,'APMEMMPPCD00400'), (1,'APMEMMPPCD00401');
-INSERT INTO zr_agencia (oida,codi) VALUES (2,'APMEMMPPJR00100'), (2,'APMEMMPPJR00101');
-INSERT INTO zr_agencia (oida,codi) VALUES (3,'APMEMMPPAP00500'), (3,'APMEMMPPAP00501');
-INSERT INTO zr_agencia (oida,codi) VALUES (3,'MAMEMMPPAP00500'), (3,'MAMEMMPPAP00501');
-INSERT INTO zr_agencia (oida,codi) VALUES (3,'MMAMEMMPPAP00500'), (3,'MMAMEMMPPAP00501');
-INSERT INTO zr_agencia (oida,codi) VALUES (4,'APMEMMPPCD00100');     
-INSERT INTO zr_agencia (oida,codi) VALUES (5,'APMEMMPPCD05500'), (5,'MAMEMMPPCD05500'), (5,'MMAMEMMPPCD05500'),(5,'MAMEMMPPCD005500');
 
 
 INSERT INTO zh_agencia_saldo (codi, fech, saldo) VALUES ('APMEMMPPCD00400', now(), 20000);
@@ -93,7 +92,28 @@ CREATE TABLE loteria
 	arch int,
 	CONSTRAINT loteria_pkey PRIMARY KEY (oid)
 );
+CREATE INDEX loteria_fech_idx ON loteria USING btree (fech);
+CREATE INDEX loteria_arch_idx ON loteria USING btree (arch);
+CREATE INDEX loteria_sist_idx ON loteria USING btree (sist);
 
+
+DROP TABLE IF EXISTS parley;
+CREATE TABLE parley(
+	oid serial NOT NULL,
+	agen character varying(128),
+	vent numeric,
+	prem numeric,
+	comi numeric,
+	usua integer,
+	fech timestamp without time zone,
+	fcre timestamp without time zone,
+	sist int,
+	arch int,
+	CONSTRAINT parley_pkey PRIMARY KEY (oid)
+);
+CREATE INDEX parley_fech_idx ON parley USING btree (fech);
+CREATE INDEX parley_arch_idx ON parley USING btree (arch);
+CREATE INDEX parley_sist_idx ON parley USING btree (sist);
 
 
 DROP TABLE IF EXISTS cuentasxcobrar;
@@ -101,14 +121,16 @@ CREATE TABLE cuentasxcobrar
 (
 	oid serial NOT NULL,
 	fech timestamp without time zone,
-	mont numeric
-	
+	mont numeric,
+	CONSTRAINT cuentasxcobrar_pkey PRIMARY KEY (oid)
 );
+CREATE INDEX cuentasxcobrar_fech_idx ON cuentasxcobrar USING btree (fech);
 
 DROP TABLE IF EXISTS banco;
 CREATE TABLE banco
 (
 	oid serial NOT NULL,
+	nomb char varying(256),
 	fech timestamp without time zone,
 	mont numeric
 	
@@ -125,9 +147,10 @@ CREATE TABLE movimiento_ingreso
 	banc int,
 	form int, -- Forma de Pago
 	obse character varying(254),
-	mont numeric
-	
+	mont numeric,
+	CONSTRAINT movimiento_ingreso_pkey PRIMARY KEY (oid)
 );
+CREATE INDEX movimiento_ingreso_fech_idx ON movimiento_ingreso USING btree (fech);
 
 DROP TABLE IF EXISTS movimiento_egreso;
 CREATE TABLE movimiento_egreso
@@ -140,9 +163,10 @@ CREATE TABLE movimiento_egreso
 	banc int,
 	form int, -- Forma de Pago
 	obse character varying(254),
-	mont numeric
-	
+	mont numeric,
+	CONSTRAINT movimiento_egreso_pkey PRIMARY KEY (oid)	
 );
+CREATE INDEX movimiento_egreso_fech_idx ON movimiento_egreso USING btree (fech);
 
 DROP TABLE IF EXISTS movimiento_prestamo;
 CREATE TABLE movimiento_prestamo
@@ -156,9 +180,10 @@ CREATE TABLE movimiento_prestamo
 	saldo numeric,
 	banc int,
 	form int, -- Forma de Pago
-	mont numeric	
+	mont numeric,
+	CONSTRAINT movimiento_prestamo_pkey PRIMARY KEY (oid)	
 );
-
+CREATE INDEX movimiento_prestamo_fech_idx ON movimiento_prestamo USING btree (fech);
 
 
 /**
@@ -174,32 +199,19 @@ CREATE TABLE cobrosypagos
 	vien numeric, --BALANCE DE REGISTRO
 	sald numeric,
 	movi numeric,
-	van numeric --BALANCE DE REGISTRO
-	
-);	
-
-DROP TABLE IF EXISTS parley;
-CREATE TABLE parley
-(
-	oid serial NOT NULL,
-	agen character varying(128),
-	vent numeric,
-	prem numeric,
-	comi numeric,
-	usua integer,
-	fech timestamp without time zone,
-	fcre timestamp without time zone,
-	sist int,
-	arch int,
-	CONSTRAINT parley_pkey PRIMARY KEY (oid)
+	van numeric, --BALANCE DE REGISTRO	
+	CONSTRAINT cobrosypagos_pkey PRIMARY KEY (oid)
 );
+CREATE INDEX cobrosypagos_fech_idx ON cobrosypagos USING btree (fech);
+
+
 
 DROP TABLE IF EXISTS sistema;
 CREATE TABLE sistema (
 	oid serial NOT NULL,
 	obse char varying(256),
-	arch integer
-	
+	arch integer,
+	CONSTRAINT sistema_pkey PRIMARY KEY (oid)	
 );
 
 DROP TABLE IF EXISTS usuario;
@@ -321,11 +333,11 @@ INSERT INTO haber (agen,mont,vouc,fdep,freg,fope,tipo,banc,esta)
 VALUES ('APMEBAPPRY00200',500,'VLO009888','2017-01-21',now(),'2017-01-21',1,1,0),
 ('APMEMMPPJR00100',7500,'VLO009888','2017-01-23',now(),'2017-01-23',1,1,0);
 
+DROP TABLE IF EXISTS saldos;
 CREATE TABLE saldos
 (
-  oid serial NOT NULL,
+  oid serial NOT NULL PRIMARY KEY,
   obse character varying(128),
   resp integer,  
-  saldoactual numeric,
-  CONSTRAINT agencia_pkey PRIMARY KEY (oid)
+  saldoactual numeric
 )

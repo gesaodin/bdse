@@ -140,7 +140,7 @@ func (G *GPanel) IrA(w http.ResponseWriter) {
 	// fmt.Println("Entrando en funcion ", G.TituloDePagina)
 	var t *template.Template
 	var err error
-	var base string = "public_web/AdminLTE/"
+	var base string = "public_web/adminlte/"
 
 	if G.TituloDePagina != "login" {
 
@@ -224,7 +224,7 @@ func (G *GPanel) SubirArchivoLoteria(w http.ResponseWriter, r *http.Request) {
 
 //En caso de acceder a una url sin acceso
 func (G *GPanel) Error(w http.ResponseWriter) {
-	terr, _ := template.ParseFiles("public_web/AdminLTE/err.html")
+	terr, _ := template.ParseFiles("public_web/adminlte/err.html")
 	terr.Execute(w, G)
 
 }

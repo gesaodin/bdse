@@ -46,7 +46,7 @@ func WMAdminLTE() {
 
 	Enrutador.HandleFunc("/bdse-admin/gpanel/{id}", GP.Login)
 	//Enrutador.HandleFunc("/bdse-admin/gpanel/subir", GP.SubirArchivoLoteria)
-	prefix := http.StripPrefix("/bdse-admin/gpanel", http.FileServer(http.Dir("public_web/AdminLTE")))
+	prefix := http.StripPrefix("/bdse-admin/gpanel", http.FileServer(http.Dir("public_web/adminlte")))
 	Enrutador.PathPrefix("/bdse-admin/gpanel/").Handler(prefix)
 
 	prefixx := http.StripPrefix("/bdse-admin/public/temp", http.FileServer(http.Dir("public/temp")))

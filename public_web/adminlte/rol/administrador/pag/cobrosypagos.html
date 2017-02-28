@@ -119,7 +119,7 @@
           <div class="col-md-6">
               <label>Cuenta Afectada: </label>
               <div class="input-group">  
-                <select id="tipoer"
+                <select id="tmovimiento"
                     class="form-control select2 select2-hidden-accessible" 
                     style="width:100%">
                     <option value="--" >Seleccionar</option>
@@ -220,14 +220,20 @@
         <br>
         <div class="row">
           <div class="col-md-6">
+              <label id="codigoer"></label>
               <label>Cuenta Afectada: </label>
+
               <div class="input-group">  
-                <select id="tipoer"
-                    class="form-control select2 select2-hidden-accessible" 
-                    style="width:100%">
+                <select id="cuentaer"
+                    class="form-control select2 select2-hidden-accessible" style="width:100%">
                     <option value="--" >Seleccionar</option>
-                    <option value=0>Banco</option>
-                    <option value=1>Caja</option>
+                    <option value=0>Venezuela</option>
+                    <option value=1>Provincial</option>
+                    <option value=2>Mercantil</option>
+                    <option value=3>Bicentenario</option>
+                    <option value=4>Banesco</option>
+                    <option value=5>BOD</option>
+                    <option value=99>Caja (Deposito/Efectivo)</option>
                   </select>
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
@@ -247,6 +253,17 @@
         <br>
         <div class="row">
           <div class="col-md-12">
+              <label>Voucher o Número de Operación</label>
+              <div class="input-group">
+                  <span class="input-group-addon"><span class="fa  fa-pencil-square-o"></span></span>
+                  <input type="text" id="voucer" class="form-control" placeholder="N° de Voucher:" required="Debe ingresar un N° de Baucher">
+              </div>
+            
+          </div>
+        </div>
+
+        <div class="row">
+          <div class="col-md-12">
              <label>Descripción: </label>
               <div class="input-group">
                 <input type="text" class="form-control" 
@@ -261,7 +278,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-success pull-left" >Registrar</button>
+        <button type="button" class="btn btn-success pull-left" onclick="RegistrarER()">Registrar</button>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
       </div>
     </div>
@@ -325,7 +342,7 @@
           <div class="col-md-6">
               <label>Modo de Cobro: </label>
               <div class="input-group">  
-                <select id="tipoer"
+                <select id="cuentaper"
                     class="form-control select2 select2-hidden-accessible" 
                     style="width:100%">
                     <option value="--" >Seleccionar</option>

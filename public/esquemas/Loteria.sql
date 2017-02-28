@@ -307,8 +307,8 @@ CREATE TABLE debe
   obse character varying(254),
   CONSTRAINT debe_pkey PRIMARY KEY (oid)
 );
-INSERT INTO debe (agen,mont,vouc,fdep,freg,fope,tipo,banc,esta) 
-VALUES ('APMEMMPPCD00400',2000,'VLO009888','2017-01-21',now(),'2017-01-19',1,1,0);
+
+--INSERT INTO debe (agen,mont,vouc,fdep,freg,fope,tipo,banc,esta) VALUES ('APMEMMPPCD00400',2000,'VLO009888','2017-01-21',now(),'2017-01-19',1,1,0);
 
 
 -- 0 DEBE | 1: HABER

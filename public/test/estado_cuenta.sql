@@ -60,3 +60,5 @@ prestamo.agen=saldo_agencia.obse AND prestamo.fech=saldo_agencia.fech
 LEFT JOIN cobrosypagos ON cobrosypagos.fech=saldo_agencia.fech
 
 ORDER BY saldo_agencia.fech
+
+select * from parley order by agen

@@ -1,17 +1,47 @@
+var _S = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+var _SAV = ['Dom', 'Lun', 'Mar', 'Mié', 'Jue', 'Vie', 'Sáb'];
+
 var opciones = {
         "paging":   true,
         "ordering": true,
         "info":     true,
         "searching": false
     };
+var opcionesfalso = {
+        "paging":   false,
+        "ordering": false,
+        "info":     false,
+        "searching": false
+    };
 //$('#reporte').DataTable(opciones);
 $('#reporteSaldos').DataTable(opciones);
-
+$('#reporteSaldosSistemas').DataTable(opcionesfalso);
+$('#reporteSaldosSistemasParley').DataTable(opcionesfalso);
+ idleTime = 0;
 $(function(){
     /** 
      * Declaración de variables globales
      */ 
-    var rS = $('#reporteSaldos').DataTable();
+    //var rS = $('#reporteSaldos').DataTable();
+
+   
+
+    //Increment the idle time counter every minute.
+   
+    var idleInterval = setInterval("timerIncrement()", 60000); // 1 minute
+    //Zero the idle timer on mouse movement.
+    $(this).mousemove(function (e) {
+        console.log('Entrando...');
+        idleTime = 0;
+    });
+    $(this).keypress(function (e) {
+        idleTime = 0;
+    });
+    
+
+
+
+
 
     $("#cargando").hide();        
     socket.addEventListener('message', function (e) {
@@ -44,6 +74,22 @@ $(function(){
     
     CargarCalendario();    
 });
+
+function CargarCalendario(){
+    
+    
+    $('#fecha').datepicker({autoclose: true, format: 'yyyy-mm-dd'});
+    $('#fechade').datepicker({autoclose: true, format: 'yyyy-mm-dd' });
+    $('#fechadere').datepicker({autoclose: true, format: 'yyyy-mm-dd' });
+}
+
+
+
+function timerIncrement() {
+    idleTime++;
+    if(idleTime > 4)$(location).attr('href', 'logout');
+}
+
 
 //Listar pagos pendientes del registro de pago.
 function LPago(){
@@ -118,7 +164,8 @@ function RPago(){
 
 
 function RP(){
-    $("#mdlRP").modal('show');
+    //$("#mdlRP").modal('show');
+    $(location).attr('href', 'registropago');
 }
 /**
  * Limpiar el formulario de pago
@@ -129,7 +176,6 @@ function LFPago(){
     $("#obse").val("");
     $("#mont").val("");
 }
-function CargarCalendario(){var a={format:"YYYY/MM/DD",applyLabel:"Aceptar",cancelLabel:"Cancelar",customRangeLabel:"Por Rango",daysOfWeek:["Do","Lu","Ma","Mi","Ju","Vi","Sa"],monthNames:["Enero","Febrero","Marzo","Abril","Mayo","Junio","Julio","Agosto","Septiembre","Octubre","Noviembre","Diciembre"]};$("#daterange-btn").daterangepicker({locale:a,ranges:{Hoy:[moment(),moment()],Ayer:[moment().subtract(1,"days"),moment().subtract(1,"days")],"Hace 7 Dias":[moment().subtract(6,"days"),moment()],"Hace 30 Dias":[moment().subtract(29,"days"),moment()],"Este Mes":[moment().startOf("month"),moment().endOf("month")],"Mes Pasado":[moment().subtract(1,"month").startOf("month"),moment().subtract(1,"month").endOf("month")]},startDate:moment().subtract(29,"days"),endDate:moment()},function(a,b){$("#daterange-btn span").html(a.format("YYYY/MM/DD")+" - "+b.format("YYYY/MM/DD"))}),$("#fechara").daterangepicker({locale:a}),$("#fecha").datepicker({autoclose:!0,format:"yyyy-mm-dd"}),$("#fechade").datepicker({autoclose:!0,format:"yyyy-mm-dd"}),$("#fechadere").datepicker({autoclose:!0,format:"yyyy-mm-dd"})}
 
 function LstSaldoGPS(){
     
@@ -210,32 +256,38 @@ function PTotales(desde, hasta, data){
         total = parseFloat(v.saldo) + movimiento + x + sAnt;
         
         fil = psFila(fila,v.fecha);
-        rS.cell(fil,1).data(sAnt.toFixed(2)).draw();
+        //rS.cell(fil,1).data(sAnt.toFixed(2)).draw();
+        rS.cell(fil,2).data(sAnt.toFixed(2)).draw();
 
-        rS.cell(fil,2).data(saldo.toFixed(2)).draw();
-        rS.cell(fil,3).data(movimiento.toFixed(2)).draw();
-        rS.cell(fil,4).data(entregado.toFixed(2)).draw();
-        rS.cell(fil,5).data(recibido.toFixed(2)).draw();
+        rS.cell(fil,3).data(saldo.toFixed(2)).draw();
+        rS.cell(fil,4).data(movimiento.toFixed(2)).draw();
+        rS.cell(fil,5).data(entregado.toFixed(2)).draw();
+        rS.cell(fil,6).data(recibido.toFixed(2)).draw();
 
-        rS.cell(fil,6).data(total.toFixed(2)).draw();
+        rS.cell(fil,7).data(total.toFixed(2)).draw();
         sAnt = total;
         
     } );
    
+    
     var table = $('#reporteSaldosGeneral').DataTable();    
         $('#reporteSaldosGeneral tbody').on( 'click', 'tr', function () {
-            var data = table.row( this ).data();            
-            VentanaEmergente(data[0]);
-            
+            var data = table.row( this ).data(); 
+            var lot = $('#reporteSaldosSistemas').DataTable();
+            var par = $('#reporteSaldosSistemasParley').DataTable();          
+            lot.clear().draw();
+            par.clear().draw();
+            VentanaEmergente(data[0], data[1]);
         } );
 
 } 
 
 function CBTotales(){
     $("#divTabla").html('\
-    <table class="table table-bordered" id="reporteSaldosGeneral" width="100%">\
+    <table class="table table-striped table-hover table-bordered"  id="reporteSaldosGeneral" width="100%">\
         <thead>\
         <tr>\
+            <th>Fecha</th>\
             <th>Fecha</th>\
             <th>S.Ant</th>\
             <th>S.Día</th>\
@@ -247,8 +299,16 @@ function CBTotales(){
         </thead>\
     </table>');
     var rS = $('#reporteSaldosGeneral').DataTable(
-        {order: [[ 0, "asc" ]]} 
+        {
+            "order": [[ 0, "asc" ]],
+            "createdRow": function ( row, data, index ) {
+                        if ( data[2] * 1 > 15 ) {
+                            $('td', row).eq(2).addClass('highlight');
+                        }
+                    }
+        } 
     );
+    rS.column( 0 ).visible( false );
 
     rS.clear().draw();
     return rS;
@@ -258,80 +318,162 @@ function CBTotales(){
 /**
  * 
  */
-function VentanaEmergente(id){
-    $('#ventanaEmergenteTitulo').html('Detalle de Sistemas...');
-    var tabla = '';
-    var data = JSON.stringify({id:0}); 
-    var loteria;
-    var parley;       
-    $.post("api/listasistema",data)
-    .done(function(data){      
-        tabla = '<table class="table table-bordered" id="reporteSaldosSistemas" width="100%"><thead><tr>';       
-        $.each(data, function(c, v){
-               tabla += '<th>' + v.nombre + '</th>';
-        } );
-        tabla += '</tr></thead></table><br><br>';      
-        
-        $('#ventanaEmergenteContenido').html(tabla);          
-        var rS = $('#reporteSaldosSistemas').DataTable( {
-            paging:   false,
-            ordering: false,
-            info:     false,
-            searching: false
-        });
-        //rS.clear().draw();
-    });
-
-    
-/**
-    var data = JSON.stringify({id:1});       
-    $.post("api/listasistema",data)
-    .done(function(data){      
-        tabla = '<table class="table table-bordered" id="reporteSaldosSistemasParley" width="100%"><thead><tr>';       
-        $.each(data, function(c, v){
-               tabla += '<th>' + v.nombre + '</th>';
-        } );
-        tabla += '</tr></thead></table>';       
-        $('#ventanaEmergenteContenido').append(tabla);        
-        var rSs = $('#reporteSaldosSistemasParley').DataTable({
-            paging:   false,
-            ordering: false,
-            info:     false,
-            searching: false
-        });
-        //rSs.clear().draw();
-        
-    });*/
-    console.log( $('#ventanaEmergenteContenido').html() );
-    $('#ventanaEmergente').modal({ keyboard: false });   // initialized with no keyboard
-    $('#ventanaEmergente').modal('show');                // initializes and invokes show
-    $('#ventanaEmergenteContenido').append("HOLA MUNDO");
-    
-    //PTotalesSistemas(id, $("#agencia").html(), loteria, parley);
-
-   
+function VentanaEmergente(id, fechaAux){
+    $('#lbldia').text(id);
+    $('#lbldiaA').text(fechaAux);
+    $('#ventanaReporteTitulo').html('Saldos por programas para el día (' + fechaAux + ')');  
+    CargarDatosSistemas(id, $("#agencia").html());
+    CargarDatosSistemasParley(id, $("#agencia").html());     
+    $('#ventanaReporte').modal({ keyboard: false });   // initialized with no keyboard
+    $('#ventanaReporte').modal('show');                // initializes and invokes show   
 }
 
-function PTotalesSistemas(fech, agencia, loteria, parley){
+function CargarDatosSistemas(fecha, agencia){
     var data = JSON.stringify({
         agencia: agencia, 
         desde:fecha, 
         hasta:fecha
-    });
-    console.log(loteria);
-    loteria.row.add([0,0,0,0,0,0,0,0,0]).draw();
-    parley.row.add(['10','HOLA','MUNDO']).draw();
+    });    
     url = "api/balance/cobrosypagossistemas";   
     $.post(url,data)
-    .done(function(data){ 
-        //console.log(data);
-        $.each(data, function(c, v){
-           console.log(v);
-
+    .done(function(data){        
+        var rs = $('#reporteSaldosSistemas').DataTable();
+        rs.clear().draw(false);
+        rs.row.add([0,0,0,0,0,0,0,0,0]).draw(false);
+        suma = 0;
+        $.each(data, function(c, v){            
+            if (v.archivo == null){
+                suma += v.saldo;
+                var id = SeleccionarSistemas(v.sistema);
+                rs.cell(0,id).data(v.saldo.toFixed(2)).draw(); 
+            }            
         });
-        
+        $('#saldoloteria').html('Total Saldo Por Loteria (' + suma.toFixed(2) + ')');
     });
 }
+
+function CargarDatosSistemasParley(fecha, agencia){
+    var data = JSON.stringify({
+        agencia: agencia, 
+        desde:fecha, 
+        hasta:fecha
+    });    
+
+    url = "api/balance/cobrosypagossistemas";   
+    $.post(url,data)
+    .done(function(data){        
+        var rs = $('#reporteSaldosSistemasParley').DataTable();
+        rs.clear().draw(false);
+        
+        rs.row.add([0,0,0]).draw(false);
+        suma = 0;
+        $.each(data, function(c, v){
+            if (v.archivo != null){
+                suma += v.saldo;           
+                var id = SeleccionarSistemas(v.sistema);
+                rs.cell(0,id).data(v.saldo.toFixed(2)).draw();
+               
+            }            
+        });    
+        $('#saldoparley').html('Total Saldo Por Parley (' + suma.toFixed(2) + ')');      
+    });
+}
+
+
+function SeleccionarSistemas(id){
+    switch (id) {
+        case 1:
+            return 0;
+            break;
+        case 2:
+            return 1;
+            break;
+        case 3:
+            return 2;
+            break;
+        case 4:
+            return 3;
+            break;
+        case 5:
+            return 4;
+            break;
+        case 6:
+            return 0;
+            break;
+        case 7:
+            return 1;
+            break;
+        case 8:
+            return 2;
+            break;
+        case 9:
+            return 5;
+            break;
+        case 10:
+            return 6;
+            break;
+        case 11:
+            return 7;
+            break;
+        case 12:
+            return 8;
+            break;
+        default:
+            break;
+    }
+}
+
+function VerDetallesTaquillas(id){
+
+    fecha =  $('#lbldia').text();
+    fechaA =  $('#lbldiaA').text();
+    $('#ventanaEmergenteTitulo').html('Detalles del día (' + fechaA + ')');
+    var data = JSON.stringify({
+        agencia: $("#agencia").html(), 
+        desde:fecha, 
+        hasta:fecha
+    });   
+   
+    url = "api/balance/cobrosypagosdetallados";   
+    $.post(url,data)
+    .done(function(data){        
+        tabla = '<table class="table table-striped table-bordered table-hover" data-page-length="5" id="reporteSaldosDetallados" width="100%"><thead><tr>\
+        <th>Taquila</th><th>Venta</th><th>Premio</th><th>Comision</th><th>Saldo</th><th>Programa</th>\
+        <tbody>';
+        tabla += '</tbody></tr></thead></table>';
+        $('#ventanaEmergenteContenido').html(tabla);
+        var rs = $('#reporteSaldosDetallados').DataTable({            
+            "ordering":  false,
+            "info":      false,
+            "searching": false,
+            "paging":    true
+        });
+        rs.clear().draw();
+        $.each(data, function(c, v){            
+            venta = v.venta == null?0:v.venta;
+            premio = v.premio == null?0:v.premio;
+            comision = v.comision == null?0:v.comision;
+            saldo = v.saldo == null?0:v.saldo;
+            //tabla += '<tr><td>' + v.taquilla + '</td><td>' + venta + '</td><td>' + premio + '</td>\
+            //<td>' + comision + '</td><td>' + saldo + '</td><td>' + v.observacion + '</td></tr>'
+            rs.row.add([
+                v.taquilla,
+                venta,
+                premio,
+                comision,
+                saldo,
+                v.observacion
+            ]).draw(false);
+        });
+        
+        
+        
+    });
+    
+    $('#ventanaEmergente').modal({ keyboard: false });   // initialized with no keyboard
+    $('#ventanaEmergente').modal('show');                // initializes and invokes show   
+}
+
 
 /**
  * @param Date | UNIX
@@ -359,9 +501,19 @@ function RecorreFechas(desde, hasta, rS){
                 mes = i;
                 if((String(i)).length==1)mes='0'+i;
                 fecha = h + "-" + mes + "-" + dia;
+                fechaX = dia + "/" + mes + "/" + h;
+                dia = new Date(h + "/" + mes + "/" + dia);
+                pos = dia.getDay();
+                inicio = '';
+                fin = '';
+                if( pos == 0){
+                    inicio = '<label style="color:green">';
+                    fin = '</label>'
+                }
                 fila[count] = fecha; 
                  rS.row.add( [
                     fecha,
+                    inicio + _SAV[pos] + ' ' + fechaX + fin,
                     0,
                     0,
                     0,

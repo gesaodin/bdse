@@ -13,6 +13,7 @@ import (
 
 type Pago struct {
 	Agencia     string  `json:"agencia,omitempty"`
+	Taquilla    string  `json:"taquilla,omitempty"`
 	Voucher     string  `json:"voucher,omitempty"`
 	Desde       string  `json:"desde,omitempty"`
 	Hasta       string  `json:"hasta,omitempty"`
@@ -21,6 +22,9 @@ type Pago struct {
 	Fecha       string  `json:"fecha,omitempty"`
 	FormaDePago int     `json:"forma,omitempty"`
 	Monto       float64 `json:"monto,omitempty"`
+	Venta       float64 `json:"venta,omitempty"`
+	Premio      float64 `json:"premio,omitempty"`
+	Comision    float64 `json:"comision,omitempty"`
 	Saldo       float64 `json:"saldo,omitempty"`
 	Vienen      float64 `json:"vienen,omitempty"`
 	Recibido    float64 `json:"recibido,omitempty"`
@@ -42,13 +46,19 @@ type Respuesta struct {
 
 func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	monto := strconv.FormatFloat(data.Monto, 'f', 6, 64)
+	tabla := "haber"
+	if(data.FormaDePago == 0){
+		tabla = "debe"
+	}
+	fmt.Println(data.Estatus)
 	forma := strconv.Itoa(data.FormaDePago)
 	banco := strconv.Itoa(data.Banco)
+	estatus := strconv.Itoa(data.Estatus)
 
-	s := "INSERT INTO haber (agen,mont,vouc,fdep,freg,tipo,banc,esta,obse) VALUES "
+	s := "INSERT INTO " + tabla + " (agen,mont,vouc,fdep,freg,tipo,banc,esta,obse) VALUES "
 	s += "('" + data.Agencia + "'," + monto + ",'" + data.Voucher + "',"
 	s += "'" + data.Deposito + "',now()," + forma
-	s += "," + banco + ",0,'" + data.Observacion + "');"
+	s += "," + banco + "," + estatus + ",'" + data.Observacion + "');"
 	//fmt.Println(s)
 	rs, err := sys.PostgreSQL.Exec(s)
 	if err != nil {
@@ -117,7 +127,6 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 			s = generarCobrosYPagosGeneral(fecha)
 		}
 	}
-	fmt.Println(s)
 
 	row, err := sys.PostgreSQL.Query(s)
 
@@ -297,7 +306,6 @@ func (p *Pago) GenerarCobrosYPagosSistemas(data Pago) (jSon []byte, err error) {
 	//fech, saldo,sist,agen,arch
 	var s string
 	s = generarCobrosYPagosSistemas(data)
-	fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
@@ -355,4 +363,70 @@ func generarCobrosYPagosSistemas(data Pago) (s string) {
 		ORDER BY sistema.arch
 	`
 	return
+}
+
+
+func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error) {
+	//fech, saldo,sist,agen,arch
+	var s string
+	s = generarCobrosYPagosDetallados(data)
+
+	row, err := sys.PostgreSQL.Query(s)
+
+	if err != nil {
+		return
+	}
+	var lst []interface{}
+
+	for row.Next() {
+		var taquilla, observacion sql.NullString
+		var venta, premio, comision, saldo sql.NullFloat64
+		e := row.Scan(&taquilla, &venta, &premio, &comision, &saldo, &observacion)
+		if e != nil {
+			fmt.Println(e.Error())
+			return
+		}
+		var pago Pago
+		pago.Taquilla = util.ValidarNullString(taquilla)
+		pago.Venta = util.ValidarNullFloat64(venta)
+		pago.Premio = util.ValidarNullFloat64(premio)
+		pago.Comision = util.ValidarNullFloat64(comision)
+		pago.Saldo = util.ValidarNullFloat64(saldo)
+		pago.Observacion = util.ValidarNullString(observacion)
+		lst = append(lst, pago)
+	}
+
+	jSon, _ = json.Marshal(lst)
+
+	return
+}
+func generarCobrosYPagosDetallados(data Pago) (s string){
+	var fecha string = ""
+	var sistema string = "";
+	if data.Desde != "" {
+		fecha = ` AND lotepar.fech BETWEEN '` + data.Desde + ` 00:00:00'::TIMESTAMP AND '` + data.Hasta + ` 23:59:59'::TIMESTAMP`
+	}
+	if data.Sistema > 0 {
+		sistema = ` AND sistema.arch = ` + strconv.Itoa(data.Sistema)
+	}
+	s = `
+		SELECT
+			lotepar.agen,  lotepar.vent AS venta,
+			lotepar.prem AS premio, lotepar.comi AS comision,
+			lotepar.saldo AS saldo, sistema.obse
+		FROM agencia
+		JOIN zr_agencia ON agencia.oid=zr_agencia.oida
+
+		JOIN (
+			SELECT
+				arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria
+
+			UNION
+			SELECT
+				arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+
+			) AS lotepar ON zr_agencia.codi=lotepar.agen
+		JOIN sistema ON lotepar.sist=sistema.oid
+		WHERE agencia.obse='` + data.Agencia + `' ` + fecha + sistema + ` ORDER BY sistema.oid,lotepar.agen  `
+		return
 }

@@ -5,6 +5,7 @@ type Agencia struct {
 	Nombre      string      `json:"nombre,omitempty"`
 	Telefono    string      `json:"telefono,omitempty"`
 	Fecha       string      `json:"fecha,omitempty"`
+	Observacion string			`json:"observacion,omitempty"`
 	Responsable interface{} `json:"responsable,omitempty"`
 	Taquilla    interface{} `json:"taquilla,omitempty"`
 	Saldo       float32     `json:"saldo,omitempty"`
@@ -40,6 +41,14 @@ type Sistema struct {
 	Fecha     string `json:"fecha,omitempty"`
 }
 
-func Registrar(a Agencia) (jSon []byte, err error) {
+//Registrar una Agencia
+func (a *Agencia) Registrar (agencia Agencia) (jSon []byte, err error) {
+
+	return
+}
+
+//Consultar una Agencia
+func (a *Agencia) Consultar (agencia Agencia) (jSon []byte, err error) {
+
 	return
 }

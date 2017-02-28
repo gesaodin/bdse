@@ -2,7 +2,7 @@ var opciones = {
         "paging":   true,
         "ordering": true,
         "info":     true,
-        "searching": false,
+        "searching": true,
         "language": {
             "decimal": ",",
             "thousands": "."
@@ -851,7 +851,7 @@ function EstadoCuenta(){
         scrollY: "200px",
         scrollCollapse: true,
         paging: false,
-        searching: false,
+        searching: true,
         order: [[ 0, "desc" ]]
      });
     rS.clear().draw();
@@ -962,4 +962,27 @@ function RecorreFechas(desde, hasta, rS){
         } 
     }
     return fila;
+}
+
+
+function RegistrarER(){
+    var EntregadoRecibido = JSON.stringify ({
+        agencia: $("#coder").html(),
+        fecha : $("#fechadere").val(),
+        deposito : $("#fechadere").val(),
+        forma: parseInt($("#tipoer option:selected").val()), //0 Entregado: DEBE 1 Recibido:HABER
+        banco: parseInt($("#cuentaer option:selected").val()),
+        monto: parseFloat($("#montoer").val()),
+        voucher: $("#voucer").val(),
+        observacion: $("#descripcioner").val(),
+        estatus: 1
+    });
+
+    url = "api/balance/registrarpago";         
+    $.post(url,EntregadoRecibido)
+    .done(function(data){  
+        $('#mdlER').modal('hide');
+        $.notify("Registro Exitoso...", "success");
+    });
+    
 }

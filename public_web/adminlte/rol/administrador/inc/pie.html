@@ -1,3 +1,24 @@
+    <div class="modal fade bs-example-modal-sm" tabindex="-1" role="dialog" id="msgbox">
+      <div class="modal-dialog  modal-sm" role="document">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+            <h4 class="modal-title" id="msgbox-titulo">Observaciones</h4>
+          </div>
+          <div class="modal-body" id="msgbox-cuerpo">
+            
+                   
+          </div>
+          <div class="modal-footer" id="msgbox-pie">
+
+            
+            
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+
+
 
 
     <div class="modal fade bs-example-modal-lg" tabindex="-1" role="dialog" id="ventanaEmergente">
@@ -143,7 +164,7 @@
 
 <script type="text/javascript">
 
- var socket = new WebSocket('wss://200.82.247.58:3000/wsapi/c1?id=admin');
+ var socket = new WebSocket('wss://200.82.247.127:3000/wsapi/c1?id=admin');
   window.onload = function (){
     $.notify.defaults({
       position: 'bottom right',
@@ -151,25 +172,9 @@
       hideAnimation: 'slideUp',
       hideDuration: 300,
     });
-
-  $('#reporteSaldos tbody').on( 'click', 'tr', function () {
-        console.log("Hola");
-        if ( $(this).hasClass('selected') ) {
-            $(this).removeClass('selected');
-        }
-        else {
-            rS.$('tr.selected').removeClass('selected');
-            $(this).addClass('selected');
-        }
-    } );
   }
 
 
 </script>
-
-<!-- Optionally, you can add Slimscroll and FastClick plugins.
-     Both of these plugins are recommended to enhance the
-     user experience. Slimscroll is required when using the
-     fixed layout. -->
 </body>
 </html>

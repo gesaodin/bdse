@@ -24,6 +24,9 @@ type Movimiento struct {
 	Cuota           float64 `json:"cuota,omitempty"`
 	Cuenta          int     `json:"cuenta,omitempty"`
 	Banco           int     `json:"banco,omitempty"`
+	BancoNombre     string  `json:"banconombre,omitempty"`
+	Estatus         int     `json:"estatus,omitempty"`
+	Observacion     string  `json:"observacion,omitempty"`
 }
 
 type MSJ struct {
@@ -46,6 +49,27 @@ func (m *Movimiento) Salvar() (jSon []byte, err error) {
 	return
 }
 
+func (m *Movimiento) Actualizar() (jSon []byte, err error) {
+	tabla := "haber"
+	if(m.FormaDePago == 0){
+		tabla = "debe"
+	}
+
+	s := `UPDATE  ` + tabla + ` SET fapr = '` + m.Fecha + `', resp='` + m.Observacion + `',
+	esta=` + strconv.Itoa(m.Estatus) + ` WHERE oid =` + strconv.Itoa(m.Oid)
+
+	_, err = sys.PostgreSQL.Exec(s)
+
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	var res MSJ
+	res.Msj = "Se actualizo correctamente..."
+	res.Tipo = 1
+	jSon, err = json.Marshal(res)
+	return
+}
 //
 func (m *Movimiento) generarSQL() (sql string) {
 	sql = "INSERT INTO "
@@ -97,8 +121,8 @@ func (m *Movimiento) generarSQL() (sql string) {
 
 func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	var lst []interface{}
-	s := `SELECT oid,agen,mont,vouc,fdep,tipo,banc FROM haber WHERE esta=0
-  AND fdep='` + m.FDeposito + `';`
+	s := `SELECT banco.nomb, debe.oid,agen,debe.mont,vouc,fdep,tipo,banc,resp FROM debe
+	LEFT JOIN banco ON debe.banc=banco.oid	WHERE esta=0`	//` +  AND fapr != ''; m.FDeposito + `
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -106,16 +130,24 @@ func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	}
 	for row.Next() {
 		var movimiento Movimiento
-		var agen, fdep, vouc string
+		var agen, fdep, vouc  string
+		var nomb, resp sql.NullString
+
 		var oid, tipo, banc int
 		var mont sql.NullFloat64
 
-		row.Scan(&oid, &agen, &mont, &vouc, &fdep, &tipo, &banc)
+		e := row.Scan(&nomb,  &oid, &agen, &mont, &vouc, &fdep, &tipo, &banc, &resp)
+		if e != nil {
+			fmt.Println(e.Error())
+			return
+		}
 		movimiento.Oid = oid
 		movimiento.Agencia = agen
 		//movimiento.FDeposito = fdep
 		movimiento.Voucher = vouc
+		movimiento.Observacion = util.ValidarNullString(resp)
 		movimiento.Banco = banc
+		movimiento.BancoNombre = util.ValidarNullString(nomb)
 		movimiento.Monto = util.ValidarNullFloat64(mont)
 		lst = append(lst, movimiento)
 	}

@@ -112,7 +112,9 @@ function CargarCalendario(){
     $('#fechara').daterangepicker({locale:local});
     
     $('#fecha').datepicker({autoclose: true, format: 'yyyy-mm-dd'});
+    
     $('#fechade').datepicker({autoclose: true, format: 'yyyy-mm-dd' });
+    $('#fechadepositore').datepicker({autoclose: true, format: 'yyyy-mm-dd' });
     $('#fechadere').datepicker({autoclose: true, format: 'yyyy-mm-dd' });
 }
 /**
@@ -208,7 +210,8 @@ function LstRA(){
         var table = $('#reporte').DataTable();    
         $('#reporte tbody').on( 'click', 'tr', function () {
             var data = table.row( this ).data();
-            VentanaEmergente(data[3],"", data[1], data[2]);           
+            //console.log(data);
+            VentanaEmergente(data[3], data[1], data[2]);           
            
         } );
     }else{
@@ -224,8 +227,8 @@ function LstRA(){
  * @param html
  * @param html
  */
-function VentanaEmergente(titulo, cont, id, tbl){
-    var cont = '<table class="table table-bordered" \
+function VentanaEmergente(titulo, id, tbl){
+    var cont = '<table class="table table-bordered table-striped table-hover" \
      id="reporteDetallado" width="100%">\
               <thead>\
                 <tr>\
@@ -255,29 +258,30 @@ function Reporte(t, oid, tbl){
 
     var table = $('#' + t).DataTable({
         "paging":   true,
-        "ordering": false,
-        "info":     false,
-        "searching": false
+        "ordering": true,
+        "info":     true,
+        "searching": true
     });   
     var clave = JSON.stringify({id:  oid, tabla: tbl });
     table.clear().draw();
     $.post("api/reportesaldo",clave)
      .done(function(data){         
             $.each(data, function(c, v){
-            venta = v.venta == null?  0: v.venta;
-            premio = v.premio == null?  0: v.premio;
-            comision = v.comision == null?  0: v.comision;
-            saldo = v.saldo == null?  0: v.saldo;
-            table.row.add( [
-                parseInt(c) + 1,
-                v.agencia,
-                venta,
-                premio,
-                comision,
-                saldo
-                            
-            ] ).draw( false );
-
+                venta = v.ven == null?  0: v.ven;
+                premio = v.pre == null?  0: v.pre;
+                comision = v.com == null?  0: v.com;
+                saldo = v.sal == null?  0: v.sal;
+                
+                table.row.add( [
+                    parseInt(c) + 1,
+                    v.age,
+                    venta,
+                    premio,
+                    comision,
+                    saldo
+                                
+                ] ).draw( false );
+                
         } );
     });
     
@@ -303,6 +307,7 @@ function CrearNotificacion(t, msj){
     
 
 }
+
 function CNErr(t, msj){
     $.notify(msj, "error");
     var cant = parseInt($("#hnoti").html()) + 1;
@@ -653,11 +658,16 @@ function GC(tipo){
     $("#divReporte").html(tableGC());
     $("#reporte").DataTable(opciones);
     var t = $("#reporte").DataTable();
-    var data = JSON.stringify({fecha:$("#fecha").val()}); 
+    fecha = $("#fecha").val();    
+    fecha = fecha.replace(/-/g, "/");    
+    fecha = OperarFecha(fecha, -1);
+    $("#lblFechade").html(fecha);
+    var data = JSON.stringify({
+        fecha: fecha
+    }); 
     
     $.post("api/balance/cobrosypagos", data)
-    .done(function (data){
-        
+    .done(function (data){        
         t.clear().draw();
         var i = 1;
         $.each(data, function(c,v){
@@ -675,32 +685,50 @@ function GC(tipo){
             total = parseFloat(v.saldo) + movimiento + x;
             accion = btnAccion(v.agencia, total);
             i++
-            if (tipo == 0){
-                if(total > 0){
-                    t.row.add([
-                        accion,
-                        v.agencia,
-                        sAnt.toFixed(2),
-                        parseFloat(v.saldo).toFixed(2),
-                        movimiento.toFixed(2),
-                        x.toFixed(2),
-                        total.toFixed(2)
-                    ]).draw();
-                }
-            }else{
-                if(total <= 0){
-                    t.row.add([
-                        accion,
-                        v.agencia,
-                        sAnt.toFixed(2),
-                        parseFloat(v.saldo).toFixed(2),
-                        movimiento.toFixed(2),
-                        x.toFixed(2),
-                        total.toFixed(2)
-                    ]).draw();
-                }
+
+            switch (parseInt(tipo)) {
+                case 0:   
+                 //console.log('CERO... ');
+                        t.row.add([
+                            accion,
+                            v.agencia,
+                            sAnt.toFixed(2),
+                            parseFloat(v.saldo).toFixed(2),
+                            movimiento.toFixed(2),
+                            x.toFixed(2),
+                            total.toFixed(2)
+                        ]).draw();                   
+                    break;
+                case 1:
+                    //console.log('UNO... ');
+                    if(total > 0){
+                        t.row.add([
+                            accion,
+                            v.agencia,
+                            sAnt.toFixed(2),
+                            parseFloat(v.saldo).toFixed(2),
+                            movimiento.toFixed(2),
+                            x.toFixed(2),
+                            total.toFixed(2)
+                        ]).draw();
+                    }
+                    break;
+                default:
+                    //console.log('DOS... ');
+                    if(total <= 0){
+                        t.row.add([
+                            accion,
+                            v.agencia,
+                            sAnt.toFixed(2),
+                            parseFloat(v.saldo).toFixed(2),
+                            movimiento.toFixed(2),
+                            x.toFixed(2),
+                            total.toFixed(2)
+                        ]).draw();
+                    }
+                    break;
             }
-            
+           
 
         })
 
@@ -749,6 +777,10 @@ function mdlE(id, cod, valor,monto){
     $('#cod' + cod).html(valor);
     $('#' + id).modal('show');
     $('#montoer').val(monto);
+
+    $("#fechadepositore").val($("#lblFechade").html());
+    $("#fechadere").val($("#fecha").val());
+
     var msj = 'Saldo a cero (0)';
     if(monto > 0){
         msj = 'Saldo a cero (0)'; 
@@ -769,32 +801,83 @@ function DP(){
     $.post("api/movimiento/listardeposito", data)
     .done(function (data){
         tabla.clear().draw();
-        var i = 1;
         $.each(data, function(c,v){
+            console.log(v);
+           banco = v.banco == null?0:v.banco;
            accion = btnADep(v.oid);
             tabla.row.add([
+                v.oid,
                 accion,
                 v.agencia,
-                v.banco,
+                v.banconombre,
                 v.voucher,
                 v.monto
             ]).draw();
         });
+        tabla.column( 0 ).visible( false );
     });
 }
 function btnADep(oid){
     s = '<div class="btn-group">\
-        <button type="button" class="btn btn-success">\
-        <span class="fa-check-circle"></span></button>\
-        <button type="button" class="btn btn-danger">\
-        <span class="fa-times-circle"></span></button></div>';
+        <button type="button" class="btn btn-success" onclick="ADP(\'' + oid + '\',\'\')">\
+        <span class="fa fa-check-circle"></span></button>\
+        <button type="button" class="btn btn-danger" onclick="ODP(\'' + oid + '\')">\
+        <span class="fa fa-times-circle"></span></button></div>';
     return s
+}
+
+function ADP(oid, obse){
+    fecha = new Date();
+    mes = fecha.getMonth() +1;
+    fecha = fecha.getFullYear() + "-" + mes + "-" + fecha.getDate();
+    estatus = 1;
+    
+    if(obse != ""){
+        obse = $('#txtObservacionDep').val();
+        $('#msgbox').modal('hide');
+        estatus = 2;
+    }else{
+        obse = "Aprobado";
+    } 
+    var data = JSON.stringify({
+        oid : parseInt(oid),
+        fecha: fecha,
+        formadepago: 0,
+        estatus: estatus,
+        observacion: obse
+    })
+    
+    $('#mdlDP').modal('hide');
+    
+
+    $.post("api/movimiento/actualizarer", data)
+    .done(function (data){
+       $.notify("El pago ha sido aprobado con exito...", "success");
+
+    });
+   
+}
+/**
+ * Observacion de las aceptaciones o rechazo de los depositos
+ * @param int
+ */
+function ODP(oid){
+    
+    $('#mdlDP').modal('hide');
+    $('#msgbox-cuerpo').html('<div class="form-group">\
+                  <label>Observaciones</label>\
+                  <textarea id="txtObservacionDep" class="form-control" rows="3" placeholder="Observaciones ..."></textarea>\
+                </div>');
+    $('#msgbox-pie').html('<button type="button" class="btn btn-success" onclick="ADP(\'' + oid + '\',\'txtObservacionDep\')">Procesar</button>\
+            <button type="button" class="btn btn-default" data-dismiss="modal">Cerrar</button>');
+    $('#msgbox').modal('show');
 }
 
 function EC(){
     $('#cagandoec').show();
     //$("#cagandoec").hide();
     var f = $('#fecharangoec option:selected').val();
+    
     var suma = 0;
     
     
@@ -968,21 +1051,48 @@ function RecorreFechas(desde, hasta, rS){
 function RegistrarER(){
     var EntregadoRecibido = JSON.stringify ({
         agencia: $("#coder").html(),
+        estatus: 1,
         fecha : $("#fechadere").val(),
-        deposito : $("#fechadere").val(),
+        fechaaprobado : $("#fechadere").val(),
+        deposito : $("#fechadepositore").val(),
         forma: parseInt($("#tipoer option:selected").val()), //0 Entregado: DEBE 1 Recibido:HABER
         banco: parseInt($("#cuentaer option:selected").val()),
         monto: parseFloat($("#montoer").val()),
         voucher: $("#voucer").val(),
-        observacion: $("#descripcioner").val(),
-        estatus: 1
+        observacion: $("#descripcioner").val()        
     });
-
+    console.log(EntregadoRecibido);
     url = "api/balance/registrarpago";         
     $.post(url,EntregadoRecibido)
     .done(function(data){  
         $('#mdlER').modal('hide');
-        $.notify("Registro Exitoso...", "success");
+        $.notify("El registro ha sido exitoso, si desea verlo en pantalla presione F5.", "success");
+        $("#voucer").val('');
     });
     
+}
+
+
+/**
+ * Funcion que devuelve la fecha actual y la fecha modificada n dias
+ * Tiene que recibir el numero de dias en positivo o negativo para sumar o 
+ * restar a la fecha actual.
+ * Ejemplo:
+ *  mostrarFecha('YYYY/MM/DD', -10) => restara 10 dias a la fecha actual
+ *  mostrarFecha('YYYY/MM/DD', 30) => añadira 30 dias a la fecha actual
+ */
+function OperarFecha(fecha, dias){
+    milisegundos = parseInt(35*24*60*60*1000); 
+    fecha = new Date(fecha);    
+    //Obtenemos los milisegundos desde media noche del 1/1/1970
+    tiempo = fecha.getTime();
+    //Calculamos los milisegundos sobre la fecha que hay que sumar o restar...
+    milisegundos = parseInt(dias*24*60*60*1000);
+    //Modificamos la fecha actual
+    total = fecha.setTime(tiempo+milisegundos);
+    day = fecha.getDate();
+    month = fecha.getMonth()+1;
+    year = fecha.getFullYear();
+
+    return year + "-" + month + "-" + day;
 }

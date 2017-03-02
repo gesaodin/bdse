@@ -80,6 +80,7 @@ func WAPI() {
 	// MOVIMIENTOS
 	Enrutador.HandleFunc(base_api+"movimiento/registrar", Movimiento.Registrar).Methods("POST")
 	Enrutador.HandleFunc(base_api+"movimiento/listardeposito", Movimiento.ListarDeposito).Methods("POST")
+	Enrutador.HandleFunc(base_api+"movimiento/actualizarer", Movimiento.ActualizarER).Methods("POST")
 
 }
 

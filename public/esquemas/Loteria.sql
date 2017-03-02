@@ -129,19 +129,23 @@ CREATE INDEX cuentasxcobrar_fech_idx ON cuentasxcobrar USING btree (fech);
 DROP TABLE IF EXISTS banco;
 CREATE TABLE banco
 (
-	oid serial NOT NULL,
+	oid serial NOT NULL PRIMARY KEY,
 	nomb char varying(256),
 	fech timestamp without time zone,
-	mont numeric
-	
+	mont numeric	
 );
+INSERT INTO banco (nomb,fech) VALUES ('Venezuela',now()),
+('Provincial',now()),('Mercantil',now()),('Bicentenario',now()),('Banesco',now()),('BOD',now())
+
 
 DROP TABLE IF EXISTS movimiento_ingreso;
 CREATE TABLE movimiento_ingreso
 (
 	oid serial NOT NULL,
 	agen char varying(256),
-	fech timestamp without time zone,
+	fech date,
+	fapr timestamp without time zone,
+	freg timestamp without time zone,
 	tipo int,
 	cuen int,
 	banc int,
@@ -151,6 +155,7 @@ CREATE TABLE movimiento_ingreso
 	CONSTRAINT movimiento_ingreso_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX movimiento_ingreso_fech_idx ON movimiento_ingreso USING btree (fech);
+CREATE INDEX movimiento_ingreso_fapr_idx ON movimiento_ingreso USING btree (fapr);
 
 DROP TABLE IF EXISTS movimiento_egreso;
 CREATE TABLE movimiento_egreso
@@ -159,7 +164,9 @@ CREATE TABLE movimiento_egreso
 	agen char varying(256),
 	tipo int,	
 	cuen int,
-	fech timestamp without time zone,
+	fech date,
+	fapr timestamp without time zone,
+	freg timestamp without time zone,
 	banc int,
 	form int, -- Forma de Pago
 	obse character varying(254),
@@ -167,6 +174,7 @@ CREATE TABLE movimiento_egreso
 	CONSTRAINT movimiento_egreso_pkey PRIMARY KEY (oid)	
 );
 CREATE INDEX movimiento_egreso_fech_idx ON movimiento_egreso USING btree (fech);
+CREATE INDEX movimiento_egreso_fapr_idx ON movimiento_egreso USING btree (fapr);
 
 DROP TABLE IF EXISTS movimiento_prestamo;
 CREATE TABLE movimiento_prestamo
@@ -174,7 +182,9 @@ CREATE TABLE movimiento_prestamo
 	oid serial NOT NULL,
 	agen char varying(256),
 	tipo int,
-	fech timestamp without time zone,
+	fech date,
+	fapr timestamp without time zone,
+	freg timestamp without time zone,
 	mcuo int,	
 	cuen int,
 	saldo numeric,
@@ -184,6 +194,7 @@ CREATE TABLE movimiento_prestamo
 	CONSTRAINT movimiento_prestamo_pkey PRIMARY KEY (oid)	
 );
 CREATE INDEX movimiento_prestamo_fech_idx ON movimiento_prestamo USING btree (fech);
+CREATE INDEX movimiento_prestamo_fapr_idx ON movimiento_prestamo USING btree (fapr);
 
 
 /**
@@ -305,9 +316,11 @@ CREATE TABLE debe
   banc integer,
   esta integer, -- 0 activos
   obse character varying(254),
+  resp character varying(254), //Respuesta
   CONSTRAINT debe_pkey PRIMARY KEY (oid)
 );
-
+CREATE INDEX debe_fapr_idx ON debe USING btree (fapr);
+CREATE INDEX debe_fest_idx ON debe USING btree (esta);
 --INSERT INTO debe (agen,mont,vouc,fdep,freg,fope,tipo,banc,esta) VALUES ('APMEMMPPCD00400',2000,'VLO009888','2017-01-21',now(),'2017-01-19',1,1,0);
 
 
@@ -327,12 +340,16 @@ CREATE TABLE haber
   banc integer,
   esta integer, -- 0 Pendiente Por Procesar  | 1 Activo
   obse character varying(254),
+  resp character varying(254), //Respuesta
   CONSTRAINT haber_pkey PRIMARY KEY (oid)
 );
+CREATE INDEX haber_fapr_idx ON haber USING btree (fapr);
+CREATE INDEX haber_fest_idx ON haber USING btree (esta);
+/**
 INSERT INTO haber (agen,mont,vouc,fdep,freg,fope,tipo,banc,esta) 
 VALUES ('APMEBAPPRY00200',500,'VLO009888','2017-01-21',now(),'2017-01-21',1,1,0),
 ('APMEMMPPJR00100',7500,'VLO009888','2017-01-23',now(),'2017-01-23',1,1,0);
-
+**/
 DROP TABLE IF EXISTS saldos;
 CREATE TABLE saldos
 (

@@ -31,7 +31,7 @@ $(function(){
     var idleInterval = setInterval("timerIncrement()", 60000); // 1 minute
     //Zero the idle timer on mouse movement.
     $(this).mousemove(function (e) {
-        console.log('Entrando...');
+        //console.log('Entrando...');
         idleTime = 0;
     });
     $(this).keypress(function (e) {
@@ -103,7 +103,10 @@ function LPago(){
     .done(function (data){    
         var i = 1;
         $.each(data, function(c, v) {
+            console.log(v);
             estatus = v.estatus == null?0:v.estatus;
+            fechaaprobado = v.fechaaprobado == "null"?'':v.fechaaprobado;
+            observacion = v.estatus == null?0:v.estatus;
             switch (estatus) {
                     case 0:
                         estatus = '<span class="label label-warning">Pendiente</span>';
@@ -113,17 +116,20 @@ function LPago(){
                         break;
                     case 2:
                         estatus = '<span class="label label-danger">Rechazado</span>';
+                        fechaaprobado = v.observacion;
                         break;    
                     default:
                         //estatus = '<span class="label label-info">Pendiente</span>';
                         break;
-                }
-
+            }
+            
             rS.row.add([
                 i++,
-                v.deposito,                
+                v.banconombre,
+                v.fecha,
+                fechaaprobado,                
                 v.voucher,
-                v.monto,
+                parseFloat(v.monto).toFixed(2),
                 estatus
             ]).draw();
         });
@@ -131,6 +137,8 @@ function LPago(){
 
 
 }
+
+//Registrar Pagos
 function RPago(){
     dep = $("#fechade").val();
     mon = $("#mont").val();
@@ -147,8 +155,6 @@ function RPago(){
     var Pago = JSON.stringify({
         agencia: $("#agencia").html(),
         voucher: vouc,
-        desde : dep,
-        hasta : dep,
         deposito: dep,
         banco : parseInt($("#banc").val()),
         formadepago: parseInt($("#form").val()),
@@ -159,6 +165,7 @@ function RPago(){
     .done(function (data){    
         $.notify("Proceso exitoso ", "success");
         LFPago();
+        LPago();
     });    
 }
 
@@ -197,7 +204,8 @@ function LstSaldoGPS(){
             hasta: hastaA.replace(/\//g, "-")          
         });
         url = "api/balance/cobrosypagos";       
-         
+       
+
         $.post(url,rfecha)
         .done(function(data){ 
            

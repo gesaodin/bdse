@@ -63,3 +63,31 @@ func (m *Movimiento) ListarDeposito(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 }
+
+// Actualizar Entregado Recibidos
+func (m *Movimiento) ActualizarER(w http.ResponseWriter, r *http.Request) {
+	Cabecera(w, r.Header.Get("Origin"))
+	var movimiento movimiento.Movimiento
+	err := json.NewDecoder(r.Body).Decode(&movimiento)
+	if err != nil {
+		fmt.Println("Estoy en un error ", err.Error())
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+	
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := movimiento.Actualizar()
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos" + e.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}

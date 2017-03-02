@@ -20,7 +20,7 @@
         <div class="box-body">
           <div class="row"> 
 
-            <div class="col-md-5">
+            <div class="col-md-3">
                 <div class="input-group date">
                     <input type="text" class="form-control" 
                     placeholder="Fecha Depósito:" value="" id="fecha" required>
@@ -28,16 +28,22 @@
                     <span class="fa fa-calendar"></span>
                 </div>
                 </div>
-            </div>    
-           <div class="col-md-2"> 
+            </div> 
+            <div class="col-md-2"> 
 
              <button type="button" onclick="GC(0)" class="btn btn-success " id="consultar" style="width:100%">
+               <span><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Listar&nbsp;</span>
+             </button>
+          </div>  
+           <div class="col-md-2"> 
+
+             <button type="button" onclick="GC(1)" class="btn btn-success " id="consultar" style="width:100%">
                <span><i class="fa fa-folder-open"></i>&nbsp;&nbsp;Cobros&nbsp;</span>
              </button>
           </div>
           <div class="col-md-2"> 
 
-             <button type="button" onclick="GC(1)" class="btn btn-info " id="consultar" style="width:100%">
+             <button type="button" onclick="GC(2)" class="btn btn-info " id="consultar" style="width:100%">
                <span><i class="fa fa-folder-open-o"></i>&nbsp;&nbsp;Pagos&nbsp;</span>
              </button>
           </div>
@@ -169,7 +175,7 @@
 </div>
   
 <!-- Entregado y Recibidos -->
-
+<label id="lblFechade" style="display: none"></label>
 <div id="mdlER" class="modal fade" role="dialog">
   <div class="modal-dialog">
 
@@ -191,6 +197,17 @@
         <div class="row">
 
             <div class="col-md-6">
+              <label>Fecha del deposito:</label>
+              <div class="input-group date">                
+                <input type="text" class="form-control" 
+                  placeholder="Fecha del Deposito:" value="" id="fechadepositore" required>
+                  <div class="input-group-addon">
+                  <span class="fa fa-calendar"></span>
+                </div>               
+              </div>
+            </div>    
+
+            <div class="col-md-6">
               <label>Fecha de la operación:</label>
               <div class="input-group date">                
                 <input type="text" class="form-control" 
@@ -199,7 +216,14 @@
                   <span class="fa fa-calendar"></span>
                 </div>               
               </div>
-            </div>    
+            </div>
+            
+        </div>
+        <br>
+
+        <div class="row">
+
+                
 
             <div class="col-md-6">
               <label>Tipo de Operación:</label>
@@ -216,10 +240,7 @@
                 </div>               
               </div>
             </div>
-        </div>
-        <br>
-        <div class="row">
-          <div class="col-md-6">
+            <div class="col-md-6">
               <label id="codigoer"></label>
               <label>Cuenta Afectada: </label>
 
@@ -227,12 +248,12 @@
                 <select id="cuentaer"
                     class="form-control select2 select2-hidden-accessible" style="width:100%">
                     <option value="--" >Seleccionar</option>
-                    <option value=0>Venezuela</option>
-                    <option value=1>Provincial</option>
-                    <option value=2>Mercantil</option>
-                    <option value=3>Bicentenario</option>
-                    <option value=4>Banesco</option>
-                    <option value=5>BOD</option>
+                    <option value=1>Venezuela</option>
+                    <option value=2>Provincial</option>
+                    <option value=3>Mercantil</option>
+                    <option value=4>Bicentenario</option>
+                    <option value=5>Banesco</option>
+                    <option value=6>BOD</option>
                     <option value=99>Caja (Deposito/Efectivo)</option>
                   </select>
                   <div class="input-group-addon">
@@ -240,6 +261,12 @@
                 </div>               
               </div>
             </div>
+
+
+        </div>
+        <br>
+        <div class="row">
+          
           
           <div class="col-md-6">
             <label>Monto de Operación:</label>
@@ -248,11 +275,8 @@
                   placeholder="Monto Operación:" value="" id="montoer" required>                  
                   <span class="input-group-addon">.00</span>                              
               </div>
-            </div>  
-        </div>
-        <br>
-        <div class="row">
-          <div class="col-md-12">
+          </div>
+          <div class="col-md-6">
               <label>Voucher o Número de Operación</label>
               <div class="input-group">
                   <span class="input-group-addon"><span class="fa  fa-pencil-square-o"></span></span>
@@ -261,6 +285,8 @@
             
           </div>
         </div>
+        <br>
+
 
         <div class="row">
           <div class="col-md-12">
@@ -407,7 +433,8 @@
         <table class="table table-bordered" cellspacing="0" id="rptDeposito" width="100%">
             <thead>
               <tr>
-                <th style="width: 60px">#</th>
+                <th>*</th>
+                <th style="width: 120px">Acciones</th>
                 <th>Agencia</th>
                 <th>Banco</th>
                 <th>Voucher</th>
@@ -521,6 +548,3 @@
 
 
 </section>
-
-<!--
-            -->

@@ -12,31 +12,33 @@ import (
 )
 
 type Pago struct {
-	Agencia     string  `json:"agencia,omitempty"`
-	Taquilla    string  `json:"taquilla,omitempty"`
-	Voucher     string  `json:"voucher,omitempty"`
-	Desde       string  `json:"desde,omitempty"`
-	Hasta       string  `json:"hasta,omitempty"`
-	Deposito    string  `json:"deposito,omitempty"`
-	Banco       int     `json:"banco,omitempty"`
-	Fecha       string  `json:"fecha,omitempty"`
-	FormaDePago int     `json:"forma,omitempty"`
-	Monto       float64 `json:"monto,omitempty"`
-	Venta       float64 `json:"venta,omitempty"`
-	Premio      float64 `json:"premio,omitempty"`
-	Comision    float64 `json:"comision,omitempty"`
-	Saldo       float64 `json:"saldo,omitempty"`
-	Vienen      float64 `json:"vienen,omitempty"`
-	Recibido    float64 `json:"recibido,omitempty"`
-	Entregado   float64 `json:"entregado,omitempty"`
-	Ingreso     float64 `json:"ingreso,omitempty"`
-	Egreso      float64 `json:"egreso,omitempty"`
-	Prestamo    float64 `json:"prestamo,omitempty"`
-	Cuota       float64 `json:"cuota,omitempty"`
-	Estatus     int     `json:"estatus,omitempty"`
-	Observacion string  `json:"observacion,omitempty"`
-	Sistema     int     `json:"sistema,omitempty"`
-	Archivo     int     `json:"archivo,omitempty"`
+	Agencia       string  `json:"agencia,omitempty"`
+	Taquilla      string  `json:"taquilla,omitempty"`
+	Voucher       string  `json:"voucher,omitempty"`
+	Desde         string  `json:"desde,omitempty"`
+	Hasta         string  `json:"hasta,omitempty"`
+	Deposito      string  `json:"deposito,omitempty"`
+	Banco         int     `json:"banco,omitempty"`
+	BancoNombre   string  `json:"banconombre,omitempty"`
+	Fecha         string  `json:"fecha,omitempty"`
+	FechaAprobado string  `json:"fechaaprobado,omitempty"`
+	FormaDePago   int     `json:"forma,omitempty"`
+	Monto         float64 `json:"monto,omitempty"`
+	Venta         float64 `json:"venta,omitempty"`
+	Premio        float64 `json:"premio,omitempty"`
+	Comision      float64 `json:"comision,omitempty"`
+	Saldo         float64 `json:"saldo,omitempty"`
+	Vienen        float64 `json:"vienen,omitempty"`
+	Recibido      float64 `json:"recibido,omitempty"`
+	Entregado     float64 `json:"entregado,omitempty"`
+	Ingreso       float64 `json:"ingreso,omitempty"`
+	Egreso        float64 `json:"egreso,omitempty"`
+	Prestamo      float64 `json:"prestamo,omitempty"`
+	Cuota         float64 `json:"cuota,omitempty"`
+	Estatus       int     `json:"estatus,omitempty"`
+	Observacion   string  `json:"observacion,omitempty"`
+	Sistema       int     `json:"sistema,omitempty"`
+	Archivo       int     `json:"archivo,omitempty"`
 }
 
 type Respuesta struct {
@@ -50,16 +52,20 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	if(data.FormaDePago == 0){
 		tabla = "debe"
 	}
-	fmt.Println(data.Estatus)
 	forma := strconv.Itoa(data.FormaDePago)
 	banco := strconv.Itoa(data.Banco)
 	estatus := strconv.Itoa(data.Estatus)
-
-	s := "INSERT INTO " + tabla + " (agen,mont,vouc,fdep,freg,tipo,banc,esta,obse) VALUES "
+	aprobado := "";
+	campo := ""
+	if data.FechaAprobado != ""{
+		campo = "fapr,"
+		aprobado = "'" + data.FechaAprobado + "',"
+	}
+	s := "INSERT INTO " + tabla + " (agen,mont,vouc,fdep,freg," + campo + "tipo,banc,esta,obse) VALUES "
 	s += "('" + data.Agencia + "'," + monto + ",'" + data.Voucher + "',"
-	s += "'" + data.Deposito + "',now()," + forma
+	s += "'" + data.Deposito + "',now()," + aprobado + "" + forma
 	s += "," + banco + "," + estatus + ",'" + data.Observacion + "');"
-	//fmt.Println(s)
+
 	rs, err := sys.PostgreSQL.Exec(s)
 	if err != nil {
 		return
@@ -76,23 +82,25 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 	var s string
 	s = `
-			SELECT fdep,vouc,fapr,esta, mont FROM agencia
-			INNER JOIN haber ON haber.agen=agencia.obse
+			SELECT fdep,vouc,fapr,esta,debe.mont,debe.resp, banco.nomb FROM agencia
+			INNER JOIN debe ON debe.agen=agencia.obse
+			INNER JOIN banco ON debe.banc=banco.oid
 			WHERE agencia.obse='` + data.Agencia + `'
-			ORDER BY haber.fdep`
-
+			ORDER BY debe.fdep`
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
 	}
+
+
 	var lst []interface{}
 	for row.Next() {
-		var fdep, vouc, fapr sql.NullString
+		var fdep, vouc, fapr, resp, nomb sql.NullString
 		var esta int
 		var mont float64
 
 		var pago Pago
-		e := row.Scan(&fdep, &vouc, &fapr, &esta, &mont)
+		e := row.Scan(&fdep, &vouc, &fapr, &esta, &mont, &resp, &nomb)
 		if e != nil {
 			fmt.Println(e.Error())
 			return
@@ -100,9 +108,15 @@ func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 		var dep = util.ValidarNullString(fdep)
 		var apr = util.ValidarNullString(fapr)
 
-		pago.Deposito = dep[0:10]
+		if(apr != "null"){
+			apr = apr[0:10]
+		}
+
 		pago.Voucher = util.ValidarNullString(vouc)
-		pago.Fecha = apr
+		pago.Observacion = util.ValidarNullString(resp)
+		pago.BancoNombre = util.ValidarNullString(nomb)
+		pago.FechaAprobado = apr
+		pago.Fecha = dep[0:10]
 		pago.Monto = mont
 		pago.Estatus = esta
 		lst = append(lst, pago)
@@ -127,7 +141,6 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 			s = generarCobrosYPagosGeneral(fecha)
 		}
 	}
-
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
@@ -260,17 +273,17 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 
 			-- DEBE
 			LEFT JOIN (
-					SELECT agen, fdep, SUM(mont) AS monto FROM debe
-					GROUP BY agen,fdep
+					SELECT agen, fapr, SUM(mont) AS monto FROM debe
+					GROUP BY agen,fapr
 			) AS debe ON
-			debe.agen=saldo_agencia.obse AND debe.fdep=saldo_agencia.fech
+			debe.agen=saldo_agencia.obse AND debe.fapr=saldo_agencia.fech
 
 			-- HABER
 			LEFT JOIN (
-				SELECT agen, fdep, SUM(mont) AS monto FROM haber
-				GROUP BY agen,fdep
+				SELECT agen, fapr, SUM(mont) AS monto FROM haber
+				GROUP BY agen,fapr
 			) AS haber ON
-			haber.agen=saldo_agencia.obse  AND haber.fdep=saldo_agencia.fech
+			haber.agen=saldo_agencia.obse  AND haber.fapr=saldo_agencia.fech
 
 			--INGRESO
 			LEFT JOIN (
@@ -328,7 +341,6 @@ func (p *Pago) GenerarCobrosYPagosSistemas(data Pago) (jSon []byte, err error) {
 		pago.Sistema = sist
 		pago.Observacion = util.ValidarNullString(agen)
 		pago.Archivo = arch
-
 		lst = append(lst, pago)
 	}
 
@@ -370,9 +382,7 @@ func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error)
 	//fech, saldo,sist,agen,arch
 	var s string
 	s = generarCobrosYPagosDetallados(data)
-
 	row, err := sys.PostgreSQL.Query(s)
-
 	if err != nil {
 		return
 	}
@@ -395,11 +405,10 @@ func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error)
 		pago.Observacion = util.ValidarNullString(observacion)
 		lst = append(lst, pago)
 	}
-
 	jSon, _ = json.Marshal(lst)
-
 	return
 }
+
 func generarCobrosYPagosDetallados(data Pago) (s string){
 	var fecha string = ""
 	var sistema string = "";

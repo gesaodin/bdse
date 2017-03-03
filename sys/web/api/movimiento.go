@@ -64,6 +64,75 @@ func (m *Movimiento) ListarDeposito(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+//Listar Cuentas para MOVIMIENTOS
+func (m *Movimiento) ListarCuentas(w http.ResponseWriter, r *http.Request) {
+	Cabecera(w, r.Header.Get("Origin"))
+	var movimiento movimiento.Movimiento
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := movimiento.ListarCuentas(0)
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos" + e.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
+
+//Listar Cuentas para BANCOS
+func (m *Movimiento) Listar(w http.ResponseWriter, r *http.Request) {
+	Cabecera(w, r.Header.Get("Origin"))
+	var movimiento movimiento.Movimiento
+	err := json.NewDecoder(r.Body).Decode(&movimiento)
+	if err != nil {
+		fmt.Println("Estoy en un error ", err.Error())
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := movimiento.Listar()
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos" + e.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
+//Listar Cuentas para BANCOS
+func (m *Movimiento) ListarBancos(w http.ResponseWriter, r *http.Request) {
+	Cabecera(w, r.Header.Get("Origin"))
+	var movimiento movimiento.Movimiento
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := movimiento.ListarCuentas(1)
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos" + e.Error()))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
 // Actualizar Entregado Recibidos
 func (m *Movimiento) ActualizarER(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
@@ -75,7 +144,7 @@ func (m *Movimiento) ActualizarER(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error al consultar los datos"))
 		return
 	}
-	
+
 	_, e := seguridad.Stores.Get(r, "session-bdse")
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)

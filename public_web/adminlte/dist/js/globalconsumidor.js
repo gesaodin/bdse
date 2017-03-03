@@ -37,8 +37,6 @@ $(function(){
     $(this).keypress(function (e) {
         idleTime = 0;
     });
-    
-
 
 
 
@@ -103,7 +101,7 @@ function LPago(){
     .done(function (data){    
         var i = 1;
         $.each(data, function(c, v) {
-            console.log(v);
+            
             estatus = v.estatus == null?0:v.estatus;
             fechaaprobado = v.fechaaprobado == "null"?'':v.fechaaprobado;
             observacion = v.estatus == null?0:v.estatus;
@@ -557,4 +555,11 @@ function btnAccion(id){
         </ul>\
     </div>';
     return s
+}
+
+/**
+ * Listar Cuentas para Movimientos
+ */
+function LCuentaM(id){
+    
 }

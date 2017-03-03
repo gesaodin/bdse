@@ -50,10 +50,40 @@ $(function(){
         console.log("Se ha cerrado la conexión");    
     });
     
+
+    cuenta = $('#cuentahaber').val();
     
+    if(cuenta != undefined)LCuentaM();
+
     CargarCalendario();    
 });
 
+/**
+ * Listar Cuentas para Movimientos
+ */
+function LCuentaM(id){
+    $('#cuentadebe').html('<option value="--" >Seleccionar...</option>');
+    $('#cuentahaber').html('<option value="--" >Seleccionar...</option>');
+    /**
+    $.getJSON("api/movimiento/listarbanco")
+    .done(function(data){   
+        $.each(data, function(c, v){
+            $('#cuentamovimiento').append('<option value="' + v.oid + '">' + v.nombre + '</option>');
+            $('#cuentabanco').append('<option value="' + v.oid + '">' + v.nombre + '</option>');
+        })
+    });
+    */
+    $.getJSON("api/movimiento/listarcuentas")
+    .done(function(data){   
+        $.each(data, function(c, v){
+            $('#cuentadebe').append('<option value="' + v.oid + '">' + v.nombre + '</option>');
+            $('#cuentahaber').append('<option value="' + v.oid + '">' + v.nombre + '</option>')
+        })
+    });
+    
+   
+  
+}
 
 function CargarCalendario(){
     //Date range picker
@@ -219,9 +249,6 @@ function LstRA(){
     }
 }
 
-
-
-
 /**
  * Crear Ventanas emergentes con diferentes contenidos
  * @param html
@@ -308,6 +335,9 @@ function CrearNotificacion(t, msj){
 
 }
 
+/**
+ * 
+ */
 function CNErr(t, msj){
     $.notify(msj, "error");
     var cant = parseInt($("#hnoti").html()) + 1;
@@ -404,6 +434,9 @@ function LstSaldo(){
     }
 }
 
+/**
+ * 
+ */
 function LSistema(){
     var tipo = 0;
     switch ($("#tipo option:selected").val()) {
@@ -440,6 +473,9 @@ function LSistema(){
     
 }
 
+/**
+ * 
+ */
 function LstSaldoGPS(){
     
     var f = $('#daterange-btn span').html();
@@ -482,6 +518,10 @@ function LstSaldoGPS(){
         $.notify("Debe seleccionar un rango", "error");
     }
 }
+
+/**
+ * 
+ */
 function PLoteria(data){
     $("#divTabla").html('\
         <table class="table table-bordered" id="reporteSaldosGeneral" width="100%">\
@@ -531,6 +571,9 @@ function PLoteria(data){
     } );
 }
 
+/**
+ * 
+ */
 function PParley(data){
     $("#divTabla").html('\
         <table class="table table-bordered" id="reporteSaldosGeneral" width="100%">\
@@ -575,7 +618,9 @@ function PParley(data){
     } );
 }
 
-
+/**
+ * 
+ */
 function psFila(fila, buscar){
     var pos = 0;
    
@@ -591,7 +636,6 @@ function psFila(fila, buscar){
  * Listar Totales de los saldos para estado de Cuenta
  * 
  */
-
 function PTotales(desde, hasta, data){
     rS = CBTotales();
     var fila = RecorreFechas(desde, hasta, rS);
@@ -631,6 +675,9 @@ function PTotales(desde, hasta, data){
 
 } 
 
+/**
+ * 
+ */
 function CBTotales(){
     $("#divTabla").html('\
     <table class="table table-bordered" id="reporteSaldosGeneral" width="100%">\
@@ -653,7 +700,9 @@ function CBTotales(){
     return rS;
 }
 
-
+/**
+ * 
+ */
 function GC(tipo){
     $("#divReporte").html(tableGC());
     $("#reporte").DataTable(opciones);
@@ -734,6 +783,10 @@ function GC(tipo){
 
     })
 }
+
+/**
+ * 
+ */
 function tableGC(){
     s = '<table class="table table-bordered" cellspacing="0" id="reporte" width="100%">\
             <thead>\
@@ -752,6 +805,9 @@ function tableGC(){
 
 }
 
+/**
+ * 
+ */
 function btnAccion(valor,monto){
     s = '<div class="btn-group">\
         <button type="button" class="btn btn-success">\
@@ -772,6 +828,9 @@ function btnAccion(valor,monto){
     return s
 }
 
+/**
+ * 
+ */
 function mdlE(id, cod, valor,monto){
 
     $('#cod' + cod).html(valor);
@@ -789,7 +848,9 @@ function mdlE(id, cod, valor,monto){
     $('#divTablaec').html('');
 }
 
-
+/**
+ * 
+ */
 function DP(){
     if($("#fecha").val() == ""){
         $.notify("Debe seleccionar la fecha", "error");
@@ -817,6 +878,10 @@ function DP(){
         tabla.column( 0 ).visible( false );
     });
 }
+
+/**
+ * 
+ */
 function btnADep(oid){
     s = '<div class="btn-group">\
         <button type="button" class="btn btn-success" onclick="ADP(\'' + oid + '\',\'\')">\
@@ -826,6 +891,9 @@ function btnADep(oid){
     return s
 }
 
+/**
+ * 
+ */
 function ADP(oid, obse){
     fecha = new Date();
     mes = fecha.getMonth() +1;
@@ -857,6 +925,7 @@ function ADP(oid, obse){
     });
    
 }
+
 /**
  * Observacion de las aceptaciones o rechazo de los depositos
  * @param int
@@ -873,6 +942,9 @@ function ODP(oid){
     $('#msgbox').modal('show');
 }
 
+/**
+ * 
+ */
 function EC(){
     $('#cagandoec').show();
     //$("#cagandoec").hide();
@@ -914,7 +986,9 @@ function EC(){
     }
 } 
 
-
+/**
+ * 
+ */
 function EstadoCuenta(){
     $("#divTablaec").html('\
     <table class="table table-bordered" id="reporteSaldosGeneral" width="100%">\
@@ -941,7 +1015,9 @@ function EstadoCuenta(){
     return rS;
 }
 
-
+/**
+ * 
+ */
 function TablaEstadoCuenta(fila, buscar){
     var pos = 0;
    
@@ -997,8 +1073,6 @@ function PTotalesDetalles(desde, hasta, data){
 
 } 
 
-
-
 /**
  * @param Date | UNIX
  * @param Date | UNIX
@@ -1047,7 +1121,9 @@ function RecorreFechas(desde, hasta, rS){
     return fila;
 }
 
-
+/**
+ * 
+ */
 function RegistrarER(){
     var EntregadoRecibido = JSON.stringify ({
         agencia: $("#coder").html(),
@@ -1095,4 +1171,98 @@ function OperarFecha(fecha, dias){
     year = fecha.getFullYear();
 
     return year + "-" + month + "-" + day;
+}
+
+function RPago(){
+    dep = $("#fechade").val();
+    mon = $("#monto").val();
+    vouc = $("#numoperacion").val();
+    if(dep == ""){
+        $.notify("Debe introducir una fecha ", "warn");
+        return false;
+    }
+    if(mon == ""){
+        $.notify("Debe introducir un monto ", "warn");
+        return false;
+    }
+
+    var Pago = JSON.stringify({
+        comercializadora: 1,
+        grupo: 0,
+        subgrupo: 0,
+        colector: 0,
+        agenciacod: 0,
+        voucher: vouc,
+        fecha: dep,
+        cuentadebe: parseInt($("#cuentadebe").val()),
+        tipodebe: parseInt($("#tipodebe").val()),
+        cuentahaber: parseInt($("#cuentahaber").val()),
+        tipohaber:  parseInt($("#tipohaber").val()),
+        monto: parseFloat(mon),
+        observacion: $("#descripcion").val()
+    });
+    
+    $.post("api/movimiento/registrar", Pago)
+    .done(function (data){        
+        $("#cuentadebe option:selected").val('--');
+        $("#cuentahaber option:selected").val('--');
+        $("#tipodebe option:selected").val('--');
+        $("#tipohaber option:selected").val('--');
+        $("#monto").val('');
+        //$("#fechade").val('');
+        $("#descripcion").val('');
+        $("#numoperacion").val('');
+        $.notify("Se ha registrado el movimiento", "success");
+        LPago();
+    }); 
+  
+}
+
+function LPago(){
+    dep = $("#fechade").val();
+    var Pago = JSON.stringify({
+        fecha: dep
+    });
+    $("#divReporte").show();
+    var rS = $('#lstReporte').DataTable();
+    rS.clear().draw();
+
+    $.post("api/movimiento/listar", Pago)
+    .done(function (data){   
+        $.each(data, function(c, v){
+            token = v.token;
+            rS.row.add([
+                v.voucher,
+                v.cuentadeben,
+                STipo(v.tipodebe),
+                v.cuentahabern,                
+                STipo(v.tipohaber),
+                v.observacion,
+                parseFloat(v.monto).toFixed(2)                
+            ]).draw();
+        });
+    }); 
+}
+
+function STipo(id){
+    switch (id) {
+        case 1:
+            return 'Deposito';
+            break;
+         case 2:
+            return 'Transferencia';
+            break;
+         case 3:
+            return 'Cheque';
+            break;
+         case 4:
+            return 'Ingreso';
+            break;
+         case 5:
+            return 'Egreso';
+            break;
+        default:
+            return 'Deposito';
+            break;
+    }
 }

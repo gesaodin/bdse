@@ -6,11 +6,40 @@ CREATE TABLE persona
 	nomb char varying(256) 	
 );
 
+DROP TABLE IF EXISTS comercializadora;
+CREATE TABLE comercializadora 
+(
+	oid serial NOT NULL PRIMARY KEY,
+	obse char varying(128),
+	resp int,	
+	telf char varying(16),
+	saldoactual numeric --AL CIERRE
+);
+CREATE INDEX comercializadora_obse_idx ON comercializadora USING btree (obse COLLATE pg_catalog."default");
+INSERT INTO comercializadora (obse) VALUES ('ALPIER');
+
+DROP TABLE IF EXISTS grupo;
+CREATE TABLE grupo 
+(
+	oid serial NOT NULL PRIMARY KEY,
+	come int,
+	obse char varying(128),
+	resp int,	
+	telf char varying(16),
+	saldoactual numeric --AL CIERRE
+);
+CREATE INDEX grupo_obse_idx ON grupo USING btree (obse COLLATE pg_catalog."default");
+INSERT INTO grupo (come, obse) VALUES (1,'ROAN'),(1,'ROSITA'),(1,'CINDY'),(1,'COMPADRE'),
+(1,'EIMAR'),(1,'JOSE LH'),(1,'JUNIOR'), (1,'LEPE'), (1,'MARYORI'), (1,'ORLANDO'),(1,'WILMER'),
+(1,'YINNIS'),(1,'ALEXPIER');
+
 
 DROP TABLE IF EXISTS agencia;
 CREATE TABLE agencia 
 (
 	oid serial NOT NULL PRIMARY KEY,
+	-- comer int,
+	-- grupo int,
 	obse char varying(128),
 	resp int,	
 	telf char varying(16),
@@ -121,7 +150,10 @@ CREATE TABLE cuentasxcobrar
 (
 	oid serial NOT NULL,
 	fech timestamp without time zone,
+	cuen int,	
 	mont numeric,
+	sald numeric,
+	
 	CONSTRAINT cuentasxcobrar_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX cuentasxcobrar_fech_idx ON cuentasxcobrar USING btree (fech);
@@ -130,30 +162,44 @@ DROP TABLE IF EXISTS banco;
 CREATE TABLE banco
 (
 	oid serial NOT NULL PRIMARY KEY,
-	nomb char varying(256),
+	nomb char varying(256), 
+	nume char varying(4),
+	auto char varying(256), -- Responsable o Autor
+	cedu char varying(16),
+	tipo int, -- Acepta Deposito (SI: Cuenta Bancaria NO : Cuenta Contable)
 	fech timestamp without time zone,
-	mont numeric	
 );
-INSERT INTO banco (nomb,fech) VALUES ('Venezuela',now()),
-('Provincial',now()),('Mercantil',now()),('Bicentenario',now()),('Banesco',now()),('BOD',now())
+INSERT INTO banco (nomb,auto,tipo,fech) VALUES 
+('Venezuela',now(),'Alexander', 1),
+('Provincial',now(),'Alexander', 1),
+('Mercantil',now(),'Alexander', 1),
+('Bicentenario',now(),'Alexander', 1),
+('Banesco',now(),'Alexander', 1),
+('BOD',now(),'Alexander', 1)
 
 
 DROP TABLE IF EXISTS movimiento_ingreso;
 CREATE TABLE movimiento_ingreso
 (
+	
 	oid serial NOT NULL,
-	agen char varying(256),
+	comer int, -- Comercializadora
+	grupo int, -- Grupo
+	subgr int, -- Sub Grupo
+	colec int, -- Colector
+	agenc int, -- Agencia
 	fech date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
-	tipo int,
-	cuen int,
-	banc int,
-	form int, -- Forma de Pago
+	tipo int, -- Tipo de Operacion	
+	cuen int, -- Cuenta
+	oper character varying(16),
 	obse character varying(254),
 	mont numeric,
+	toke character varying(254),
 	CONSTRAINT movimiento_ingreso_pkey PRIMARY KEY (oid)
 );
+CREATE INDEX movimiento_ingreso_toke_idx ON movimiento_ingreso USING btree (toke COLLATE pg_catalog."default");
 CREATE INDEX movimiento_ingreso_fech_idx ON movimiento_ingreso USING btree (fech);
 CREATE INDEX movimiento_ingreso_fapr_idx ON movimiento_ingreso USING btree (fapr);
 
@@ -161,18 +207,23 @@ DROP TABLE IF EXISTS movimiento_egreso;
 CREATE TABLE movimiento_egreso
 (
 	oid serial NOT NULL,
-	agen char varying(256),
-	tipo int,	
-	cuen int,
+	comer int, -- Comercializadora
+	grupo int, -- Grupo
+	subgr int, -- Sub Grupo
+	colec int, -- Colector
+	agenc int, -- Agencia
 	fech date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
-	banc int,
-	form int, -- Forma de Pago
+	tipo int, -- Tipo de Operacion	
+	cuen int, -- Cuenta
+	oper character varying(16),
 	obse character varying(254),
 	mont numeric,
+	toke character varying(254),
 	CONSTRAINT movimiento_egreso_pkey PRIMARY KEY (oid)	
 );
+CREATE INDEX movimiento_egreso_toke_idx ON movimiento_egreso USING btree (toke COLLATE pg_catalog."default");
 CREATE INDEX movimiento_egreso_fech_idx ON movimiento_egreso USING btree (fech);
 CREATE INDEX movimiento_egreso_fapr_idx ON movimiento_egreso USING btree (fapr);
 
@@ -294,8 +345,7 @@ CREATE TABLE mensaje
 
 
 
-INSERT INTO sistema (obse,arch) 
-VALUES ('Morpheus',0),('Pos1',0),('Pos2',0),
+INSERT INTO sistema (obse,arch) VALUES ('Morpheus',0),('Pos1',0),('Pos2',0),
 ('Pos3',0),('Maticlo',0),('Ilbanquero',1),('CyberParley',1),
 ('Sport17',1),('Alien1',0), ('Alien2',0), ('Alien3',0), ('Turco1',0);
 
@@ -358,3 +408,14 @@ CREATE TABLE saldos
   resp integer,  
   saldoactual numeric
 )
+
+
+DROP TABLE IF EXISTS cuenta;
+CREATE TABLE cuenta (
+    cod int NOT NULL,
+    nomb character varying(30),
+    num character varying(20),
+    tipo integer
+);
+
+

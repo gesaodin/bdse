@@ -11,22 +11,35 @@ import (
 )
 
 type Movimiento struct {
-	Oid             int     `json:"oid,omitempty"`
-	Agencia         string  `json:"agencia,omitempty"`
-	Fecha           string  `json:"fecha,omitempty"`
-	FDeposito       string  `json:"fdeposito,omitempty"`
-	FOperacion      string  `json:"foperacion,omitempty"`
-	Voucher         string  `json:"voucher,omitempty"`
-	FormaDePago     int     `json:"forma,omitempty"`
-	TipoDeOperacion int     `json:"operacion,omitempty"`
-	TipoTabla       int     `json:"tipo,omitempty"`
-	Monto           float64 `json:"monto,omitempty"`
-	Cuota           float64 `json:"cuota,omitempty"`
-	Cuenta          int     `json:"cuenta,omitempty"`
-	Banco           int     `json:"banco,omitempty"`
-	BancoNombre     string  `json:"banconombre,omitempty"`
-	Estatus         int     `json:"estatus,omitempty"`
-	Observacion     string  `json:"observacion,omitempty"`
+	Oid               int     `json:"oid,omitempty"`
+	Comercializadora  int     `json:"comercializadora,omitempty"`
+	Grupo						  int     `json:"grupo,omitempty"`
+	SubGrupo				  int     `json:"subgrupo,omitempty"`
+	Colector          int     `json:"colector,omitempty"`
+	AgenciaCod			  int     `json:"agenciacod,omitempty"`
+	Agencia           string  `json:"agencia,omitempty"`
+	Nombre     			  string  `json:"nombre,omitempty"`
+	Fecha             string  `json:"fecha,omitempty"`
+	FDeposito         string  `json:"fdeposito,omitempty"`
+	FOperacion        string  `json:"foperacion,omitempty"`
+	Voucher           string  `json:"voucher,omitempty"`
+	FormaDePago       int     `json:"forma,omitempty"`
+	TipoDeOperacion   int     `json:"operacion,omitempty"`
+	TipoTabla         int     `json:"tipo,omitempty"`
+	Monto             float64 `json:"monto,omitempty"`
+	Cuota             float64 `json:"cuota,omitempty"`
+	Cuenta            int     `json:"cuenta,omitempty"`
+	CuentaDebe	      int     `json:"cuentadebe,omitempty"`
+	CuentaDebeNombre  string  `json:"cuentadeben,omitempty"`
+	TipoDebe  			  int     `json:"tipodebe,omitempty"`
+	CuentaHaber			  int     `json:"cuentahaber,omitempty"`
+	CuentaHaberNombre string  `json:"cuentahabern,omitempty"`
+	TipoHaber				  int     `json:"tipohaber,omitempty"`
+	Banco             int     `json:"banco,omitempty"`
+	BancoNombre       string  `json:"banconombre,omitempty"`
+	Estatus           int     `json:"estatus,omitempty"`
+	Observacion       string  `json:"observacion,omitempty"`
+	Token	            string  `json:"token,omitempty"`
 }
 
 type MSJ struct {
@@ -70,54 +83,75 @@ func (m *Movimiento) Actualizar() (jSon []byte, err error) {
 	jSon, err = json.Marshal(res)
 	return
 }
+
 //
 func (m *Movimiento) generarSQL() (sql string) {
-	sql = "INSERT INTO "
-	ie := "(agen,fech,tipo,cuen,banc,	form,	mont)"               // INGRESO | EGRESO
-	dh := "(agen,mont,vouc,fdep,freg,fope,fapro,tipo,banc,esta)" //DEBE | HABER
+	sql1 := "INSERT INTO "
+	ie := "(comer,grupo,subgr,colec,agenc,fech,freg,tipo,cuen,mont,oper,obse, toke)"               // INGRESO | EGRESO
+
 	monto := strconv.FormatFloat(m.Monto, 'f', 2, 64)
-	iie := "('" + m.Agencia + "','" + m.Fecha + "'," + strconv.Itoa(m.Cuenta) + ","
-	iie += strconv.Itoa(m.Banco) + "," + strconv.Itoa(m.FormaDePago) + ","
-	iie += monto + ")"
-	operacion := m.FOperacion
-	if m.FOperacion == "" {
-		operacion = m.FDeposito
-	}
-	idh := "('" + m.Agencia + "'," + monto + ",'" + m.Voucher
-	idh += "','" + m.FDeposito + "',Now(),'" + operacion + "','" + operacion + "',"
-	idh += strconv.Itoa(m.FormaDePago) + "," + strconv.Itoa(m.Banco)
-	idh += "," + strconv.Itoa(m.TipoDeOperacion) + ")"
+	iii := "(" + strconv.Itoa(m.Comercializadora) + "," + strconv.Itoa(m.Grupo)
+	iii += "," + strconv.Itoa(m.SubGrupo) + "," +  strconv.Itoa(m.Colector) + "," +  strconv.Itoa(m.AgenciaCod)
+	iii += ",'" + m.Fecha + "',now(),"
+	cuenta := strconv.Itoa(m.TipoDebe) + "," + strconv.Itoa(m.CuentaDebe) + ","
+	iff := monto + ", '" + m.Voucher + "', '" + m.Observacion + "', md5('" + m.Fecha +  m.Voucher + monto + "'));"
+	sqle := sql1 + "movimiento_ingreso " + ie + " VALUES " +  iii + cuenta + iff
 
-	switch m.TipoTabla {
-	case 0:
 
-		sql += "movimiento_egreso " + ie + " VALUES " + iie
-		break
-	case 1:
-		sql += "movimiento_ingreso " + ie + " VALUES " + iie
-		break
-	case 2:
-		cuota := strconv.FormatFloat(m.Cuota, 'f', 2, 64)
-		t := "(agen,tipo,fech,mcuo,cuen,saldo,banc,form,mont)"
-		p := "('" + m.Agencia + "'," + strconv.Itoa(m.TipoDeOperacion) + ",'"
-		p += m.Fecha + "'," + cuota + "," + strconv.Itoa(m.Cuenta) + ","
-		p += monto + "," + strconv.Itoa(m.Banco) + "," + strconv.Itoa(m.FormaDePago)
-		p += "," + monto
+	cuenta = strconv.Itoa(m.TipoHaber) + "," + strconv.Itoa(m.CuentaHaber) + ","
+	sqls := sql1 + "movimiento_egreso " + ie + " VALUES " + iii + cuenta + iff
+	sql = sqls +  sqle
+	
 
-		sql += "movimiento_prestamo " + t + " VALUES " + p
-		break
-	case 3:
-		sql += "debe " + dh + " VALUES " + idh
-		break
-	case 4:
-		sql += "haber " + dh + " VALUES " + idh
-		break
-	default:
-		sql = ""
-	}
 	return
 
 }
+
+//Listar todos los movimientos por fechas
+func (m *Movimiento) Listar() (jSon []byte, err error) {
+	var lst []interface{}
+	s := `SELECT A.fech,A.oper, CONCAT(C.nomb, ' ', C.num ) AS debe, A.tipo AS tdebe,
+		CONCAT(D.nomb, ' ', D.num ) AS haber, B.tipo AS thaber, A.obse, A.mont, A.toke
+		 FROM movimiento_ingreso A
+		INNER JOIN movimiento_egreso B ON A.toke=B.toke
+		JOIN cuenta  C ON C.cod = A.cuen
+		JOIN cuenta D ON D.cod = B.cuen  WHERE A.fech='` + m.Fecha + `';`	//` +  AND fapr != ''; m.FDeposito + `
+
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	for row.Next() {
+		var movimiento Movimiento
+		var fech, toke, debe,haber  string
+
+		var obse, oper sql.NullString
+
+		var  tdebe, thaber int
+		var mont sql.NullFloat64
+
+		e := row.Scan(&fech, &oper, &debe, &tdebe, &haber, &thaber, &obse, &mont, &toke)
+		if e != nil {
+			fmt.Println(e.Error())
+			return
+		}
+		movimiento.Fecha = fech
+		movimiento.Voucher = util.ValidarNullString(oper)
+		movimiento.Observacion = util.ValidarNullString(obse)
+		movimiento.Monto = util.ValidarNullFloat64(mont)
+		movimiento.CuentaDebeNombre = debe
+		movimiento.TipoDebe = tdebe
+		movimiento.CuentaHaberNombre = haber
+		movimiento.TipoHaber = thaber
+		movimiento.Token = toke
+		lst = append(lst, movimiento)
+	}
+	jSon, err = json.Marshal(lst)
+	return
+}
+
+
 
 func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	var lst []interface{}
@@ -149,6 +183,37 @@ func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 		movimiento.Banco = banc
 		movimiento.BancoNombre = util.ValidarNullString(nomb)
 		movimiento.Monto = util.ValidarNullFloat64(mont)
+		lst = append(lst, movimiento)
+	}
+	jSon, err = json.Marshal(lst)
+	return
+}
+
+//Listar 0: Cuentas y 1: Banco
+func (m *Movimiento) ListarCuentas(tipo int) (jSon []byte, err error) {
+	var lst []interface{}
+	s := `SELECT cod,nomb,num, tipo FROM cuenta `
+	if tipo == 1{
+			s = `SELECT oid AS cod, nomb, nume AS num, tipo FROM banco `
+	}
+
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		fmt.Println(err.Error())
+		return
+	}
+	for row.Next() {
+		var movimiento Movimiento
+		var cuen, num sql.NullString
+		var cod, tipo int
+		e := row.Scan(&cod, &cuen, &num, &tipo)
+		if e != nil {
+			fmt.Println(e.Error())
+			return
+		}
+		movimiento.Oid = cod
+		movimiento.Nombre = util.ValidarNullString(cuen) + " " + util.ValidarNullString(num)
+		movimiento.TipoDeOperacion = tipo
 		lst = append(lst, movimiento)
 	}
 	jSon, err = json.Marshal(lst)

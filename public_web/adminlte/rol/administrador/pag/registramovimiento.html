@@ -1,0 +1,206 @@
+<section class="content">
+  <!-- Your Page Content Here -->
+
+    <!-- formulario de registro de pago-->
+        <div class="box box-solid box-success">
+          <div class="box-header with-border">
+            <h3 class="box-title">Registrar Movimientos:</h3>
+            <div class="box-tools pull-right">
+            </div><!-- /.box-tools -->
+          </div><!-- /.box-header -->
+          <div class="box-body">
+            <div class="row">
+
+            <div class="col-md-6">
+               <label>Fecha de Operación: </label>
+              <div class="input-group date">
+                <input type="text" class="form-control" 
+                  placeholder="Fecha Operación:" value="" id="fechade" required>
+                  <div class="input-group-addon">
+                  <span class="fa fa-calendar"></span>
+                </div>               
+              </div>
+            </div>    
+
+            
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-6">
+              <label>Cuenta 1 (DEBE) : </label>
+              <div class="input-group">  
+                <select id="cuentadebe"
+                    class="form-control select2 select2-hidden-accessible" 
+                    style="width:100%">
+                    <option value="--" >Seleccionar</option>
+                    <option value=0>Banco</option>
+                    <option value=1>Caja</option>
+                  </select>
+                  <div class="input-group-addon">
+                  <span class="fa  fa-bank "></span>
+                </div>               
+              </div>
+            </div>
+
+
+             <div class="col-md-6">
+              <label>Tipo Cuenta: </label>
+              <div class="input-group">  
+                <select id="tipodebe"
+                    class="form-control select2 select2-hidden-accessible" 
+                    style="width:100%">
+                    <option value="--" >Seleccionar...</option>
+                    <optgroup label="BANCO">
+                      <option value=1>Deposito</option>
+                      <option value=2>Transferencia</option>
+                    </optgroup>
+                    <optgroup label="OTROS">
+                      <option value=4>Ingresos</option>
+                    </optgroup>
+                  </select>
+                  <div class="input-group-addon">
+                  <span class="fa fa-bars"></span>
+                </div>               
+              </div>
+            </div>
+            
+          
+        </div>
+        <br>
+        <div class="row">
+          <div class="col-md-6">
+              <label>Cuenta 2 (HABER) : </label>
+              <div class="input-group">  
+                <select id="cuentahaber"
+                    class="form-control select2 select2-hidden-accessible" 
+                    style="width:100%">
+                    <option value="--" >Seleccionar</option>
+                    <option value=0>Banco</option>
+                    <option value=1>Caja</option>
+                  </select>
+                  <div class="input-group-addon">
+                  <span class="fa fa-bank"></span>
+                </div>               
+              </div>
+            </div>
+
+
+            <div class="col-md-6">
+              <label>Tipo Cuenta: </label>
+              <div class="input-group">  
+                <select id="tipohaber"
+                    class="form-control select2 select2-hidden-accessible" 
+                    style="width:100%">
+                    <option value="--" >Seleccionar...</option>
+                    <optgroup label="BANCO">
+                      <option value=2>Transferencia</option>
+                      <option value=3>Cheque</option>
+                    </optgroup>
+                    <optgroup label="OTROS">
+                      <option value=5>Egresos</option>
+                    </optgroup>
+                  </select>
+                  <div class="input-group-addon">
+                  <span class="fa fa-bars"></span>
+                </div>               
+              </div>
+            </div>
+            
+          
+        </div>
+        <br>
+
+        <div class="row">
+          
+
+           <div class="col-md-6">
+             <label>Monto de la Operación: </label>
+              <div class="input-group">
+                <input type="text" class="form-control" 
+                  placeholder="Monto Operación:" value="" id="monto" required>
+                  
+                  <span class="input-group-addon">.00</span>
+                              
+              </div>
+            </div>  
+
+          <div class="col-md-6">
+             <label>Número De Operación: </label>
+              <div class="input-group">
+                <input type="text" class="form-control" 
+                  placeholder="Número De Operación y/o Transacción:" value="" id="numoperacion" required>
+                  
+                  <div class="input-group-addon">
+                  <span class="fa fa-sort-numeric-asc"></span>
+                              
+              </div>
+            </div>
+        </div>
+        </div><br>
+        <div class="row">
+          
+
+
+          <div class="col-md-12">
+             <label>Descripción: </label>
+              <div class="input-group">
+                <input type="text" class="form-control" 
+                  placeholder="Descripción:" value="" id="descripcion" required>
+                  
+                  <div class="input-group-addon">
+                  <span class="fa fa-archive"></span>
+                              
+              </div>
+            </div>
+        </div>
+        </div>
+
+          </div><!-- /.box-body -->
+          <div class="box-footer">
+            
+            <div class="row pull-right">
+              <div class="col-md-12">
+                <button type="button" class="btn btn-primary" 
+                onclick="LPago()"><i class="fa fa-print"></i>&nbsp;&nbsp;Listar</button>
+                <button type="button" class="btn btn-success" 
+                onclick="RPago()"><i class="fa fa-save"></i>&nbsp;&nbsp;Guardar</button>
+               
+              </div>
+              
+            </div>
+              
+            
+            </form>
+          </div><!-- box-footer -->
+        </div><!-- /.box fin de formulario registro de pago-->
+
+        <div id="divReporte" style="display: none">
+
+          <div class="box box-solid box-primary">
+            <div class="box-header with-border">
+              <h3 class="box-title">Listado Movimientos</h3>
+              <div class="box-tools pull-right">
+              </div><!-- /.box-tools -->
+            </div><!-- /.box-header -->
+            <div class="box-body">
+              <table class="table table-bordered table-striped table-hover" cellspacing="0" id="lstReporte" width="100%">
+                <thead>
+                  <tr>
+                    <th>#</th> <!-- Numero de Voucher o Operacion -->
+                    <th>Cuenta 1 (DEBE)</th>
+                    <th>Tipo</th>
+                    <th>Cuenta 2 (HABER)</th>
+                    <th>Tipo</th>
+                    <th>Descripción</th>
+                    <th>Monto</th>
+                  </tr>
+                </thead>
+              </table>
+            </div><!-- /.box-body -->
+            <div class="box-footer">
+              
+            </div><!-- box-footer -->
+          </div><!-- /.box -->
+    </div>
+
+</section>

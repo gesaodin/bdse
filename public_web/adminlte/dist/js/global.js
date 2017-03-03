@@ -17,6 +17,7 @@ $(function(){
      * Declaración de variables globales
      */
     //var t = $('#reporte').DataTable();    
+    $(".select2").select2();
     var rS = $('#reporteSaldos').DataTable();
     
     $("#cargando").hide();        
@@ -76,8 +77,8 @@ function LCuentaM(id){
     $.getJSON("api/movimiento/listarcuentas")
     .done(function(data){   
         $.each(data, function(c, v){
-            $('#cuentadebe').append('<option value="' + v.oid + '">' + v.nombre + '</option>');
-            $('#cuentahaber').append('<option value="' + v.oid + '">' + v.nombre + '</option>')
+            $('#cuentadebe').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.nombre + '</option>');
+            $('#cuentahaber').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.nombre + '</option>')
         })
     });
     

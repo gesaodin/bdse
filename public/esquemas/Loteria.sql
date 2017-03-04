@@ -22,24 +22,39 @@ DROP TABLE IF EXISTS grupo;
 CREATE TABLE grupo 
 (
 	oid serial NOT NULL PRIMARY KEY,
-	come int,
+	comer int,
 	obse char varying(128),
-	resp int,	
+	resp int,
+	tipo int, -- 0: GRUPO | 1: COLECTOR
 	telf char varying(16),
-	saldoactual numeric --AL CIERRE
+	saldoactual numeric, --AL CIERRE
+	CONSTRAINT grupo_obse_key UNIQUE (obse)
 );
-CREATE INDEX grupo_obse_idx ON grupo USING btree (obse COLLATE pg_catalog."default");
-INSERT INTO grupo (come, obse) VALUES (1,'ROAN'),(1,'ROSITA'),(1,'CINDY'),(1,'COMPADRE'),
-(1,'EIMAR'),(1,'JOSE LH'),(1,'JUNIOR'), (1,'LEPE'), (1,'MARYORI'), (1,'ORLANDO'),(1,'WILMER'),
-(1,'YINNIS'),(1,'ALEXPIER');
+
+--INSERT INTO grupo (comer, obse,tipo) VALUES (1,'ROAN',0),(1,'ROSITA',0),(1,'CINDY',0),(1,'COMPADRE',0),
+--(1,'EIMAR',0),(1,'JOSE LH',0),(1,'JUNIOR',0), (1,'LEPE',0), (1,'MARYORI',0), (1,'ORLANDO',0),(1,'WILMER',0),
+--(1,'YINNIS',0),(1,'ALEXPIER',0);
+
+
+DROP TABLE IF EXISTS subgrupo;
+CREATE TABLE subgrupo 
+(
+	oid serial NOT NULL PRIMARY KEY,	
+	comer int,
+	grupo int,
+	obse char varying(128),
+	resp int,
+	tipo int, -- 0: GRUPO | 1: COLECTOR
+	telf char varying(16),
+	saldoactual numeric, --AL CIERRE
+	CONSTRAINT subgrupo_obse_key UNIQUE (obse)
+);
 
 
 DROP TABLE IF EXISTS agencia;
 CREATE TABLE agencia 
 (
 	oid serial NOT NULL PRIMARY KEY,
-	-- comer int,
-	-- grupo int,
 	obse char varying(128),
 	resp int,	
 	telf char varying(16),
@@ -47,11 +62,11 @@ CREATE TABLE agencia
 );
 CREATE INDEX agencia_obse_idx ON agencia USING btree (obse COLLATE pg_catalog."default");
 
-INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00400');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPJR00100');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPAP00500');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00100');
-INSERT INTO agencia (obse) VALUES ('APMEMMPPCD05500');
+--INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00400');
+--INSERT INTO agencia (obse) VALUES ('APMEMMPPJR00100');
+--INSERT INTO agencia (obse) VALUES ('APMEMMPPAP00500');
+--INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00100');
+--INSERT INTO agencia (obse) VALUES ('APMEMMPPCD05500');
 
 /**
 * DESCRIBE LA RELACION ENTRE LA AGENCIA Y LAS TAQUILLAS
@@ -60,19 +75,31 @@ DROP TABLE IF EXISTS zr_agencia;
 CREATE TABLE zr_agencia 
 (
 	oida int NOT NULL,
-	codi char varying(128) 
+	comer int,
+	grup int,
+	subgr int,
+	colec int,
+	codi char varying(128) -- CAJA O TAQUILLA
 );
-CREATE INDEX zr_agencia_oida_idx ON zr_agencia USING btree (oida);
-CREATE INDEX zr_agencia_codi_idx ON zr_agencia USING btree (codi COLLATE pg_catalog."default");
 
-INSERT INTO zr_agencia (oida,codi) VALUES (1,'APMEMMPPCD00400'), (1,'APMEMMPPCD00401');
-INSERT INTO zr_agencia (oida,codi) VALUES (2,'APMEMMPPJR00100'), (2,'APMEMMPPJR00101');
-INSERT INTO zr_agencia (oida,codi) VALUES (3,'APMEMMPPAP00500'), (3,'APMEMMPPAP00501'), (3,'APMEMMPPAP00502'), (3,'APMEMMPPAP00503'), (3,'APMEMMPPAP00504');
-INSERT INTO zr_agencia (oida,codi) VALUES (3,'MAMEMMPPAP00500'), (3,'MAMEMMPPAP00501');
-INSERT INTO zr_agencia (oida,codi) VALUES (3,'MMAMEMMPPAP00500'),(3,'MMAMEMMPPAP00501');
-INSERT INTO zr_agencia (oida,codi) VALUES (4,'APMEMMPPCD00100');     
-INSERT INTO zr_agencia (oida,codi) VALUES (5,'APMEMMPPCD05500'), (5,'MAMEMMPPCD05500'), (5,'MMAMEMMPPCD05500'),(5,'MAMEMMPPCD005500');
 
+
+/**
+INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi) VALUES 
+(1,1,'APMEMMPPCD00400'), (1,1,'APMEMMPPCD00401');
+INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi) VALUES 
+(1,2,'APMEMMPPJR00100'), (1,2,'APMEMMPPJR00101');
+INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi) VALUES 
+(1,3,'APMEMMPPAP00500'), (1,3,'APMEMMPPAP00501'), (1,3,'APMEMMPPAP00502'), (1,3,'APMEMMPPAP00503'), (1,3,'APMEMMPPAP00504');
+INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi) VALUES 
+(1,3,'MAMEMMPPAP00500'), (1,3,'MAMEMMPPAP00501');
+INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi) VALUES 
+(1,3,'MMAMEMMPPAP00500'),(1,3,'MMAMEMMPPAP00501');
+INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi) VALUES 
+(1,4,'APMEMMPPCD00100');     
+INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi) VALUES 
+(1,5,'APMEMMPPCD05500'), (1,5,'MAMEMMPPCD05500'), (1,5,'MMAMEMMPPCD05500'),(1,5,'MAMEMMPPCD005500');
+**/
 
 DROP TABLE IF EXISTS zr_agencia_taquilla;
 CREATE TABLE zr_agencia_taquilla(
@@ -188,6 +215,7 @@ CREATE TABLE movimiento_ingreso
 	subgr int, -- Sub Grupo
 	colec int, -- Colector
 	agenc int, -- Agencia
+	agen character varying(254), -- Agencia
 	fech date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
@@ -212,6 +240,7 @@ CREATE TABLE movimiento_egreso
 	subgr int, -- Sub Grupo
 	colec int, -- Colector
 	agenc int, -- Agencia
+	agen character varying(254), -- Agencia
 	fech date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,

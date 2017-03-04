@@ -34,7 +34,7 @@ func Login(w http.ResponseWriter, r *http.Request) {
 	e := json.NewDecoder(r.Body).Decode(&u)
 	util.Error(e)
 
-	fmt.Println("Pasando el Decode", u)
+	//fmt.Println("Pasando el Decode", u)
 	if u.Nombre == "carlos" && u.Clave == "za63qj2p" {
 		u.Nombre = "Carlos"
 		u.Clave = ""

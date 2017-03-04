@@ -108,7 +108,8 @@ func (u *Usuario) Consultar(usuario string, clave string) (v bool) {
 	v = false
 	var encry string = hex.EncodeToString(b[:])
 	sC := "SELECT oid, nomb, ncom, corr, fech,esta,rol FROM usuario WHERE toke = '" + encry + "';"
-	fmt.Println(sys.PostgreSQL.Ping())
+
+	
 	row, e := sys.PostgreSQL.Query(sC)
 	if e != nil {
 		fmt.Println(e.Error())

@@ -92,6 +92,7 @@ func (a *Archivo) Crear(cadena string) bool {
 	return true
 }
 
+
 //Archivo de loteria, ch chan []byte
 func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 	a.iniciarVariable("loteria")
@@ -560,5 +561,65 @@ func (a *Archivo) EscribirLinea(linea string) bool {
 }
 
 func (a *Archivo) Cerrar() bool {
+	return true
+}
+
+
+func (a *Archivo) LeerCodigosYCrearAgencias () bool{
+	var sql string
+	archivo, err := os.Open("public/temp/Com-Gru-Age-Caja.csv")
+	Error(err)
+
+	scan := bufio.NewScanner(archivo)
+	for scan.Scan() {
+		linea := strings.Split(scan.Text(), ";")
+
+		grupo := linea[1]
+		sql = `INSERT INTO grupo (comer, obse,tipo) VALUES (1,'` + grupo +  `',0);`
+		_, err := a.PostgreSQL.Exec(sql)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		fmt.Println(sql)
+
+		cap := linea[2]
+		sql = `INSERT INTO agencia (obse) VALUES ('` + cap +  `');`
+		_, err = a.PostgreSQL.Exec(sql)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		fmt.Println(sql)
+
+		dondegrupo := `(SELECT oid FROM grupo WHERE obse='` + grupo +  `')`
+		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap +  `')`
+		caja := linea[3]
+		sql = `INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi)
+		VALUES (1,` + dondegrupo + `,0,0,` + dondeagencia + `,'` + caja + `'); `
+		_, err = a.PostgreSQL.Exec(sql)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		fmt.Println(sql)
+		sql = `INSERT INTO usuario (nomb,ncom,corr,fech,esta,rol, toke) VALUES
+					(
+						'` + grupo + `', 'Grupo','agencia@admin.com',
+						Now(), 2, 'Grupo', md5('` + grupo + `123456')
+
+					)`
+		_, err = a.PostgreSQL.Exec(sql)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		sql = `INSERT INTO usuario (nomb,ncom,corr,fech,esta,rol, toke) VALUES
+					(
+						'` + cap + `', 'Agencia','agencia@admin.com',
+						Now(), 4, 'Agencia', md5('` + cap + `123456')
+
+					)`
+		_, err = a.PostgreSQL.Exec(sql)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+	}
 	return true
 }

@@ -46,7 +46,8 @@ type WebData struct {
 
 func (G *GPanel) Login(w http.ResponseWriter, r *http.Request) {
 	v := mux.Vars(r)
-	//fmt.Println(r.RemoteAddr)
+
+
 	session, e := seguridad.Stores.Get(r, "session-bdse")
 	if e != nil {
 
@@ -107,9 +108,11 @@ func (G *GPanel) Validar(w http.ResponseWriter, r *http.Request) {
 		//http.Redirect(w, r, "login", http.StatusFound)
 		return
 	}
-
+	//fmt.Println(r.FormValue("usuario")  + r.FormValue("clave") )
 	if r.FormValue("usuario") != "" {
+
 		b := usuario.Consultar(r.FormValue("usuario"), r.FormValue("clave"))
+
 		if b {
 			session.Values["acceso"] = true
 			session.Values["usuario"] = r.FormValue("usuario")

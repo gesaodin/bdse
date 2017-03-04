@@ -1157,6 +1157,9 @@ function RegistrarER(){
  * Ejemplo:
  *  mostrarFecha('YYYY/MM/DD', -10) => restara 10 dias a la fecha actual
  *  mostrarFecha('YYYY/MM/DD', 30) => añadira 30 dias a la fecha actual
+ * 
+ * @param date
+ * @param int
  */
 function OperarFecha(fecha, dias){
     milisegundos = parseInt(35*24*60*60*1000); 
@@ -1174,6 +1177,9 @@ function OperarFecha(fecha, dias){
     return year + "-" + month + "-" + day;
 }
 
+/**
+ * Recibo de Pagos
+ */
 function RPago(){
     dep = $("#fechade").val();
     mon = $("#monto").val();
@@ -1219,6 +1225,10 @@ function RPago(){
   
 }
 
+/**
+ * Listar Recibos de Pagos Movimiento (Entregado y Recibidos)
+ */
+
 function LPago(){
     dep = $("#fechade").val();
     var Pago = JSON.stringify({
@@ -1245,6 +1255,9 @@ function LPago(){
     }); 
 }
 
+/**
+ * 
+ */
 function STipo(id){
     switch (id) {
         case 1:

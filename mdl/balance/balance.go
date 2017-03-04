@@ -131,8 +131,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 	var s string
 
 	if data.Agencia != "" {
-		s = ` SELECT * FROM (
-		` + generarCobrosYPagosAgencia(data) + ` ) AS U `
+		s = generarCobrosYPagosAgencia(data)
 
 	} else {
 		s = generarCobrosYPagosGeneral(fecha)
@@ -140,6 +139,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 			fecha = data.Fecha
 			s = generarCobrosYPagosGeneral(fecha)
 		}
+		fmt.Println(s)
 	}
 	row, err := sys.PostgreSQL.Query(s)
 
@@ -181,66 +181,73 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 
 //Generar Cobros y Pagos Administrador
 func generarCobrosYPagosGeneral(fecha string) (s string) {
+
+	if fecha != "" {
+		fecha = ` lotepar.fech BETWEEN '` + fecha + ` 00:00:00'::TIMESTAMP AND '` + fecha + ` 23:59:59'::TIMESTAMP `
+	}
 	s = `
-				SELECT t.agen, SUM(t.vent-t.prem-t.comi) AS saldo,
-					debe.monto AS entregado, haber.monto AS recibido,
-					ingreso.monto AS ingreso, egreso.monto AS egreso,
-					prestamo.monto AS prestamo,
-					vienen.vien AS vienen, SUM(prestamo.cuota) AS cuota
-				FROM
-					(
-						select arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria UNION
-						select arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
-					) AS t
+		SELECT saldo_agencia.obse, saldo_agencia.saldo,
+				debe.monto AS entregado, haber.monto AS recibido,
+				ingreso.monto AS ingreso, egreso.monto AS egreso,
+				prestamo.monto AS prestamo,
+				cobrosypagos.vien AS vienen,
+				cobrosypagos.van AS van
+			FROM (
+			SELECT agencia.obse, lotepar.fech, SUM(lotepar.saldo) AS saldo
+			FROM agencia
+			JOIN zr_agencia ON agencia.oid=zr_agencia.oida
+			JOIN (
+				SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria
+				UNION
+				SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+			) AS lotepar ON zr_agencia.codi=lotepar.agen
 
-				LEFT JOIN (
-						SELECT agen, fdep, SUM(mont) AS monto FROM debe
-						WHERE fdep BETWEEN '` + fecha + ` 00:00:00'::TIMESTAMP AND '` + fecha + ` 23:59:59'::TIMESTAMP
-						GROUP BY agen,fdep
-				) AS debe ON
-				debe.agen=t.agen
+			WHERE ` + fecha + `
+			GROUP BY agencia.obse,lotepar.fech
+			) saldo_agencia
 
-				LEFT JOIN (
-					SELECT agen, fdep, SUM(mont) AS monto FROM haber
-					WHERE fdep BETWEEN '` + fecha + ` 00:00:00'::TIMESTAMP AND '` + fecha + ` 23:59:59'::TIMESTAMP
-					GROUP BY agen,fdep
-				) AS haber ON
-				haber.agen=t.agen
+			-- DEBE
+			LEFT JOIN (
+					SELECT agen, fapr, SUM(mont) AS monto FROM debe
+					GROUP BY agen,fapr
+			) AS debe ON
+			debe.agen=saldo_agencia.obse AND debe.fapr=saldo_agencia.fech
 
-				LEFT JOIN (
-					SELECT agen, fech, SUM(mont) AS monto FROM movimiento_ingreso
-					WHERE fech BETWEEN '` + fecha + ` 00:00:00'::TIMESTAMP AND '` + fecha + ` 23:59:59'::TIMESTAMP
-					GROUP BY agen,fech
-				)
-				AS ingreso ON
-				ingreso.agen=t.agen
+			-- HABER
+			LEFT JOIN (
+				SELECT agen, fapr, SUM(mont) AS monto FROM haber
+				GROUP BY agen,fapr
+			) AS haber ON
+			haber.agen=saldo_agencia.obse  AND haber.fapr=saldo_agencia.fech
 
-				LEFT JOIN (
-					SELECT agen, fech, SUM(mont) AS monto FROM movimiento_egreso
-					WHERE fech BETWEEN '` + fecha + ` 00:00:00'::TIMESTAMP AND '` + fecha + ` 23:59:59'::TIMESTAMP
-					GROUP BY agen,fech
-				)
-				AS egreso ON
-				egreso.agen=t.agen
+			--INGRESO
+			LEFT JOIN (
+				SELECT agen, fech, SUM(mont) AS monto FROM movimiento_ingreso
+				GROUP BY agen,fech
+			)
+			AS ingreso ON
+			ingreso.agen=saldo_agencia.obse  AND ingreso.fech=saldo_agencia.fech
 
-				LEFT JOIN (
-					SELECT agen, fech, SUM(mont) AS monto, SUM(mcuo) AS cuota FROM movimiento_prestamo
-					WHERE fech BETWEEN '` + fecha + ` 00:00:00'::TIMESTAMP AND '` + fecha + ` 23:59:59'::TIMESTAMP
-					GROUP BY agen,fech
-				)
-				AS prestamo ON
-				prestamo.agen=t.agen
+			-- EGRESO
+			LEFT JOIN (
+				SELECT agen, fech, SUM(mont) AS monto FROM movimiento_egreso
+				GROUP BY agen,fech
+			)
+			AS egreso ON
+			egreso.agen=saldo_agencia.obse  AND egreso.fech=saldo_agencia.fech
 
-				LEFT JOIN (
-						SELECT * FROM cobrosypagos ORDER BY fech ASC LIMIT 1
-				) AS vienen
-				ON vienen.agen=t.agen
+			-- PRESTAMOS
+			LEFT JOIN (
+				SELECT agen, fech, SUM(mont) AS monto, SUM(mcuo) AS cuota FROM movimiento_prestamo
+				GROUP BY agen,fech)
+			AS prestamo ON
+			prestamo.agen=saldo_agencia.obse AND prestamo.fech=saldo_agencia.fech
 
-				WHERE t.fech='` + fecha + `'
-				GROUP BY t.agen, debe.monto, haber.monto, ingreso.monto, egreso.monto,
-					prestamo.monto, vienen.vien
-				ORDER BY t.agen
-			`
+			-- VIENEN
+			LEFT JOIN cobrosypagos ON cobrosypagos.fech=saldo_agencia.fech
+			AND cobrosypagos.agen=saldo_agencia.obse
+			ORDER BY saldo_agencia.fech
+	`
 	return
 }
 
@@ -310,6 +317,7 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 
 			-- VIENEN
 			LEFT JOIN cobrosypagos ON cobrosypagos.fech=saldo_agencia.fech
+			AND cobrosypagos.agen=saldo_agencia.obse
 			ORDER BY saldo_agencia.fech
 	`
 	return

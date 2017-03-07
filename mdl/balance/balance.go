@@ -258,16 +258,16 @@ func generarCobrosYPagosGeneral(fecha string) (s string) {
 
 			--INGRESO
 			LEFT JOIN (
-			SELECT agen, fech,fapr, SUM(mont) AS monto FROM movimiento_ingreso
-			GROUP BY agen,fech
+			SELECT agen, fapr, SUM(mont) AS monto FROM movimiento_ingreso
+			GROUP BY agen,fapr
 			)
 			AS ingreso ON
 			ingreso.agen=z.obse  AND ingreso.fapr=` + fechaAux + `
 
 			-- EGRESO
 			LEFT JOIN (
-			SELECT agen, fech,fapr, SUM(mont) AS monto FROM movimiento_egreso
-			GROUP BY agen,fech
+			SELECT agen, fapr, SUM(mont) AS monto FROM movimiento_egreso
+			GROUP BY agen,fapr
 			)
 			AS egreso ON
 			egreso.agen=z.obse  AND egreso.fapr=` + fechaAux + `
@@ -378,7 +378,7 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 	}
 	s = `
 	SELECT cpc.oid, cpc.fech,
-			vienen,
+			cyp.vien,
 			saldo,
 			entregado,
 			recibido,
@@ -386,7 +386,7 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 			egreso,
 			prestamo,
 			cuota,
-			COALESCE(saldo,0) + COALESCE(vienen,0) +
+			COALESCE(saldo,0) + COALESCE(cyp.vien,0) +
 			(
 				COALESCE(entregado,0) - COALESCE(recibido,0)) +
 				(
@@ -410,7 +410,7 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 				SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
 			) AS lotepar ON zr_agencia.codi=lotepar.agen
 
-			WHERE agencia.obse='` + data.Agencia + `'` + fecha + `
+			WHERE agencia.obse='` + data.Agencia + `' ` + fecha + `
 			GROUP BY agencia.oid,agencia.obse,lotepar.fech
 			) saldo_agencia
 
@@ -452,9 +452,16 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 			prestamo.agen=saldo_agencia.obse AND prestamo.fech=saldo_agencia.fech
 
 			-- VIENEN
-			LEFT JOIN cobrosypagos ON cobrosypagos.fech=saldo_agencia.fech
-			AND cobrosypagos.oida=saldo_agencia.oid) AS f
+			-- LEFT JOIN cobrosypagos ON cobrosypagos.fech=saldo_agencia.fech
+			-- AND cobrosypagos.oida=saldo_agencia.oid
+
+			) AS f
 			ON cpc.fech=f.fech
+
+			-- VIENEN
+			LEFT JOIN cobrosypagos cyp ON cyp.fech=cpc.fech
+			INNER JOIN agencia ON cyp.oida=agencia.oid
+			WHERE agencia.obse=` + data.Agencia + `' AND cyp.oida=agencia.oid
 
 	`
 	return

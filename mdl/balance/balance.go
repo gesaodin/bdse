@@ -398,8 +398,7 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 	SELECT saldo_agencia.oid, saldo_agencia.fech, saldo_agencia.saldo,
 				debe.monto AS entregado, haber.monto AS recibido,
 				ingreso.monto AS ingreso, egreso.monto AS egreso,
-				prestamo.monto AS prestamo,prestamo.cuota AS cuota,
-				cobrosypagos.vien AS vienen
+				prestamo.monto AS prestamo,prestamo.cuota AS cuota
 			FROM (
 			SELECT agencia.oid,agencia.obse, lotepar.fech, SUM(lotepar.saldo) AS saldo
 			FROM agencia
@@ -461,7 +460,7 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 			-- VIENEN
 			LEFT JOIN cobrosypagos cyp ON cyp.fech=cpc.fech
 			INNER JOIN agencia ON cyp.oida=agencia.oid
-			WHERE agencia.obse=` + data.Agencia + `' AND cyp.oida=agencia.oid
+			WHERE agencia.obse='` + data.Agencia + `' AND cyp.oida=agencia.oid
 
 	`
 	return

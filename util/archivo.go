@@ -92,7 +92,6 @@ func (a *Archivo) Crear(cadena string) bool {
 	return true
 }
 
-
 //Archivo de loteria, ch chan []byte
 func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 	a.iniciarVariable("loteria")
@@ -564,8 +563,7 @@ func (a *Archivo) Cerrar() bool {
 	return true
 }
 
-
-func (a *Archivo) LeerCodigosYCrearAgencias () bool{
+func (a *Archivo) LeerCodigosYCrearAgencias() bool {
 	var sql string
 	archivo, err := os.Open("public/temp/Com-Gru-Age-Caja.csv")
 	Error(err)
@@ -575,7 +573,7 @@ func (a *Archivo) LeerCodigosYCrearAgencias () bool{
 		linea := strings.Split(scan.Text(), ";")
 
 		grupo := linea[1]
-		sql = `INSERT INTO grupo (comer, obse,tipo) VALUES (1,'` + grupo +  `',0);`
+		sql = `INSERT INTO grupo (comer, obse,tipo) VALUES (1,'` + grupo + `',0);`
 		_, err := a.PostgreSQL.Exec(sql)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -583,15 +581,15 @@ func (a *Archivo) LeerCodigosYCrearAgencias () bool{
 		fmt.Println(sql)
 
 		cap := linea[2]
-		sql = `INSERT INTO agencia (obse) VALUES ('` + cap +  `');`
+		sql = `INSERT INTO agencia (obse) VALUES ('` + cap + `');`
 		_, err = a.PostgreSQL.Exec(sql)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 		fmt.Println(sql)
 
-		dondegrupo := `(SELECT oid FROM grupo WHERE obse='` + grupo +  `')`
-		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap +  `')`
+		dondegrupo := `(SELECT oid FROM grupo WHERE obse='` + grupo + `')`
+		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
 		caja := linea[3]
 		sql = `INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi)
 		VALUES (1,` + dondegrupo + `,0,0,` + dondeagencia + `,'` + caja + `'); `
@@ -620,6 +618,29 @@ func (a *Archivo) LeerCodigosYCrearAgencias () bool{
 		if err != nil {
 			fmt.Println(err.Error())
 		}
+	}
+	return true
+}
+
+func (a *Archivo) LeerCodigosYCrearSaldos() bool {
+	var sql string
+	archivo, err := os.Open("public/temp/saldos.enero.csv")
+	Error(err)
+
+	scan := bufio.NewScanner(archivo)
+	for scan.Scan() {
+		linea := strings.Split(scan.Text(), ";")
+
+		cap := linea[0]
+		saldo := linea[1]
+		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
+		sql = `INSERT INTO cobrosypagos (oida, fech, vien) VALUES (` + dondeagencia + `,'2017-01-01'::TIMESTAMP,` + saldo + `);`
+		_, err := a.PostgreSQL.Exec(sql)
+		if err != nil {
+			fmt.Println(err.Error())
+		}
+		fmt.Println(sql)
+
 	}
 	return true
 }

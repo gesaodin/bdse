@@ -58,9 +58,10 @@ CREATE TABLE agencia
 	obse char varying(128),
 	resp int,	
 	telf char varying(16),
-	saldoactual numeric --AL CIERRE
+	saldoactual numeric, --AL CIERRE
+	CONSTRAINT agencia_obse_key UNIQUE (obse)
 );
-CREATE INDEX agencia_obse_idx ON agencia USING btree (obse COLLATE pg_catalog."default");
+
 
 --INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00400');
 --INSERT INTO agencia (obse) VALUES ('APMEMMPPJR00100');
@@ -74,14 +75,17 @@ CREATE INDEX agencia_obse_idx ON agencia USING btree (obse COLLATE pg_catalog."d
 DROP TABLE IF EXISTS zr_agencia;
 CREATE TABLE zr_agencia 
 (
-	oida int NOT NULL,
+	
 	comer int,
-	grup int,
+	grupo int,
 	subgr int,
 	colec int,
-	codi char varying(128) -- CAJA O TAQUILLA
+	oida int NOT NULL,
+	codi char varying(128), -- CAJA O TAQUILLA
+	saldoactual numeric, --AL CIERRE
+	CONSTRAINT zr_agencia_key UNIQUE (comer,grupo,subgr,colec,oida,codi)
 );
-
+CREATE INDEX zr_agencia_idx ON zr_agencia USING btree (comer,codi);
 
 
 /**
@@ -285,7 +289,7 @@ DROP TABLE IF EXISTS cobrosypagos;
 CREATE TABLE cobrosypagos
 (
 	oid serial NOT NULL,
-	agen char varying(256),
+	oida int,
 	fech timestamp without time zone,
 	vien numeric, --BALANCE DE REGISTRO
 	sald numeric,
@@ -293,7 +297,20 @@ CREATE TABLE cobrosypagos
 	van numeric, --BALANCE DE REGISTRO	
 	CONSTRAINT cobrosypagos_pkey PRIMARY KEY (oid)
 );
+CREATE INDEX cobrosypagos_oida_idx ON cobrosypagos USING btree (oida);
 CREATE INDEX cobrosypagos_fech_idx ON cobrosypagos USING btree (fech);
+
+
+DROP TABLE IF EXISTS cobrosypagoscierre;
+CREATE TABLE cobrosypagoscierre
+(
+	oid serial NOT NULL,
+	fech timestamp without time zone,
+	esta int,
+	CONSTRAINT cobrosypagoscierre PRIMARY KEY (oid)
+);
+CREATE INDEX cobrosypagoscierre_fech_idx ON cobrosypagos USING btree (fech);
+
 
 
 
@@ -312,7 +329,6 @@ CREATE TABLE usuario
   nomb character varying(32),
   ncom character varying(255),
   corr character varying(255),
-  clav character varying(255),
   fech timestamp without time zone,
   esta integer,
   rol character varying(255),
@@ -320,25 +336,15 @@ CREATE TABLE usuario
   CONSTRAINT usuario_pkey PRIMARY KEY (oid)
 );
 
-INSERT INTO usuario (nomb,ncom,corr,clav,fech,esta,rol, toke) VALUES 
+INSERT INTO usuario (nomb,ncom,corr,fech,esta,rol, toke) VALUES 
 (
-	'carlos', 'Administrador Del Sistema','carlos@admin.com',md5('za63qj2p'),
+	'carlos', 'Administrador Del Sistema','carlos@admin.com',
 	Now(), 1, 'Administrador', md5('carlosza63qj2p')
 	
 ),
 (
-	'admin', 'Administrador Del Sistema','carlos@admin.com',md5('za63qj2p'),
+	'admin', 'Administrador Del Sistema','carlos@admin.com',
 	Now(), 1, 'Administrador', md5('admin123')
-	
-),
-(
-	'APMEMMPPCD00400', 'APMEMMPPCD00400','carlos@admin.com',md5('123'),
-	Now(), 1, 'Consumidor', md5('APMEMMPPCD00400123')
-	
-),
-(
-	'APMEMMPPAP00500', 'APMEMMPPAP00500','carlos@admin.com',md5('123'),
-	Now(), 1, 'Consumidor', md5('APMEMMPPAP00500123')
 	
 );
 
@@ -395,7 +401,7 @@ CREATE TABLE debe
   banc integer,
   esta integer, -- 0 activos
   obse character varying(254),
-  resp character varying(254), //Respuesta
+  resp character varying(254), --Respuesta
   CONSTRAINT debe_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX debe_fapr_idx ON debe USING btree (fapr);
@@ -419,7 +425,7 @@ CREATE TABLE haber
   banc integer,
   esta integer, -- 0 Pendiente Por Procesar  | 1 Activo
   obse character varying(254),
-  resp character varying(254), //Respuesta
+  resp character varying(254), --Respuesta
   CONSTRAINT haber_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX haber_fapr_idx ON haber USING btree (fapr);

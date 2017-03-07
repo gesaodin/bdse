@@ -138,8 +138,6 @@ func (p *Pago) GenerarCobrosYPagosDetallados(w http.ResponseWriter, r *http.Requ
 	w.Write(j)
 }
 
-
-
 func (p *Pago) ListarPagos(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago
@@ -158,6 +156,34 @@ func (p *Pago) ListarPagos(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, e := pago.ListarPagos(dataJSON)
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
+//Cierre Diario
+func (p *Pago) CierreDiario(w http.ResponseWriter, r *http.Request) {
+	Cabecera(w, r.Header.Get("Origin"))
+	var dataJSON balance.Pago
+	err := json.NewDecoder(r.Body).Decode(&dataJSON)
+	if err != nil {
+		fmt.Println("Estoy en un error ", err.Error())
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := pago.GenerarCierreDiario(dataJSON)
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Error al consultar los datos"))

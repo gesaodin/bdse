@@ -1,8 +1,8 @@
 [{
   "Driver" : "postgres",
-  "Usuario" : "bdse",
-  "Basedatos": "bdse",
-  "Clave" : "bdseza63#",
+  "Usuario" : "postgres",
+  "Basedatos": "banca",
+  "Clave" : "za63qj2p",
   "Host" : "localhost",
   "Puerto" : "5432"
 },

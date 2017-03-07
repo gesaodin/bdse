@@ -246,10 +246,9 @@ function PTotales(desde, hasta, data){
         return
     }           
     $.each(data, function(c, v){        
-        
-        if (i == 0)sAnt = v.vienen == null?0:v.vienen;
-        
-        i++;
+        console.log(v);
+        sAnt = v.vienen == null?0:v.vienen;
+        sTotal = v.van == null?0:v.van;
         ingreso = v.ingreso == null?0:v.ingreso;
         egreso = v.egreso == null?0:v.egreso;
         prestamo = v.prestamo == null?0:v.prestamo;
@@ -270,8 +269,8 @@ function PTotales(desde, hasta, data){
         rS.cell(fil,5).data(entregado.toFixed(2)).draw();
         rS.cell(fil,6).data(recibido.toFixed(2)).draw();
 
-        rS.cell(fil,7).data(total.toFixed(2)).draw();
-        sAnt = total;
+        rS.cell(fil,7).data(sTotal.toFixed(2)).draw();
+        //sAnt = total;
         
     } );
    

@@ -721,7 +721,9 @@ function GC(tipo){
         t.clear().draw();
         var i = 1;
         $.each(data, function(c,v){
-            sAnt = v.vienen == null?0:v.vienen;
+            console.log(v);
+            vienen = v.vienen == null?0:v.vienen;
+            saldo =  v.saldo == null?0:v.saldo;
             ingreso = v.ingreso == null?0:v.ingreso;
             egreso = v.egreso == null?0:v.egreso;
             prestamo = v.prestamo == null?0:v.prestamo;
@@ -732,18 +734,23 @@ function GC(tipo){
             
             x = parseFloat(entregado) - parseFloat(recibido);
             //console.log("SALDO: " + v.saldo + " X: " + x + " MOVIMIENTO : " + movimiento);
-            total = parseFloat(v.saldo) + movimiento + x;
+            total = vienen + parseFloat(saldo) + movimiento + x;
             accion = btnAccion(v.agencia, total);
             i++
-
+            if (v.estatus != null){
+                if(v.estatus == 1){
+                    accion = "";
+                    t.column(0).visible( false ); //Ocultar la columna 0
+                }
+            }
             switch (parseInt(tipo)) {
                 case 0:   
                  //console.log('CERO... ');
                         t.row.add([
                             accion,
                             v.agencia,
-                            sAnt.toFixed(2),
-                            parseFloat(v.saldo).toFixed(2),
+                            vienen.toFixed(2),
+                            saldo.toFixed(2),
                             movimiento.toFixed(2),
                             x.toFixed(2),
                             total.toFixed(2)
@@ -829,8 +836,21 @@ function btnAccion(valor,monto){
     return s
 }
 
-/**
- * 
+
+function GCD(){
+    fecha = $("#fecha").val();
+     var data = JSON.stringify({
+        fecha: fecha
+    }); 
+    console.log(data);
+
+    $.post("api/balance/cierrediario", data)
+    .done(function (data){        
+        $.notify("Proceso exitos: Se han generado todos los eventos del día siguiente...", "success");
+    });
+
+}
+/**  
  */
 function mdlE(id, cod, valor,monto){
 

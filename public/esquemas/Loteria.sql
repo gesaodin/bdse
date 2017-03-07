@@ -307,9 +307,10 @@ CREATE TABLE cobrosypagoscierre
 	oid serial NOT NULL,
 	fech timestamp without time zone,
 	esta int,
-	CONSTRAINT cobrosypagoscierre PRIMARY KEY (oid)
+	CONSTRAINT cobrosypagoscierre_pkey PRIMARY KEY (oid)
 );
-CREATE INDEX cobrosypagoscierre_fech_idx ON cobrosypagos USING btree (fech);
+CREATE INDEX cobrosypagoscierre_esta_idx ON cobrosypagoscierre USING btree (esta);
+CREATE INDEX cobrosypagoscierre_fech_idx ON cobrosypagoscierre USING btree (fech);
 
 
 

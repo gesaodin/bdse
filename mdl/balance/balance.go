@@ -386,7 +386,12 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 			egreso,
 			prestamo,
 			cuota,
-			saldo + vienen + (entregado - recibido) + (egreso - (ingreso+prestamo)) AS van,
+			COALESCE(saldo,0) + COALESCE(vienen,0) +
+			(
+				COALESCE(entregado,0) - COALESCE(recibido,0)) +
+				(
+					COALESCE(egreso,0) - (COALESCE(ingreso,0)+COALESCE(prestamo,0))
+				) AS van,
 			cpc.esta
 			FROM cobrosypagoscierre cpc
 	LEFT JOIN (

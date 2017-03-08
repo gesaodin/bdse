@@ -18,6 +18,6 @@ func init() {
 func main() {
 	var archivo = util.Archivo{}
 	archivo.PostgreSQL = sys.PostgreSQL
-	//archivo.LeerCodigosYCrearAgencias()
+	archivo.LeerCodigosYCrearAgencias()
 	archivo.LeerCodigosYCrearSaldos()
 }

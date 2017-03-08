@@ -322,33 +322,7 @@ CREATE TABLE sistema (
 	arch integer,
 	CONSTRAINT sistema_pkey PRIMARY KEY (oid)	
 );
-
-DROP TABLE IF EXISTS usuario;
-CREATE TABLE usuario
-(
-  oid serial NOT NULL,
-  nomb character varying(32),
-  ncom character varying(255),
-  corr character varying(255),
-  fech timestamp without time zone,
-  esta integer,
-  rol character varying(255),
-  toke character varying(255),
-  CONSTRAINT usuario_pkey PRIMARY KEY (oid)
-);
-
-INSERT INTO usuario (nomb,ncom,corr,fech,esta,rol, toke) VALUES 
-(
-	'carlos', 'Administrador Del Sistema','carlos@admin.com',
-	Now(), 1, 'Administrador', md5('carlosza63qj2p')
-	
-),
-(
-	'admin', 'Administrador Del Sistema','carlos@admin.com',
-	Now(), 1, 'Administrador', md5('admin123')
-	
-);
-
+1
 DROP TABLE IF EXISTS archivo;
 CREATE TABLE archivo
 (

@@ -1,7 +1,4 @@
-// PostgreSQL
-// Es un Sistema de gestión de bases de datos relacional
-// orientado a objetos y libre, publicado bajo la licencia PostgreSQL,
-// similar a la BSD o la MIT.
+//configuraciones del sistema
 package sys
 
 import (
@@ -14,13 +11,14 @@ import (
 	_ "github.com/lib/pq"
 )
 
+//MongoDBConexion Conexion a Mongo DB
 func MongoDBConexion() {
 	MGOSession, Error = mgo.Dial("localhost:27000")
 	fmt.Println("Cargando Conexión Con MongoDB...")
 	util.Error(Error)
 }
 
-// Funcion de Conexion a Postgres
+//PostgresDBConexion Funcion de Conexion a Postgres
 func PostgresDBConexion() {
 	c := BaseDeDatos.CadenaDeConexion["postgres"]
 	cadena := "user=" + c.Usuario + " dbname=" + c.Basedatos + " password=" + c.Clave + " host=" + c.Host

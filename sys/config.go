@@ -11,9 +11,9 @@ import (
 
 type config struct{}
 
+//Variables del modelo
 var (
-	Version string = "V.0.0.1"
-	// PostgreSQL  bool   = false
+	Version          = "V.0.0.1"
 	MySQL       bool = false
 	MongoDB     bool = false
 	SQLServer   bool = false
@@ -24,6 +24,7 @@ var (
 	Error       error
 )
 
+//Constantes del sistema
 const (
 	ActivarConexionRemota      bool   = true
 	DesactivarConexionRemota   bool   = false
@@ -40,10 +41,12 @@ const (
 	MaximoLimiteDeConsultas    int    = 10
 )
 
+//BaseDatos Estructuras
 type BaseDatos struct {
 	CadenaDeConexion map[string]CadenaDeConexion
 }
 
+//CadenaDeConexion Conexion de datos
 type CadenaDeConexion struct {
 	Driver    string
 	Usuario   string
@@ -53,9 +56,10 @@ type CadenaDeConexion struct {
 	Puerto    string
 }
 
-//0: PostgreSQL, 1: MySQL, 2: MongoDB
+//Conexiones 0: PostgreSQL, 1: MySQL, 2: MongoDB
 var Conexiones []CadenaDeConexion
 
+//init Inicio y control
 func init() {
 	var a util.Archivo
 	a.NombreDelArchivo = "sys/config.json"

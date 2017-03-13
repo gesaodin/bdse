@@ -1,3 +1,9 @@
+// seguridad (del latín securitas) cotidianamente se puede
+// referir a la ausencia de riesgo o a la confianza en algo
+// o en alguien. Sin embargo, el término puede tomar diversos
+// sentidos según el área o campo a la que haga referencia en la
+// seguridad. En términos generales, la seguridad se define como "el
+// estado de bienestar que percibe y disfruta el ser humano".
 package seguridad
 
 import (

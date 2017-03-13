@@ -13,7 +13,7 @@ import (
 	"github.com/gesaodin/bdse/util/logs/mensaje"
 )
 
-//Obtener una persona (find)
+//PersonaGET Obtener una persona (find)
 func PersonaGET(w http.ResponseWriter, r *http.Request) {
 	var Prs mdl.Persona
 	var m mensaje.MSJ
@@ -43,7 +43,7 @@ func PersonaGET(w http.ResponseWriter, r *http.Request) {
 
 }
 
-//Crear una persona (insert)
+//PersonaPOST crear una persona (insert)
 func PersonaPOST(w http.ResponseWriter, r *http.Request) {
 	var m mensaje.MSJ
 	var p mdl.Persona
@@ -58,10 +58,10 @@ func PersonaPOST(w http.ResponseWriter, r *http.Request) {
 			CabeceraRechazada(w, http.StatusNotFound, "Debe indicar un objeto")
 			return
 		}
-		p.Id = bson.NewObjectId()
+		p.ID = bson.NewObjectId()
 		p.FechaDeCreacion = time.Now()
 		e := p.SalvarMGO()
-		fmt.Println("Creando una persona ", p.Id)
+		fmt.Println("Creando una persona ", p.ID)
 
 		if e == nil {
 			m.Estatus = true
@@ -77,6 +77,7 @@ func PersonaPOST(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+//PersonaPUT Agregar
 func PersonaPUT(w http.ResponseWriter, r *http.Request) {
 	var m mensaje.MSJ
 	var p mdl.Persona
@@ -100,6 +101,7 @@ func PersonaPUT(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//PersonaUpdate Actualizar
 func PersonaUpdate(w http.ResponseWriter, r *http.Request) {
 	// var m logs.MSJ
 	Cabecera(w, r.Header.Get("Origin"))
@@ -125,6 +127,7 @@ func PersonaUpdate(w http.ResponseWriter, r *http.Request) {
 	*/
 }
 
+//PersonaDELETE Eliminar
 func PersonaDELETE(w http.ResponseWriter, r *http.Request) {
 
 }

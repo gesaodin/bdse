@@ -1,3 +1,4 @@
+//ingreso y egreso ayudan a las ganancias o perdidas
 package movimiento
 
 import (
@@ -13,12 +14,12 @@ import (
 type Movimiento struct {
 	Oid               int     `json:"oid,omitempty"`
 	Comercializadora  int     `json:"comercializadora,omitempty"`
-	Grupo						  int     `json:"grupo,omitempty"`
-	SubGrupo				  int     `json:"subgrupo,omitempty"`
+	Grupo             int     `json:"grupo,omitempty"`
+	SubGrupo          int     `json:"subgrupo,omitempty"`
 	Colector          int     `json:"colector,omitempty"`
-	AgenciaCod			  int     `json:"agenciacod,omitempty"`
+	AgenciaCod        int     `json:"agenciacod,omitempty"`
 	Agencia           string  `json:"agencia,omitempty"`
-	Nombre     			  string  `json:"nombre,omitempty"`
+	Nombre            string  `json:"nombre,omitempty"`
 	Fecha             string  `json:"fecha,omitempty"`
 	FDeposito         string  `json:"fdeposito,omitempty"`
 	FOperacion        string  `json:"foperacion,omitempty"`
@@ -29,17 +30,17 @@ type Movimiento struct {
 	Monto             float64 `json:"monto,omitempty"`
 	Cuota             float64 `json:"cuota,omitempty"`
 	Cuenta            int     `json:"cuenta,omitempty"`
-	CuentaDebe	      int     `json:"cuentadebe,omitempty"`
+	CuentaDebe        int     `json:"cuentadebe,omitempty"`
 	CuentaDebeNombre  string  `json:"cuentadeben,omitempty"`
-	TipoDebe  			  int     `json:"tipodebe,omitempty"`
-	CuentaHaber			  int     `json:"cuentahaber,omitempty"`
+	TipoDebe          int     `json:"tipodebe,omitempty"`
+	CuentaHaber       int     `json:"cuentahaber,omitempty"`
 	CuentaHaberNombre string  `json:"cuentahabern,omitempty"`
-	TipoHaber				  int     `json:"tipohaber,omitempty"`
+	TipoHaber         int     `json:"tipohaber,omitempty"`
 	Banco             int     `json:"banco,omitempty"`
 	BancoNombre       string  `json:"banconombre,omitempty"`
 	Estatus           int     `json:"estatus,omitempty"`
 	Observacion       string  `json:"observacion,omitempty"`
-	Token	            string  `json:"token,omitempty"`
+	Token             string  `json:"token,omitempty"`
 }
 
 type MSJ struct {
@@ -64,7 +65,7 @@ func (m *Movimiento) Salvar() (jSon []byte, err error) {
 
 func (m *Movimiento) Actualizar() (jSon []byte, err error) {
 	tabla := "haber"
-	if(m.FormaDePago == 0){
+	if m.FormaDePago == 0 {
 		tabla = "debe"
 	}
 
@@ -87,21 +88,19 @@ func (m *Movimiento) Actualizar() (jSon []byte, err error) {
 //
 func (m *Movimiento) generarSQL() (sql string) {
 	sql1 := "INSERT INTO "
-	ie := "(comer,grupo,subgr,colec,agenc,fech,freg,tipo,cuen,mont,oper,obse, toke)"               // INGRESO | EGRESO
+	ie := "(comer,grupo,subgr,colec,agenc,fech,freg,tipo,cuen,mont,oper,obse, toke)" // INGRESO | EGRESO
 
 	monto := strconv.FormatFloat(m.Monto, 'f', 2, 64)
 	iii := "(" + strconv.Itoa(m.Comercializadora) + "," + strconv.Itoa(m.Grupo)
-	iii += "," + strconv.Itoa(m.SubGrupo) + "," +  strconv.Itoa(m.Colector) + "," +  strconv.Itoa(m.AgenciaCod)
+	iii += "," + strconv.Itoa(m.SubGrupo) + "," + strconv.Itoa(m.Colector) + "," + strconv.Itoa(m.AgenciaCod)
 	iii += ",'" + m.Fecha + "',now(),"
 	cuenta := strconv.Itoa(m.TipoDebe) + "," + strconv.Itoa(m.CuentaDebe) + ","
-	iff := monto + ", '" + m.Voucher + "', '" + m.Observacion + "', md5('" + m.Fecha +  m.Voucher + monto + "'));"
-	sqle := sql1 + "movimiento_ingreso " + ie + " VALUES " +  iii + cuenta + iff
-
+	iff := monto + ", '" + m.Voucher + "', '" + m.Observacion + "', md5('" + m.Fecha + m.Voucher + monto + "'));"
+	sqle := sql1 + "movimiento_ingreso " + ie + " VALUES " + iii + cuenta + iff
 
 	cuenta = strconv.Itoa(m.TipoHaber) + "," + strconv.Itoa(m.CuentaHaber) + ","
 	sqls := sql1 + "movimiento_egreso " + ie + " VALUES " + iii + cuenta + iff
-	sql = sqls +  sqle
-	
+	sql = sqls + sqle
 
 	return
 
@@ -115,7 +114,7 @@ func (m *Movimiento) Listar() (jSon []byte, err error) {
 		 FROM movimiento_ingreso A
 		INNER JOIN movimiento_egreso B ON A.toke=B.toke
 		JOIN cuenta  C ON C.cod = A.cuen
-		JOIN cuenta D ON D.cod = B.cuen  WHERE A.fech='` + m.Fecha + `';`	//` +  AND fapr != ''; m.FDeposito + `
+		JOIN cuenta D ON D.cod = B.cuen  WHERE A.fech='` + m.Fecha + `';` //` +  AND fapr != ''; m.FDeposito + `
 
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
@@ -124,11 +123,11 @@ func (m *Movimiento) Listar() (jSon []byte, err error) {
 	}
 	for row.Next() {
 		var movimiento Movimiento
-		var fech, toke, debe,haber  string
+		var fech, toke, debe, haber string
 
 		var obse, oper sql.NullString
 
-		var  tdebe, thaber int
+		var tdebe, thaber int
 		var mont sql.NullFloat64
 
 		e := row.Scan(&fech, &oper, &debe, &tdebe, &haber, &thaber, &obse, &mont, &toke)
@@ -151,12 +150,10 @@ func (m *Movimiento) Listar() (jSon []byte, err error) {
 	return
 }
 
-
-
 func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	var lst []interface{}
 	s := `SELECT banco.nomb, debe.oid,agen,debe.mont,vouc,fdep,tipo,banc,resp FROM debe
-	LEFT JOIN banco ON debe.banc=banco.oid	WHERE esta=0`	//` +  AND fapr != ''; m.FDeposito + `
+	LEFT JOIN banco ON debe.banc=banco.oid	WHERE esta=0` //` +  AND fapr != ''; m.FDeposito + `
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
 		fmt.Println(err.Error())
@@ -164,13 +161,13 @@ func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	}
 	for row.Next() {
 		var movimiento Movimiento
-		var agen, fdep, vouc  string
+		var agen, fdep, vouc string
 		var nomb, resp sql.NullString
 
 		var oid, tipo, banc int
 		var mont sql.NullFloat64
 
-		e := row.Scan(&nomb,  &oid, &agen, &mont, &vouc, &fdep, &tipo, &banc, &resp)
+		e := row.Scan(&nomb, &oid, &agen, &mont, &vouc, &fdep, &tipo, &banc, &resp)
 		if e != nil {
 			fmt.Println(e.Error())
 			return
@@ -193,8 +190,8 @@ func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 func (m *Movimiento) ListarCuentas(tipo int) (jSon []byte, err error) {
 	var lst []interface{}
 	s := `SELECT cod,nomb,num, tipo FROM cuenta `
-	if tipo == 1{
-			s = `SELECT oid AS cod, nomb, nume AS num, tipo FROM banco `
+	if tipo == 1 {
+		s = `SELECT oid AS cod, nomb, nume AS num, tipo FROM banco `
 	}
 
 	row, err := sys.PostgreSQL.Query(s)

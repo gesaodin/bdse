@@ -1,3 +1,9 @@
+//interfaz de programación de aplicaciones.
+//Abreviado como API del inglés: Application Programming Interface,
+//es un conjunto de subrutinas, funciones y procedimientos
+//(o métodos, en la programación orientada a objetos) que
+//ofrece cierta biblioteca para ser utilizado por otro software
+//como una capa de abstracción.
 package api
 
 import (
@@ -9,24 +15,38 @@ import (
 	"github.com/gesaodin/bdse/sys/seguridad"
 )
 
+//Usuario del sistema
 type Usuario struct {
 	Usr seguridad.Usuario `json:"usuario"`
 }
 
+//Pago para el control
 type Pago struct{}
 
+//Movimiento Ingreso y Egresos
 type Movimiento struct{}
+
+//Localizacion ubicacion geografica
+type Localizacion struct{}
+
+//Registro de Control
+type Registro struct{}
+
+//Comercializadora compuesta por grupo, subgrupo, colector, agencia
+type Comercializadora struct{}
 
 var pago balance.Pago
 
+//Salvar un registro web
 func (a *Usuario) Salvar(w http.ResponseWriter, r *http.Request) {
 
 }
 
+//ConsultarToken WEB
 func (a *Usuario) ConsultarToken(w http.ResponseWriter, r *http.Request) {
-
 }
 
+//Salvar un pago
 func (p *Pago) Salvar(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago
@@ -55,6 +75,7 @@ func (p *Pago) Salvar(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+//GenerarCobrosYPagos De las consultas web
 func (p *Pago) GenerarCobrosYPagos(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago
@@ -82,6 +103,8 @@ func (p *Pago) GenerarCobrosYPagos(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusOK)
 	w.Write(j)
 }
+
+//GenerarCobrosYPagosSistemas Programas MATICLOT, MORPHEUS, POS
 func (p *Pago) GenerarCobrosYPagosSistemas(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago
@@ -110,6 +133,7 @@ func (p *Pago) GenerarCobrosYPagosSistemas(w http.ResponseWriter, r *http.Reques
 	w.Write(j)
 }
 
+//GenerarCobrosYPagosDetallados de todos los programas
 func (p *Pago) GenerarCobrosYPagosDetallados(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago
@@ -138,6 +162,7 @@ func (p *Pago) GenerarCobrosYPagosDetallados(w http.ResponseWriter, r *http.Requ
 	w.Write(j)
 }
 
+//ListarPagos de los entregados y recibidos
 func (p *Pago) ListarPagos(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago
@@ -165,7 +190,7 @@ func (p *Pago) ListarPagos(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-//Cierre Diario
+//CierreDiario Pos los saldos acumulados
 func (p *Pago) CierreDiario(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago

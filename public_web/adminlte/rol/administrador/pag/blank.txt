@@ -1,0 +1,424 @@
+<section class="content-header">
+  <h1>
+    Pagina Principal
+    <small>Banca</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="principal"><i class="fa fa-dashboard"></i> Principal</a></li>
+    <li class="active">Banca</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <!-- Your Page Content Here -->
+
+
+     
+</section>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*** Respaldo ***/
+
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <label>Programa: </label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa1" Value="Maticlot" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <label>Tripe: </label>
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple1" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <label>Terminal: </label>
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple1" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <label>Queda: </label>
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple1" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <label>Parti.: </label>
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple1" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Maticlot-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa2" Value="Morpheus" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple2" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal2" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda2" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion2" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Morpheus-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa3" Value="Pos 1" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple3" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal3" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda3" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion3" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Pos 1-->
+
+                                 <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa4" Value="Pos 2" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple4" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal4" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda4" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion4" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Pos 2-->
+                                
+                                 <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa5" Value="Pos 3" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple5" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal5" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda5" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion5" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Pos 3-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa6" Value="Alien 1" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple6" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal6" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda6" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion6" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Alien 1-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa7" Value="Alien 2" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple7" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal7" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda7" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion7" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Alien 2-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa8" Value="Alien 3" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple8" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal8" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda8" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion8" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Alien 3-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa9" Value="Ibanquero" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple9" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal9" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda9" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion9" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Ilbanquero-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa10" Value="Cyber Parley" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple10" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal10" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda10" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion10" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Cyber Parley-->
+
+                                <div class="row">
+                                    <div class="col-xs-4">
+                                        <div class="form-group">
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                                <input type="text" class="form-control" id="programa11" Value="Spor 17" readonly/>
+                                            </div>
+                                        </div>                                        
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="triple11" placeholder="Triple" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="terminal11" placeholder="Term." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="queda11" placeholder="Queda" maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                    <div class="col-xs-2">
+                                        <div class="form-group">
+                                            <div class="input-group">                                                
+                                                <input type="text" class="form-control" id="participacion11" placeholder="Parti." maxlength="2"/>                                            </div>
+                                        </div>                                       
+                                    </div>
+                                </div> <!-- Fin de programa Ilbanquero-->

@@ -1,9 +1,4 @@
-// Seguridad (del latín securitas)1 cotidianamente se puede
-// referir a la ausencia de riesgo o a la confianza en algo
-// o en alguien. Sin embargo, el término puede tomar diversos
-// sentidos según el área o campo a la que haga referencia en la
-// seguridad. En términos generales, la seguridad se define como "el
-// estado de bienestar que percibe y disfruta el ser humano".
+// se refiere a la confianza en algo.
 package seguridad
 
 import (
@@ -15,18 +10,21 @@ import (
 	"github.com/gesaodin/bdse/util"
 )
 
+//Constantes Generales
 const (
 	Encriptamiento             = "md5"
 	ActivarLimiteDeConexion    = true
 	DesactivarLimiteDeConexion = false
 )
 
+//Variables de Seguridad
 var (
 	LlavePrivada *rsa.PrivateKey
 	LlavePublica *rsa.PublicKey
 	LlaveJWT     string
 )
 
+//init Función inicial del sistema
 func init() {
 	bytePrivados, err := ioutil.ReadFile("./sys/seguridad/private.rsa")
 	util.Fatal(err)
@@ -36,6 +34,7 @@ func init() {
 	LlavePublica, err = jwt.ParseRSAPublicKeyFromPEM(bytePublicos)
 }
 
+//GenerarJWT Json Web Token
 func GenerarJWT(u Usuario) string {
 	peticion := Reclamaciones{
 		Usuario: u,

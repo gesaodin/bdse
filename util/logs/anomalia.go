@@ -1,5 +1,4 @@
-// El consumidor de recursos establece la necesidad de uso e iteraciones
-// a las cuales el usuario se enfrenta a diario. Recurrencia
+// uso e iteraciones a las cuales el usuario se enfrenta a diario. Recurrencia
 package logs
 
 import (

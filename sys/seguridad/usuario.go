@@ -5,7 +5,6 @@
 // usuarios, RBAC puede dividir las capacidades de superusuario entre varios
 // administradores. La gestión de derechos de procesos se implementa a través de
 // privilegios. La gestión de derechos de usuarios se implementa a través de RBAC.
-
 package seguridad
 
 import (
@@ -109,7 +108,6 @@ func (u *Usuario) Consultar(usuario string, clave string) (v bool) {
 	var encry string = hex.EncodeToString(b[:])
 	sC := "SELECT oid, nomb, ncom, corr, fech,esta,rol FROM usuario WHERE toke = '" + encry + "';"
 
-	
 	row, e := sys.PostgreSQL.Query(sC)
 	if e != nil {
 		fmt.Println(e.Error())

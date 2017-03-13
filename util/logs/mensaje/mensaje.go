@@ -1,9 +1,10 @@
+//cadena de contenido entre servidor y clientes
 package mensaje
 
 import "time"
 
 type (
-	//Sistema
+	//MSJ mensajes
 	MSJ struct {
 		Estatus     bool   `json:"estatus"` //true: Exitoso | false: Ocurrio un Error
 		Tipo        string `json:"tipo" `
@@ -11,16 +12,18 @@ type (
 		Descripcion string `json:"descripcion"`
 	}
 
+	//OBJRespuesta respuestas
 	OBJRespuesta struct {
 		MSJ     `json:"msj"`
 		Persona interface{} `json:"persona"`
 	}
 
+	//OBJMsj mensajes
 	OBJMsj struct {
 		MSJ `json:"msj"`
 	}
 
-	//Socket de Conexion por chat y sistema
+	//WSocket conexion para chat y sistema
 	WSocket struct {
 		Listado interface{} `json:"lst,omitempty"`
 		Usuario interface{} `json:"usu,omitempty"`
@@ -28,7 +31,7 @@ type (
 		Tipo    int         `json:"tipo"`
 	}
 
-	//Para el Chat
+	//WChat el Chat
 	WChat struct {
 		Tipo   int       `json:"tipo,omitempty"`
 		De     string    `json:"de,omitempty"`

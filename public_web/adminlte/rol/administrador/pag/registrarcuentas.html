@@ -1,0 +1,118 @@
+<section class="content-header">
+  <h1>
+    Registrar Cuentas 
+    <small>Banca</small>
+  </h1>
+  <ol class="breadcrumb">
+    <li><a href="principal"><i class="fa fa-dashboard"></i> Principal</a></li>
+    <li class="active">Banca</li>
+  </ol>
+</section>
+<!-- Main content -->
+<section class="content">
+  <!-- Your Page Content Here -->
+
+<div class="box box-solid box-success">
+        <div class="box-header with-border">
+          <h3 class="box-title">Cuentas</h3>
+
+          <div class="box-tools pull-right">
+            <button data-original-title="Collapse" type="button" class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="">
+              <i class="fa fa-minus"></i></button>
+            <button type="button" class="btn btn-box-tool" data-widget="remove" data-toggle="tooltip" title="Remove">
+              <i class="fa fa-times"></i></button>
+          </div>
+        </div>
+        <div style="display: block;" class="box-body">
+           <div class="row">
+               <div class="col-md-5 col-xs-12">
+                   <div class="form-group">
+                      <label>Cuentas:</label>
+                      <select multiple="" class="form-control js-example-placeholder-multiple" style= "height: 13em" id="veragencia" >
+                      <optgroup label="Bancarias">
+                        <option>option 1</option>
+                        <option>option 2</option>
+                        <option>option 3</option>
+                      </optgroup>
+                      <optgroup label="Contables">
+                        <option>option 4</option>
+                        <option>option 5</option>
+                      </optgroup>
+                       
+                      </select>
+                    </div>
+               </div>
+               <div class="col-md-7 col-xs-12">
+                    <div class="row">
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                            <label>Codigo cuenta:</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-qrcode"></span>                                
+                                </div>
+                                <input type="text" class="form-control" placeholder="Código:" id="codigo" required="">
+                            </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <div class="form-group">
+                            <label>Acepta Depósito:</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-mail-reply-all"></span>
+                                </div>
+                                <select class="form-control" id="acepta">
+                                    <option>SI</option>
+                                    <option>NO</option>
+                                    
+                                </select>
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                            <label>Descripción:</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-file-text"></span>                                
+                                </div>
+                                <input type="text" class="form-control" placeholder="Descripción:" id="descripcion" required="">
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12 col-md-12">
+                            <div class="form-group">
+                            <label>Detalles:</label>
+                            <div class="input-group">
+                                <div class="input-group-addon">
+                                    <span class="fa fa-file-text"></span>                                
+                                </div>
+                                <input type="text" class="form-control" placeholder="Detalles:" id="detalles" required="">
+                            </div>
+                            </div>
+                        </div>
+                    </div>
+
+               </div>
+           </div>
+        </div>
+        <!-- /.box-body -->
+        <div style="display: block;" class="box-footer">
+          <div class="row pull-right">
+              <div class="col-md-12">
+                
+                <button type="button" class="btn btn-success" 
+                onclick="RPago()"><i class="fa fa-save"></i>&nbsp;&nbsp;Guardar</button>
+               
+              </div>
+           </div>
+        </div>
+        <!-- /.box-footer-->
+      </div>
+     
+</section>

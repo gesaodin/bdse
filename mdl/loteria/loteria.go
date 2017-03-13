@@ -1,3 +1,4 @@
+//juegos y programas para el azar en triples y terminales
 package loteria
 
 import (
@@ -11,6 +12,7 @@ import (
 	"github.com/gesaodin/bdse/util"
 )
 
+//Archivo formatos en estructuras
 type Archivo struct {
 	Oid       int       `json:"oid,omitempty"`
 	Nombre    string    `json:"nombre,omitempty"`
@@ -23,6 +25,7 @@ type Archivo struct {
 	idTabla   int
 }
 
+//Reporte reglas para la impresión
 type Reporte struct {
 	Agencia  string  `json:"age,omitempty"`
 	Venta    float32 `json:"ven,omitempty"`
@@ -36,11 +39,14 @@ type Reporte struct {
 	Usuario  int     `json:"usuario,omitempty"`
 }
 
+//Listar valores generales
 type Listar struct {
 	Oid    int    `json:"oid,omitempty"`
 	Nombre string `json:"nombre,omitempty"`
+	Tipo   int    `json:"tipo,omitempty"`
 }
 
+//JsonDataReporte esquemas de impresión
 type JsonDataReporte struct {
 	Id      int    `json:"id,omitempty"`
 	Tabla   string `json:"tabla,omitempty"`
@@ -50,6 +56,7 @@ type JsonDataReporte struct {
 	Tipo    int    `json:"tipo,omitempty"`
 }
 
+//ArchivosCargados listar todos los registros de los archivos
 func (r *Reporte) ArchivosCargados(data JsonDataReporte) (j []byte, e error) {
 	var lst []Archivo
 
@@ -87,9 +94,9 @@ func (r *Reporte) ArchivosCargados(data JsonDataReporte) (j []byte, e error) {
 	j, _ = json.Marshal(lst)
 
 	return
-
 }
 
+//Saldos ver los montos acumulados
 func (r *Reporte) Saldos(data JsonDataReporte) (j []byte, e error) {
 	var lst []interface{}
 	var s, donde string
@@ -138,9 +145,14 @@ func (r *Reporte) Saldos(data JsonDataReporte) (j []byte, e error) {
 	return
 }
 
+//Sistemas listar tabla de programas
 func (l *Listar) Sistemas(data JsonDataReporte) (j []byte, e error) {
 	var lst []Listar
-	s := "SELECT oid, obse FROM sistema WHERE arch =" + strconv.Itoa(data.Id)
+	var donde string
+	if data.Id != 3 {
+		donde = " WHERE arch =" + strconv.Itoa(data.Id)
+	}
+	s := "SELECT oid, obse, arch FROM sistema " + donde + " ORDER BY arch, oid"
 
 	row, e := sys.PostgreSQL.Query(s)
 	if e != nil {
@@ -150,21 +162,25 @@ func (l *Listar) Sistemas(data JsonDataReporte) (j []byte, e error) {
 	defer row.Close()
 	for row.Next() {
 		var ls Listar
-		var oid int
+		var oid, arch int
+
 		var nomb string
-		row.Scan(&oid, &nomb)
+		row.Scan(&oid, &nomb, &arch)
 		ls.Oid = oid
 		ls.Nombre = nomb
+		ls.Tipo = arch
 		lst = append(lst, ls)
 	}
 	j, _ = json.Marshal(lst)
 	return
 }
 
+//Banca comercializadora
 type Banca struct {
 	Reporte []Reporte
 }
 
+//SaldosGenerales consultar el saldo total acumulado
 func (l *Listar) SaldosGenerales(data JsonDataReporte) (jSon []byte, e error) {
 	var banca map[string]Banca
 	var nombreAuxiliar string
@@ -183,9 +199,8 @@ func (l *Listar) SaldosGenerales(data JsonDataReporte) (jSon []byte, e error) {
 				JOIN sistema ON sistema.oid=archivo.tipo
 				LEFT JOIN zr_agencia ON t.agen=zr_agencia.codi
 				LEFT JOIN agencia ON agencia.oid=zr_agencia.oida
-				--WHERE agencia.obse='APMEMMPPCD00400'
 				ORDER BY agencia.oid, t.sist`
-	//fmt.Println(s)
+
 	row, e := sys.PostgreSQL.Query(s)
 	if e != nil {
 		fmt.Println(e.Error())
@@ -246,6 +261,7 @@ func (l *Listar) SaldosGenerales(data JsonDataReporte) (jSon []byte, e error) {
 	return
 }
 
+//Detalle establece las reglas generales
 type Detalle struct {
 	Sistema int     `json:"sistema,omitempty"`
 	Tabla   int     `json:"tabla,omitempty"`
@@ -253,6 +269,7 @@ type Detalle struct {
 	Fecha   string  `json:"fecha,omitempty"`
 }
 
+//SaldosGeneralesPorSistemas establece los montos acumulados por los programas
 func (r *Reporte) SaldosGeneralesPorSistemas(data JsonDataReporte) (jSon []byte, e error) {
 	var lst map[string]interface{}
 	lst = make(map[string]interface{})
@@ -311,6 +328,7 @@ func (r *Reporte) SaldosGeneralesPorSistemas(data JsonDataReporte) (jSon []byte,
 	return
 }
 
+//SaldoGeneralTotales totales acumulados por fecha
 func (r *Reporte) SaldoGeneralTotales(data JsonDataReporte) (jSon []byte, e error) {
 	var i int
 	var tablaAuxiliar int
@@ -364,12 +382,14 @@ func (r *Reporte) SaldoGeneralTotales(data JsonDataReporte) (jSon []byte, e erro
 	return
 }
 
+//Balance configuracion de saldos
 type Balance struct {
 	Saldo float32 `json:"saldo"`
 	Debe  float64 `json:"debe"`
 	Haber float64 `json:"haber"`
 }
 
+//BalanceGeneral reglas generales de los saldos
 func (r *Reporte) BalanceGeneral(data JsonDataReporte) (jSon []byte, err error) {
 	var lstBalance map[string]interface{}
 	var lstTabla map[int]interface{}
@@ -462,6 +482,7 @@ func (r *Reporte) BalanceGeneral(data JsonDataReporte) (jSon []byte, err error) 
 	return
 }
 
+//ConvertirTabla devuelve loteria / parley
 func (a *Archivo) ConvertirTabla() {
 
 	if a.idTabla == 0 {

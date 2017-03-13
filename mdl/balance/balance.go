@@ -1,3 +1,4 @@
+//cobros y pagos en movimiento y entregados/recibidos
 package balance
 
 import (
@@ -11,6 +12,7 @@ import (
 	"github.com/gesaodin/bdse/util"
 )
 
+//Pago Control de Pagos
 type Pago struct {
 	Oid           int     `json:"oid,omitempty"`
 	Agencia       string  `json:"agencia,omitempty"`
@@ -43,11 +45,13 @@ type Pago struct {
 	Archivo       int     `json:"archivo,omitempty"`
 }
 
+//Respuesta Generales
 type Respuesta struct {
-	Cantidad int64  `json:"cant"`
-	Msj      string `json:"msj"`
+	Cantidad int64  `json:"cant"` // Cantidad de elementos
+	Msj      string `json:"msj"`  // Mensaje almacenado
 }
 
+//Registrar Un pago por movimiento de ingreso o egreso
 func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	monto := strconv.FormatFloat(data.Monto, 'f', 6, 64)
 	tabla := "haber"
@@ -81,6 +85,7 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	return
 }
 
+//ListarPagos Generales del sistema
 func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 	var s string
 	s = `
@@ -127,6 +132,7 @@ func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 	return
 }
 
+//GenerarCobrosYPagos Generacion de Cobros y Pagos del sistema
 func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 	var fecha string = time.Now().String()[0:10]
 	var s string
@@ -185,6 +191,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 	return
 }
 
+//GenerarCierreDiario Generar Cierre Diario de las operaciones contables
 func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 
 	var s string
@@ -208,7 +215,7 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	return
 }
 
-//Generar Cobros y Pagos Administrador
+//generarCobrosYPagosGeneral Generar Cobros y Pagos Administrador
 func generarCobrosYPagosGeneral(fecha string) (s string) {
 	fechaAux := `'` + fecha + ` 00:00:00'::TIMESTAMP `
 	if fecha != "" {
@@ -291,7 +298,7 @@ func generarCobrosYPagosGeneral(fecha string) (s string) {
 	return
 }
 
-//Generar Cierre Diario seleccionar el día y le suma al siguiente
+//generarCobrosYPagosGeneralCierre Generar Cierre Diario seleccionar el día y le suma al siguiente
 func generarCobrosYPagosGeneralCierre(fecha string) (s string) {
 	fechaAux := `'` + fecha + ` 00:00:00'::TIMESTAMP `
 	sumar := fecha
@@ -370,9 +377,9 @@ func generarCobrosYPagosGeneralCierre(fecha string) (s string) {
 	return
 }
 
-//Estado de Cuenta por agencia
+//generarCobrosYPagosAgencia Generar SQL Cobros y Pagos por Agenacia
 func generarCobrosYPagosAgencia(data Pago) (s string) {
-	var fecha string = ""
+	var fecha string
 	if data.Desde != "" {
 		fecha = ` AND lotepar.fech BETWEEN '` + data.Desde + ` 00:00:00'::TIMESTAMP AND '` + data.Hasta + ` 23:59:59'::TIMESTAMP`
 	}
@@ -466,8 +473,8 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 	return
 }
 
+//GenerarCobrosYPagosSistemas Generar Reporte de pagos por programas Ej: Maticlot, Parley
 func (p *Pago) GenerarCobrosYPagosSistemas(data Pago) (jSon []byte, err error) {
-	//fech, saldo,sist,agen,arch
 	var s string
 	s = generarCobrosYPagosSistemas(data)
 	row, err := sys.PostgreSQL.Query(s)
@@ -500,9 +507,9 @@ func (p *Pago) GenerarCobrosYPagosSistemas(data Pago) (jSon []byte, err error) {
 	return
 }
 
-//Estado de Cuenta por Loteria y Parley (Sistemas)
+//generarCobrosYPagosSistemas Creacion de SQL para Reporte de pago  por programas
 func generarCobrosYPagosSistemas(data Pago) (s string) {
-	var fecha string = ""
+	var fecha string
 	fecha = ` AND lotepar.fech BETWEEN '` + data.Desde + ` 00:00:00'::TIMESTAMP AND '` + data.Hasta + ` 23:59:59'::TIMESTAMP`
 	if data.Desde != "" {
 	}
@@ -528,6 +535,7 @@ func generarCobrosYPagosSistemas(data Pago) (s string) {
 	return
 }
 
+//GenerarCobrosYPagosDetallados Generar Cobros y Pagos detallados de las ventas
 func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error) {
 	//fech, saldo,sist,agen,arch
 	var s string
@@ -559,9 +567,10 @@ func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error)
 	return
 }
 
+//generarCobrosYPagosDetallados Generar SQL para el detalle de las Ventas
 func generarCobrosYPagosDetallados(data Pago) (s string) {
-	var fecha string = ""
-	var sistema string = ""
+	var fecha string
+	var sistema string
 	if data.Desde != "" {
 		fecha = ` AND lotepar.fech BETWEEN '` + data.Desde + ` 00:00:00'::TIMESTAMP AND '` + data.Hasta + ` 23:59:59'::TIMESTAMP`
 	}

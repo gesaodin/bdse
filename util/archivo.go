@@ -1,3 +1,4 @@
+//utilidades generales para cadenas y números
 package util
 
 import (
@@ -17,16 +18,22 @@ import (
 )
 
 const (
+	//Loteria terminales y triples
 	Loteria string = "0"
-	Parley  string = "1"
+	//Parley apuestas generales deporte
+	Parley string = "1"
+	//Totales
+	_Totales = "TOTALES"
 )
 
+//webMSJ Mensajes del sistema
 type webMSJ struct {
 	Tipo    int    `json:"tipo"`
 	Mensaje string `json:"msj"`
 	Autor   string `json:"aut"`
 }
 
+//Archivo Estructura de los archivos
 type Archivo struct {
 	Responsable      int
 	Ruta             string
@@ -44,6 +51,7 @@ type Archivo struct {
 
 var m mensaje.WChat
 
+//iniciarVariable Variables del sistema
 func (a *Archivo) iniciarVariable(tabla string) {
 	a.Cabecera = "INSERT INTO " + tabla + " (agen,vent,prem,comi,usua,fech,fcre,sist, arch) VALUES "
 	a.CantidadLineas = 0
@@ -51,6 +59,7 @@ func (a *Archivo) iniciarVariable(tabla string) {
 	a.Salvar = false
 }
 
+//CrearTraza Traza y eventos de los archivos
 func (a *Archivo) CrearTraza(tipo int, tabla string) (oid int, err error) {
 	t := time.Now()
 	nomb := a.NombreDelArchivo
@@ -74,6 +83,7 @@ func (a *Archivo) CrearTraza(tipo int, tabla string) (oid int, err error) {
 	return
 }
 
+//ModificarTraza Actualizar Traza o eventos
 func (a *Archivo) ModificarTraza() bool {
 	t := time.Now()
 	fpro := t.Format("2006-01-02 15:04:05")
@@ -88,15 +98,11 @@ func (a *Archivo) ModificarTraza() bool {
 	return true
 }
 
-func (a *Archivo) Crear(cadena string) bool {
-	return true
-}
-
-//Archivo de loteria, ch chan []byte
+//LeerMorpheus Archivo de loteria, ch chan []byte
 func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 	a.iniciarVariable("loteria")
-	var insertar string = a.Cabecera
-	var coma string = ""
+	insertar := a.Cabecera
+	var coma string
 	oid, b := a.CrearTraza(1, Loteria)
 	if b != nil {
 		m.Msj = "E# Morpheus: " + a.NombreDelArchivo + " " + b.Error()
@@ -118,13 +124,13 @@ func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 			a.Leer = true
 		}
 		if a.Leer {
-			if a.CantidadLineas > 2 && "TOTALES" != strings.Trim(linea[0], " ") {
+			if a.CantidadLineas > 2 && _Totales != strings.Trim(linea[0], " ") {
 				coma = ","
 			} else {
 				coma = ""
 			}
 			insertar += coma
-			if a.CantidadLineas > 1 && len(linea) == 8 && "TOTALES" != strings.Trim(linea[0], " ") {
+			if a.CantidadLineas > 1 && len(linea) == 8 && _Totales != strings.Trim(linea[0], " ") {
 				agencia, venta := strings.Trim(linea[1], " "), strings.Trim(linea[3], " ")
 				premio, comision := strings.Trim(linea[5], " "), strings.Trim(linea[7], " ")
 				insertar += "('" + agencia + "'," + venta + "," + premio + ","
@@ -160,12 +166,11 @@ func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 	return true, insertar
 }
 
-//Archivos de Loteria
+//LeerPos Archivos de Loteria
 func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
 	a.iniciarVariable("loteria")
-	//a.PostgreSQL.SetMaxOpenConns(10)
-	var insertar string = a.Cabecera
-	var coma string = ""
+	insertar := a.Cabecera
+	var coma string
 
 	oid, b := a.CrearTraza(tipo, Loteria)
 	if b != nil {
@@ -238,12 +243,12 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
 	return true, insertar
 }
 
-//Archivo en formato XLS 97-2003
+//LeerMaticlo Archivo en formato XLS 97-2003
 func (a *Archivo) LeerMaticlo(ch chan []byte) (bool, string) {
 	a.iniciarVariable("loteria")
-	var insertar string = a.Cabecera
-	var coma string = ""
-	var contar int = 0
+	insertar := a.Cabecera
+	var coma string
+	contar := 0
 
 	oid, b := a.CrearTraza(5, Loteria)
 	if b != nil {
@@ -321,11 +326,11 @@ func (a *Archivo) LeerMaticlo(ch chan []byte) (bool, string) {
 	return true, insertar
 }
 
-//Consultar en ilbanquero con el proveedor
+//LeerIlbanquero Consultar en ilbanquero con el proveedor
 func (a *Archivo) LeerIlbanquero(ch chan []byte) (bool, string) {
 	a.iniciarVariable("parley")
-	var insertar string = a.Cabecera
-	var coma string = ""
+	insertar := a.Cabecera
+	var coma string
 
 	oid, b := a.CrearTraza(6, Parley)
 	if b != nil {
@@ -394,10 +399,11 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte) (bool, string) {
 	return true, insertar
 }
 
+//LeerCyberParley Cyber Parley
 func (a *Archivo) LeerCyberParley(ch chan []byte) (bool, string) {
 	a.iniciarVariable("parley")
-	var insertar string = a.Cabecera
-	var coma string = ""
+	insertar := a.Cabecera
+	var coma string
 
 	oid, b := a.CrearTraza(7, Parley)
 	if b != nil {
@@ -470,12 +476,11 @@ func (a *Archivo) LeerCyberParley(ch chan []byte) (bool, string) {
 	return true, insertar
 }
 
-//Leer Sport17
+//LeerSport Sport
 func (a *Archivo) LeerSport(ch chan []byte) (bool, string) {
 	a.iniciarVariable("parley")
-	var insertar string = a.Cabecera
-	var coma string = ""
-
+	insertar := a.Cabecera
+	var coma string
 	oid, b := a.CrearTraza(8, Parley)
 	if b != nil {
 		m.Msj = "E# Sport17 : " + a.NombreDelArchivo + " " + b.Error()
@@ -550,19 +555,13 @@ func (a *Archivo) LeerSport(ch chan []byte) (bool, string) {
 	return true, insertar
 }
 
+//LeerTodo Todo un archivo
 func (a *Archivo) LeerTodo() (f []byte, err error) {
 	f, err = ioutil.ReadFile(a.NombreDelArchivo)
 	return
 }
 
-func (a *Archivo) EscribirLinea(linea string) bool {
-	return true
-}
-
-func (a *Archivo) Cerrar() bool {
-	return true
-}
-
+//LeerCodigosYCrearAgencias Crear codigos y agencias
 func (a *Archivo) LeerCodigosYCrearAgencias() bool {
 	var sql string
 	archivo, err := os.Open("public/temp/Com-Gru-Age-Caja.csv")
@@ -622,6 +621,7 @@ func (a *Archivo) LeerCodigosYCrearAgencias() bool {
 	return true
 }
 
+//LeerCodigosYCrearSaldos Saldos del sistema
 func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 	var sql string
 	archivo, err := os.Open("public/temp/saldos.enero.csv")

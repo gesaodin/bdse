@@ -1,3 +1,4 @@
+//sistemas de paginas y archivos para el www
 package web
 
 import (
@@ -17,16 +18,23 @@ import (
 )
 
 const (
+	//DescripcionDelPanel Descripcion
 	DescripcionDelPanel string = "Bus de Servicio Empresarial"
-	VersionDelPanel     string = "V.0.0.1"
-	AutorDelPanel       string = "Carlos E. Peña A."
+	//VersionDelPanel Version
+	VersionDelPanel string = "V.0.0.1"
+	//AutorDelPanel Autor
+	AutorDelPanel string = "Carlos E. Peña A."
+	//_Login Usuario
+	_Login = "login"
 )
 
+//Pagina Direcciones de Cabaeceras
 type Pagina struct {
 	Urlcss string
 	Urljs  string
 }
 
+//GPanel Reglas de descripcion general del panel
 type GPanel struct {
 	Descripcion    string
 	Version        string
@@ -40,13 +48,14 @@ type GPanel struct {
 	Config         Pagina
 }
 
-type WebData struct {
+//Data Titulo general
+type Data struct {
 	Title string
 }
 
+//Login Inicio de sesion del panel
 func (G *GPanel) Login(w http.ResponseWriter, r *http.Request) {
 	v := mux.Vars(r)
-
 
 	session, e := seguridad.Stores.Get(r, "session-bdse")
 	if e != nil {
@@ -72,8 +81,8 @@ func (G *GPanel) Login(w http.ResponseWriter, r *http.Request) {
 		G.SubirArchivoLoteria(w, r)
 	case "subirp": //Subir Archivos de Parley
 		G.SubirArchivoLoteria(w, r)
-	case "login":
-		G.TituloDePagina = "login"
+	case _Login:
+		G.TituloDePagina = _Login
 		if session.Values["acceso"] != nil && session.Values["acceso"].(bool) {
 			G.TituloDePagina = "principal"
 		}
@@ -92,12 +101,13 @@ func (G *GPanel) Login(w http.ResponseWriter, r *http.Request) {
 			} //Session == true
 		} else {
 			G.TextoError = "Acceso denegado"
-			G.TituloDePagina = "login"
+			G.TituloDePagina = _Login
 			G.IrA(w)
 		} //Err Session
 	} //Fin switch
 }
 
+//Validar Verificacion del usuario
 func (G *GPanel) Validar(w http.ResponseWriter, r *http.Request) {
 	var usuario seguridad.Usuario
 
@@ -105,7 +115,7 @@ func (G *GPanel) Validar(w http.ResponseWriter, r *http.Request) {
 	if e != nil {
 		G.TextoError = e.Error()
 		G.Error(w)
-		//http.Redirect(w, r, "login", http.StatusFound)
+		//http.Redirect(w, r, _Login, http.StatusFound)
 		return
 	}
 	//fmt.Println(r.FormValue("usuario")  + r.FormValue("clave") )
@@ -133,7 +143,7 @@ func (G *GPanel) Validar(w http.ResponseWriter, r *http.Request) {
 		}
 
 	} else {
-		G.TituloDePagina = "login"
+		G.TituloDePagina = _Login
 		G.IrA(w)
 	}
 
@@ -145,7 +155,7 @@ func (G *GPanel) IrA(w http.ResponseWriter) {
 	var err error
 	var base string = "public_web/adminlte/"
 
-	if G.TituloDePagina != "login" {
+	if G.TituloDePagina != _Login {
 
 		plantilla := base + "p" + G.TituloDePagina + ".ghtm"
 
@@ -237,7 +247,7 @@ func (G *GPanel) Logout(w http.ResponseWriter, r *http.Request) {
 	session, _ := seguridad.Stores.Get(r, "session-bdse")
 	session.Values["acceso"] = false
 	sessions.Save(r, w)
-	G.TituloDePagina = "login"
+	G.TituloDePagina = _Login
 	G.IrA(w)
 }
 

@@ -5,15 +5,15 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/gesaodin/bdse/mdl/movimiento"
+	"github.com/gesaodin/bdse/mdl/localizacion"
 	"github.com/gesaodin/bdse/sys/seguridad"
 )
 
-//Registrar movimientos
-func (m *Movimiento) Registrar(w http.ResponseWriter, r *http.Request) {
+//ConsultarEstado Localizacion de Estados
+func (l *Localizacion) ConsultarEstado(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
-	var movimiento movimiento.Movimiento
-	err := json.NewDecoder(r.Body).Decode(&movimiento)
+	var localizacion localizacion.Estado
+	err := json.NewDecoder(r.Body).Decode(&localizacion)
 
 	if err != nil {
 		fmt.Println("Estoy en un error ", err.Error())
@@ -28,7 +28,7 @@ func (m *Movimiento) Registrar(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error en la Cookies"))
 		return
 	}
-	j, e := movimiento.Salvar()
+	j, e := localizacion.Consultar()
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Error al consultar los datos" + e.Error()))
@@ -38,11 +38,12 @@ func (m *Movimiento) Registrar(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-//ListarDeposito Bancarios
-func (m *Movimiento) ListarDeposito(w http.ResponseWriter, r *http.Request) {
+//ConsultarCiudad Localizacion de Estados
+func (l *Localizacion) ConsultarCiudad(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
-	var movimiento movimiento.Movimiento
-	err := json.NewDecoder(r.Body).Decode(&movimiento)
+	var localizacion localizacion.Ciudad
+	err := json.NewDecoder(r.Body).Decode(&localizacion)
+
 	if err != nil {
 		fmt.Println("Estoy en un error ", err.Error())
 		w.WriteHeader(http.StatusForbidden)
@@ -56,7 +57,7 @@ func (m *Movimiento) ListarDeposito(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error en la Cookies"))
 		return
 	}
-	j, e := movimiento.ListarDepositos()
+	j, e := localizacion.Consultar()
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Error al consultar los datos" + e.Error()))
@@ -66,31 +67,12 @@ func (m *Movimiento) ListarDeposito(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-//ListarCuentas para Movimientos
-func (m *Movimiento) ListarCuentas(w http.ResponseWriter, r *http.Request) {
+//ConsultarMunicipio Localizacion de Estados
+func (l *Localizacion) ConsultarMunicipio(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
-	var movimiento movimiento.Movimiento
-	_, e := seguridad.Stores.Get(r, "session-bdse")
-	if e != nil {
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("Error en la Cookies"))
-		return
-	}
-	j, e := movimiento.ListarCuentas(0)
-	if e != nil {
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("Error al consultar los datos" + e.Error()))
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(j)
-}
+	var localizacion localizacion.Municipio
+	err := json.NewDecoder(r.Body).Decode(&localizacion)
 
-//Listar Cuentas para Bancos
-func (m *Movimiento) Listar(w http.ResponseWriter, r *http.Request) {
-	Cabecera(w, r.Header.Get("Origin"))
-	var movimiento movimiento.Movimiento
-	err := json.NewDecoder(r.Body).Decode(&movimiento)
 	if err != nil {
 		fmt.Println("Estoy en un error ", err.Error())
 		w.WriteHeader(http.StatusForbidden)
@@ -104,7 +86,7 @@ func (m *Movimiento) Listar(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error en la Cookies"))
 		return
 	}
-	j, e := movimiento.Listar()
+	j, e := localizacion.Consultar()
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Error al consultar los datos" + e.Error()))
@@ -114,31 +96,12 @@ func (m *Movimiento) Listar(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-//ListarBancos Para Cuentas en los bancos
-func (m *Movimiento) ListarBancos(w http.ResponseWriter, r *http.Request) {
+//ConsultarParroquia Localizacion de Estados
+func (l *Localizacion) ConsultarParroquia(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
-	var movimiento movimiento.Movimiento
-	_, e := seguridad.Stores.Get(r, "session-bdse")
-	if e != nil {
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("Error en la Cookies"))
-		return
-	}
-	j, e := movimiento.ListarCuentas(1)
-	if e != nil {
-		w.WriteHeader(http.StatusForbidden)
-		w.Write([]byte("Error al consultar los datos" + e.Error()))
-		return
-	}
-	w.WriteHeader(http.StatusOK)
-	w.Write(j)
-}
+	var localizacion localizacion.Parroquia
+	err := json.NewDecoder(r.Body).Decode(&localizacion)
 
-//ActualizarER Entregado Recibidos
-func (m *Movimiento) ActualizarER(w http.ResponseWriter, r *http.Request) {
-	Cabecera(w, r.Header.Get("Origin"))
-	var movimiento movimiento.Movimiento
-	err := json.NewDecoder(r.Body).Decode(&movimiento)
 	if err != nil {
 		fmt.Println("Estoy en un error ", err.Error())
 		w.WriteHeader(http.StatusForbidden)
@@ -152,7 +115,7 @@ func (m *Movimiento) ActualizarER(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error en la Cookies"))
 		return
 	}
-	j, e := movimiento.Actualizar()
+	j, e := localizacion.Consultar()
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Error al consultar los datos" + e.Error()))

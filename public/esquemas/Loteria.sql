@@ -438,6 +438,11 @@ DROP TABLE IF EXISTS debe;
 CREATE TABLE debe
 (
   oid serial NOT NULL,
+  comer int, -- Comercializadora
+  grupo int, -- Grupo
+  subgr int, -- Sub Grupo
+  colec int, -- Colector
+  oida int,
   agen character varying(32),
   mont numeric,
   vouc character varying(254),
@@ -462,6 +467,11 @@ DROP TABLE IF EXISTS haber;
 CREATE TABLE haber
 (
   oid serial NOT NULL,
+  comer int, -- Comercializadora
+  grupo int, -- Grupo
+  subgr int, -- Sub Grupo
+  colec int, -- Colector
+  oida int,
   agen character varying(32),
   mont numeric,
   vouc character varying(254),

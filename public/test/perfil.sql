@@ -17,3 +17,36 @@ AND a.colec=0;
 SELECT SUM(mont) FROM movimiento_egreso a
 WHERE a.comer=1 AND a.grupo=0 AND a.subgr=0
 AND a.colec=0;
+
+--DEPOSITOS PENDIENTES
+SELECT SUM(mont) FROM haber a
+WHERE a.comer=1 AND a.grupo=0 AND a.subgr=0
+AND a.colec=0;
+
+SELECT g.obse, g.fneg, g.trip, g.term, g.qued, g.part, g.calc, g.freq, g.tipo,
+zr.parro, zr.casa, zr.dire, zr.cuen, zr.tele, zr.celu, zr.obse, zr.fech
+FROM grupo g
+LEFT JOIN zr_gsca_localizacion zr ON g.oid=zr.grupo
+
+-- ventas, premios y comision: por grupos
+SELECT 
+	g.obse, 
+	SUM(l.vent) AS venta,
+	SUM(l.prem) AS premio,
+	SUM(l.comi) AS comision,
+	SUM(l.saldo) AS saldo
+FROM grupo g 
+JOIN zr_agencia z ON g.oid=z.grupo
+JOIN (
+	SELECT 
+		arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria 
+	UNION
+	SELECT 
+		arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+	
+) AS l ON z.codi=l.agen
+WHERE l.fech = (SELECT fech FROM cobrosypagoscierre ORDER BY fech desc LIMIT 1)
+GROUP BY g.obse
+
+
+(SELECT fech FROM cobrosypagoscierre ORDER BY fech desc LIMIT 1)

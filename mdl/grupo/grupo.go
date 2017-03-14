@@ -27,6 +27,7 @@ type Grupo struct {
 	Negociacion        int          `json:"negociacion,omitempty"` //1: Global 2:Individual
 	Localizacion       Localizacion `json:"localizacion,omitempty"`
 	Seguridad          Seguridad    `json:"seguridad,omitempty"`
+	Saldos             Saldos       `json:"saldos,omitempty"`
 	Tipo               int          `json:"tipo,omitempty"`
 }
 
@@ -48,6 +49,14 @@ type Seguridad struct {
 	RClave    string `json:"rclave,omitempty"`
 	Pregunta  int    `json:"pregunta,omitempty"`
 	Respuesta string `json:"respuesta,omitempty"`
+}
+
+//Saldos Montos acumulados
+type Saldos struct {
+	Venta    float64 `json:"venta,omitempty"`
+	Premio   float64 `json:"premio,omitempty"`
+	Comision float64 `json:"comision,omitempty"`
+	Saldo    float64 `json:"saldo,omitempty"`
 }
 
 //Mensaje del sistema
@@ -128,10 +137,40 @@ de acceso, correo y preguntas del sistema
 func (g *Grupo) Consultar() (LGrupo []Grupo, err error) {
 
 	s := `
-		SELECT g.obse, g.fneg, g.trip, g.term, g.qued, g.part, g.calc, g.freq, g.tipo,
-		zr.parro, zr.casa, zr.dire, zr.cuen, zr.tele, zr.celu, zr.obse, zr.fech
+	-- Relación completa
+SELECT g.obse, g.fneg, g.trip, g.term, g.qued, g.part,
+		COALESCE(g.calc, 0) as calc,
+		COALESCE(g.freq, 0) as freq,
+		COALESCE(g.tipo, 0) as tipo,
+		COALESCE(zr.parro, 0) as parro,
+		zr.casa, zr.dire, zr.cuen, zr.tele, zr.celu, zr.obse, zr.fech,
+		COALESCE(s.venta, 0) AS venta,
+		COALESCE(s.premio, 0) AS premio,
+		COALESCE(s.comision, 0) AS comision,
+		COALESCE(s.saldo, 0) AS saldo
+	FROM grupo g
+	LEFT JOIN zr_gsca_localizacion zr ON g.oid=zr.grupo
+	LEFT JOIN (
+		SELECT
+			g.oid,
+			SUM(l.vent) AS venta,
+			SUM(l.prem) AS premio,
+			SUM(l.comi) AS comision,
+			SUM(l.saldo) AS saldo
 		FROM grupo g
-		LEFT JOIN zr_gsca_localizacion zr ON g.oid=zr.grupo
+		JOIN zr_agencia z ON g.oid=z.grupo
+		JOIN (
+			SELECT
+				arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria
+			UNION
+			SELECT
+				arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+
+		) AS l ON z.codi=l.agen
+		WHERE l.fech = (SELECT fech FROM cobrosypagoscierre ORDER BY fech desc LIMIT 1)
+		GROUP BY g.oid
+	) AS s ON s.oid = g.oid
+
 	`
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
@@ -141,33 +180,41 @@ func (g *Grupo) Consultar() (LGrupo []Grupo, err error) {
 	}
 	for row.Next() {
 		var gr Grupo
-		var obse, fneg, casa, dire, cuent, tele, celu, fech, obser string
+		var obse, fneg, casa, dire, cuent, tele, celu, fech, obser sql.NullString
 		var trip, term, qued, part sql.NullFloat64
+		var venta, premio, comision, saldo sql.NullFloat64
 		var parr, calc, tipo, freq int
 
 		e := row.Scan(
 			&obse, &fneg, &trip, &term, &qued, &part, &calc,
 			&freq, &tipo, &parr, &casa, &dire, &cuent, &tele,
-			&celu, &obser, &fech)
+			&celu, &obser, &fech,
+			&venta, &premio, &comision, &saldo)
 
 		if e != nil {
-			fmt.Println(err.Error())
+			fmt.Println(e.Error())
 		}
 
-		gr.FechaNegociacion = fneg
+		gr.Nombre = util.ValidarNullString(obse)
+		gr.FechaNegociacion = util.ValidarNullString(fneg)
 		gr.Triple = util.ValidarNullFloat64(trip)
 		gr.Terminal = util.ValidarNullFloat64(term)
 		gr.Queda = util.ValidarNullFloat64(qued)
 		gr.Participacion = util.ValidarNullFloat64(part)
-		gr.NumeroCuenta = cuent
+		gr.NumeroCuenta = util.ValidarNullString(cuent)
 		gr.Frecuencia = freq
 		gr.Tipo = tipo
 		gr.Localizacion.IDParroquia = parr
 
-		gr.Localizacion.Casa = casa
-		gr.Localizacion.Direccion = dire
-		gr.Localizacion.Telefono = tele
-		gr.Localizacion.Celular = celu
+		gr.Localizacion.Casa = util.ValidarNullString(casa)
+		gr.Localizacion.Direccion = util.ValidarNullString(dire)
+		gr.Localizacion.Telefono = util.ValidarNullString(tele)
+		gr.Localizacion.Celular = util.ValidarNullString(celu)
+
+		gr.Saldos.Venta = util.ValidarNullFloat64(venta)
+		gr.Saldos.Premio = util.ValidarNullFloat64(premio)
+		gr.Saldos.Comision = util.ValidarNullFloat64(comision)
+		gr.Saldos.Saldo = util.ValidarNullFloat64(saldo)
 
 		LGrupo = append(LGrupo, gr)
 

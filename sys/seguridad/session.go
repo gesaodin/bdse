@@ -7,17 +7,21 @@
 package seguridad
 
 import (
+	"net"
 	"net/http"
+	"os"
 
 	"github.com/gorilla/sessions"
 )
 
+//Session Seccion de acceso
 type Session struct {
 	Nombre string
 	Acceso string
 	Nivel  int
 }
 
+//Stores resultados
 var Stores = sessions.NewCookieStore([]byte("#za63qj2p-6pt33pSUz#"))
 
 func init() {
@@ -27,8 +31,28 @@ func init() {
 		MaxAge:   1800, //Media Hora en segundos
 		HttpOnly: true,
 	}
+	ObtnerIP()
 }
 
+//Crear conexion y variables
 func (S *Session) Crear(w http.ResponseWriter, r *http.Request) {
 
+}
+
+//ObtnerIP Direccion Fisica de la maquina
+func ObtnerIP() {
+	addrs, err := net.InterfaceAddrs()
+	if err != nil {
+		os.Stderr.WriteString("Oops: " + err.Error() + "\n")
+		os.Exit(1)
+	}
+
+	for _, a := range addrs {
+		//fmt.Println(a)
+		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
+			if ipnet.IP.To4() != nil {
+				os.Stdout.WriteString(ipnet.IP.String() + "\n")
+			}
+		}
+	}
 }

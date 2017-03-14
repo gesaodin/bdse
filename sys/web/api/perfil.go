@@ -6,22 +6,26 @@ import (
 	"net/http"
 
 	"github.com/gesaodin/bdse/mdl/comercializadora"
+	"github.com/gesaodin/bdse/mdl/grupo"
 	"github.com/gesaodin/bdse/sys/seguridad"
 )
 
 //DatosPerfil Esquema de datos web para el perfil
 type DatosPerfil struct {
-	Gastos              float64 `json:"gastos,omitempty"`
-	CantidadAgencia     int     `json:"cant_agencia,omitempty"`
-	CantidadGrupo       int     `json:"cant_grupo,omitempty"`
-	CantidadSubGrupo    int     `json:"cant_subgrupo,omitempty"`
-	DepositosPendientes float64 `json:"depositos,omitempty"`
+	Gastos              float64       `json:"gastos,omitempty"`
+	CantidadAgencia     int           `json:"cant_agencia,omitempty"`
+	CantidadGrupo       int           `json:"cant_grupo,omitempty"`
+	CantidadSubGrupo    int           `json:"cant_subgrupo,omitempty"`
+	DepositosPendientes float64       `json:"depositos,omitempty"`
+	LGrupo              []grupo.Grupo `json:"lgrupo,omitempty"`
 }
 
 //Consultar Localizacion de Estados
 func (c *Comercializadora) Consultar(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var data DatosPerfil
+	var grupo grupo.Grupo
+
 	var comercializadora comercializadora.Comercializadora
 	err := json.NewDecoder(r.Body).Decode(&comercializadora)
 
@@ -42,6 +46,8 @@ func (c *Comercializadora) Consultar(w http.ResponseWriter, r *http.Request) {
 	data.CantidadAgencia = m.Cantidad
 	x, _ := comercializadora.Gastos()
 	data.Gastos = x.Monto
+	l, _ := grupo.Consultar()
+	data.LGrupo = l
 
 	jSon, e := json.Marshal(data)
 	if e != nil {

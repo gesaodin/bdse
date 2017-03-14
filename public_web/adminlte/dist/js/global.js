@@ -17,12 +17,14 @@ $(function () {
      * Declaración de variables globales
      */
     //var t = $('#reporte').DataTable();
+
     $(".select2").select2();
     var rS = $('#reporteSaldos').DataTable();
     $("[data-mask]").inputmask();
     if ($('#cuentahaber').val() != undefined) LCuentaM();
     if ($('#estado').val() != undefined) LEstado();
     if ($('#taquilla').val() != undefined) LProgramas();
+    CargarPerfil();
     CargarCalendario();
 
     $("#cargando").hide();
@@ -55,9 +57,36 @@ $(function () {
     socket.addEventListener('close', function (e) {
         console.log("Se ha cerrado la conexión");
     });
-
+    if ($("#listagrupo").html() != undefined)LGrupos();
 
 });
+
+
+function CargarPerfil() {
+    if (sessionStorage.perfil == null) {
+        var data = JSON.stringify({ id: 1 });
+        $.post("api/perfil/comercializadora", data)
+            .done(function (data) {
+                sessionStorage.setItem('perfil', JSON.stringify(data));               
+                $("#lblGastos").html(parseFloat(data.gastos).toFixed(2) + " Bs.");
+            });
+    } else {
+        if ($("#lblGastos").html() != undefined) {
+            perfil = JSON.parse(sessionStorage.perfil);            
+            $("#lblGastos").html(parseFloat(perfil.gastos).toFixed(2) + " Bs.");
+            $.each(perfil.lgrupo, function(c, v){
+                console.log(v.nombre);
+            });
+        }
+    }
+}
+
+function LGrupos(){
+    perfil = JSON.parse(sessionStorage.perfil);
+    $.each(perfil.lgrupo, function(c, v){
+        $("#listagrupo").append(ListarGrupos(v.nombre));  
+    });
+}
 
 /**
  * Listar Cuentas para Movimientos
@@ -1521,4 +1550,27 @@ function agregarCajas() {
     $("#taquilla").val("");
     $("#vendedor").val("");
 
+}
+
+function ListarGrupos(grupo){
+    var s = '<div class="col-md-4">\
+    <div class="box box-widget widget-user-2">\
+            <div class="widget-user-header bg-aqua">\
+              <div class="widget-user-image">\
+                <img class="img-circle" src="dist/img/user2-160x160.jpg" alt="User Avatar">\
+              </div>\
+              <h3 class="widget-user-username">' + grupo + '</h3>\
+              <h5 class="widget-user-desc">Lead Developer</h5>\
+            </div>\
+            <div class="box-footer no-padding">\
+              <ul class="nav nav-stacked">\
+                <li><a href="#">Projects <span class="pull-right badge bg-blue">31</span></a></li>\
+                <li><a href="#">Tasks <span class="pull-right badge bg-aqua">5</span></a></li>\
+                <li><a href="#">Completed Projects <span class="pull-right badge bg-green">12</span></a></li>\
+                <li><a href="#">Followers <span class="pull-right badge bg-red">842</span></a></li>\
+              </ul>\
+            </div>\
+          </div>\
+        </div>';
+    return s;
 }

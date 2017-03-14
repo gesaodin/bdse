@@ -580,15 +580,18 @@ func (a *Archivo) LeerCodigosYCrearAgencias() bool {
 		fmt.Println(sql)
 
 		cap := linea[2]
-		sql = `INSERT INTO agencia (obse) VALUES ('` + cap + `');`
+
+		dondegrupo := `(SELECT oid FROM grupo WHERE obse='` + grupo + `')`
+		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
+
+		sql = `INSERT INTO agencia (comer,grupo,subgr,colec,obse)
+		VALUES (1,` + dondegrupo + `,0,0,'` + cap + `');`
 		_, err = a.PostgreSQL.Exec(sql)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
 		fmt.Println(sql)
 
-		dondegrupo := `(SELECT oid FROM grupo WHERE obse='` + grupo + `')`
-		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
 		caja := linea[3]
 		sql = `INSERT INTO zr_agencia (comer,grupo,subgr,colec,oida,codi)
 		VALUES (1,` + dondegrupo + `,0,0,` + dondeagencia + `,'` + caja + `'); `

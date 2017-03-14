@@ -174,7 +174,10 @@
 
 <script type="text/javascript">
 
- var socket = new WebSocket('wss://200.82.247.127:3000/wsapi/c1?id=admin');
+ var h = window.location.host;
+ var s = h.split(":");
+
+ var socket = new WebSocket('wss://' + s[0] + ':3000/wsapi/c1?id=admin');
   window.onload = function (){
     $.notify.defaults({
       position: 'bottom right',

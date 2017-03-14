@@ -1,4 +1,4 @@
-package bdse
+package main
 
 import (
 	"fmt"
@@ -16,6 +16,7 @@ func leer() {
 }
 
 func main() {
+	leer()
 	var archivo = util.Archivo{}
 	archivo.PostgreSQL = sys.PostgreSQL
 	archivo.LeerCodigosYCrearAgencias()

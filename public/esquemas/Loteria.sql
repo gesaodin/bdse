@@ -245,7 +245,7 @@ CREATE TABLE banco
 	auto char varying(256), -- Responsable o Autor
 	cedu char varying(16),
 	tipo int, -- Acepta Deposito (SI: Cuenta Bancaria NO : Cuenta Contable)
-	fech timestamp without time zone,
+	fech timestamp without time zone
 );
 INSERT INTO banco (nomb,auto,tipo,fech) VALUES 
 ('Venezuela',now(),'Alexander', 1),

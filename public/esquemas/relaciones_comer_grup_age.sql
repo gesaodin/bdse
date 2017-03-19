@@ -18,6 +18,8 @@ CREATE TABLE grupo
 	comer integer,
 	obse character varying(128),
 	resp integer,
+	lote numeric, -- PORCENTAJE POR LOTERIA
+	parl numeric, -- PORCENTAJE POR PARLEY
 	fneg date,
 	trip numeric,
 	term numeric,
@@ -70,6 +72,8 @@ CREATE TABLE subgrupo
 	grupo int, -- GRUPO
 	obse character varying(128),
 	fneg date,
+	lote numeric, -- PORCENTAJE POR LOTERIA
+	parl numeric, -- PORCENTAJE POR PARLEY
 	trip numeric,
 	term numeric,
 	qued numeric,
@@ -91,6 +95,8 @@ CREATE TABLE agencia
 	colec int, -- COLECTOR
 	obse char varying(128),
 	fneg date, -- FECHA DE NEGOCIACION
+	lote numeric, -- PORCENTAJE POR LOTERIA
+	parl numeric, -- PORCENTAJE POR PARLEY	
 	trip numeric,
 	term numeric,
 	qued numeric,
@@ -99,4 +105,80 @@ CREATE TABLE agencia
 	freq integer,
 	tipo integer, -- 1: GRUPO | 2: SUB GRUPO | 3 COLECTOR | 4 AGENCIA
 	CONSTRAINT agencia_obse_key UNIQUE (obse)
+);
+
+
+/**
+* DESCRIBE LA RELACION ENTRE LA AGENCIA Y LAS TAQUILLAS
+*/
+DROP TABLE IF EXISTS zr_agencia;
+CREATE TABLE zr_agencia 
+(
+	
+	comer int,
+	grupo int,
+	subgr int,
+	colec int,
+	oida int NOT NULL,
+	codi char varying(128), -- CAJA O TAQUILLA
+	saldoactual numeric, --AL CIERRE
+	CONSTRAINT zr_agencia_key UNIQUE (comer,grupo,subgr,colec,oida,codi)
+);
+CREATE INDEX zr_agencia_idx ON zr_agencia USING btree (comer,codi);
+
+
+
+DROP TABLE zr_negociacion_agencia;
+CREATE TABLE zr_negociacion_agencia
+(
+	oid serial NOT NULL,
+	oida integer,
+	oids integer,
+	lote numeric, -- PORCENTAJE POR LOTERIA
+	parl numeric, -- PORCENTAJE POR PARLEY
+	trip numeric,
+	term numeric,
+	qued numeric,
+	part numeric,
+	calc integer,
+	freq integer,
+	CONSTRAINT zr_negociacion_agencia_pkey PRIMARY KEY (oid),
+	CONSTRAINT zr_negociacion_agencia_opkey UNIQUE (oida, oids)
+);
+
+DROP TABLE zr_negociacion_grupo;
+CREATE TABLE zr_negociacion_grupo
+(
+	oid serial NOT NULL,
+	oidg integer,
+	oids integer,
+	lote numeric, -- PORCENTAJE POR LOTERIA
+	parl numeric, -- PORCENTAJE POR PARLEY
+	trip numeric,
+	term numeric,
+	qued numeric,
+	part numeric,
+	calc integer,
+	freq integer,
+	CONSTRAINT zr_negociacion_grupo_pkey PRIMARY KEY (oid),
+	CONSTRAINT zr_negociacion_grupo_upkey UNIQUE (oidg, oids)
+);
+
+
+DROP TABLE zr_negociacion_subgrupo;
+CREATE TABLE zr_negociacion_subgrupo
+(
+	oid serial NOT NULL,
+	oidsb integer,
+	oids integer,
+	lote numeric, -- PORCENTAJE POR LOTERIA
+	parl numeric, -- PORCENTAJE POR PARLEY
+	trip numeric,
+	term numeric,
+	qued numeric,
+	part numeric,
+	calc integer,
+	freq integer,
+	CONSTRAINT zr_negociacion_subgrupo_pkey PRIMARY KEY (oid),
+	CONSTRAINT zr_negociacion_subgrupo_upkey UNIQUE (oidsb, oids)
 );

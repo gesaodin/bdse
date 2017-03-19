@@ -43,14 +43,25 @@ type Movimiento struct {
 	Token             string  `json:"token,omitempty"`
 }
 
+//MSJ Control de mensaje
 type MSJ struct {
 	Msj  string `json:"msj"`
 	Tipo int    `json:"tipo"`
 }
 
+//Salvar datos
 func (m *Movimiento) Salvar() (jSon []byte, err error) {
+	var ingreso, egreso string
+	switch m.TipoDeOperacion {
+	case 1:
+		ingreso, _ = m.generarSQL()
+	case 2:
+		_, egreso = m.generarSQL()
+	default:
+		ingreso, egreso = m.generarSQL()
+	}
 
-	_, err = sys.PostgreSQL.Exec(m.generarSQL())
+	_, err = sys.PostgreSQL.Exec(ingreso + egreso)
 
 	if err != nil {
 
@@ -63,6 +74,7 @@ func (m *Movimiento) Salvar() (jSon []byte, err error) {
 	return
 }
 
+//Actualizar datos
 func (m *Movimiento) Actualizar() (jSon []byte, err error) {
 	tabla := "haber"
 	if m.FormaDePago == 0 {
@@ -85,8 +97,8 @@ func (m *Movimiento) Actualizar() (jSon []byte, err error) {
 	return
 }
 
-//
-func (m *Movimiento) generarSQL() (sql string) {
+//generarSQL Consultar
+func (m *Movimiento) generarSQL() (sqlI string, sqlE string) {
 	sql1 := "INSERT INTO "
 	ie := "(comer,grupo,subgr,colec,agenc,fech,freg,tipo,cuen,mont,oper,obse, toke)" // INGRESO | EGRESO
 
@@ -96,14 +108,13 @@ func (m *Movimiento) generarSQL() (sql string) {
 	iii += ",'" + m.Fecha + "',now(),"
 	cuenta := strconv.Itoa(m.TipoDebe) + "," + strconv.Itoa(m.CuentaDebe) + ","
 	iff := monto + ", '" + m.Voucher + "', '" + m.Observacion + "', md5('" + m.Fecha + m.Voucher + monto + "'));"
-	sqle := sql1 + "movimiento_ingreso " + ie + " VALUES " + iii + cuenta + iff
+	sqlI = sql1 + "movimiento_ingreso " + ie + " VALUES " + iii + cuenta + iff
 
 	cuenta = strconv.Itoa(m.TipoHaber) + "," + strconv.Itoa(m.CuentaHaber) + ","
-	sqls := sql1 + "movimiento_egreso " + ie + " VALUES " + iii + cuenta + iff
-	sql = sqls + sqle
+	sqlE = sql1 + "movimiento_egreso " + ie + " VALUES " + iii + cuenta + iff
+	//sqlE = sqls + sqle
 
 	return
-
 }
 
 //Listar todos los movimientos por fechas
@@ -150,6 +161,7 @@ func (m *Movimiento) Listar() (jSon []byte, err error) {
 	return
 }
 
+//ListarDepositos Depositos Pendientes
 func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	var lst []interface{}
 	s := `SELECT banco.nomb, debe.oid,agen,debe.mont,vouc,fdep,tipo,banc,resp FROM debe
@@ -186,12 +198,13 @@ func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	return
 }
 
-//Listar 0: Cuentas y 1: Banco
-func (m *Movimiento) ListarCuentas(tipo int) (jSon []byte, err error) {
+//ListarCuentas 0: Cuentas y 1: Banco
+func (m *Movimiento) ListarCuentas() (jSon []byte, err error) {
 	var lst []interface{}
+
 	s := `SELECT cod,nomb,num, tipo FROM cuenta `
-	if tipo == 1 {
-		s = `SELECT oid AS cod, nomb, nume AS num, tipo FROM banco `
+	if m.TipoDeOperacion == 1 {
+		s = `SELECT cod, nomb, num, tipo FROM cuenta WHERE esta=1`
 	}
 
 	row, err := sys.PostgreSQL.Query(s)

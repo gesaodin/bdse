@@ -72,10 +72,12 @@ func WAPI() {
 
 	Enrutador.HandleFunc(url+"balance/registrarpago", Pago.Salvar).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cobrosypagos", Pago.GenerarCobrosYPagos).Methods("POST")
+	Enrutador.HandleFunc(url+"balance/cobrosypagosgrupo", Pago.GenerarCobrosYPagosGrupo).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cobrosypagossistemas", Pago.GenerarCobrosYPagosSistemas).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cobrosypagosdetallados", Pago.GenerarCobrosYPagosDetallados).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/listarpagos", Pago.ListarPagos).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cierrediario", Pago.CierreDiario).Methods("POST")
+	Enrutador.HandleFunc(url+"balance/estadocuentagrupo", Pago.EstadoDeCuentaGrupo).Methods("POST")
 
 	// API DE LISTADOS
 	Enrutador.HandleFunc(url+"listasistema", Listar.Sistemas).Methods("POST")
@@ -85,8 +87,8 @@ func WAPI() {
 	Enrutador.HandleFunc(url+"movimiento/registrar", Movimiento.Registrar).Methods("POST")
 	Enrutador.HandleFunc(url+"movimiento/listar", Movimiento.Listar).Methods("POST")
 	Enrutador.HandleFunc(url+"movimiento/listardeposito", Movimiento.ListarDeposito).Methods("POST")
-	Enrutador.HandleFunc(url+"movimiento/listarcuentas", Movimiento.ListarCuentas).Methods("GET")
-	Enrutador.HandleFunc(url+"movimiento/listarbanco", Movimiento.ListarBancos).Methods("GET")
+	Enrutador.HandleFunc(url+"movimiento/listarcuentas", Movimiento.ListarCuentas).Methods("POST")
+	//Enrutador.HandleFunc(url+"movimiento/listarbanco", Movimiento.ListarBancos).Methods("GET")
 	Enrutador.HandleFunc(url+"movimiento/actualizarer", Movimiento.ActualizarER).Methods("POST")
 
 	//LOCALIZACION

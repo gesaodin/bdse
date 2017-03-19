@@ -14,23 +14,8 @@ CREATE TABLE persona
 --INSERT INTO agencia (obse) VALUES ('APMEMMPPCD00100');
 --INSERT INTO agencia (obse) VALUES ('APMEMMPPCD05500');
 
-/**
-* DESCRIBE LA RELACION ENTRE LA AGENCIA Y LAS TAQUILLAS
-*/
-DROP TABLE IF EXISTS zr_agencia;
-CREATE TABLE zr_agencia 
-(
-	
-	comer int,
-	grupo int,
-	subgr int,
-	colec int,
-	oida int NOT NULL,
-	codi char varying(128), -- CAJA O TAQUILLA
-	saldoactual numeric, --AL CIERRE
-	CONSTRAINT zr_agencia_key UNIQUE (comer,grupo,subgr,colec,oida,codi)
-);
-CREATE INDEX zr_agencia_idx ON zr_agencia USING btree (comer,codi);
+
+
 
 
 /**
@@ -209,6 +194,11 @@ DROP TABLE IF EXISTS movimiento_prestamo;
 CREATE TABLE movimiento_prestamo
 (
 	oid serial NOT NULL,
+	comer int, -- Comercializadora
+	grupo int, -- Grupo
+	subgr int, -- Sub Grupo
+	colec int, -- Colector
+	agenc int, -- Agencia
 	agen char varying(256),
 	tipo int,
 	fech date,
@@ -220,8 +210,10 @@ CREATE TABLE movimiento_prestamo
 	banc int,
 	form int, -- Forma de Pago
 	mont numeric,
+	toke character varying(254),
 	CONSTRAINT movimiento_prestamo_pkey PRIMARY KEY (oid)	
 );
+CREATE INDEX movimiento_prestamo_toke_idx ON movimiento_prestamo USING btree (toke COLLATE pg_catalog."default");
 CREATE INDEX movimiento_prestamo_fech_idx ON movimiento_prestamo USING btree (fech);
 CREATE INDEX movimiento_prestamo_fapr_idx ON movimiento_prestamo USING btree (fapr);
 

@@ -1,0 +1,57 @@
+
+  <!-- Content Header (Page header) -->
+  <section class="content-header">
+    <h1>
+      Subir Archivos
+      <small>Loteria</small>
+    </h1>
+    <ol class="breadcrumb">
+      <li><a href="principal"><i class="fa fa-dashboard"></i> Principal</a></li>
+      <li class="active">Subir Loteria</li>
+    </ol>
+  </section>
+
+
+  <!-- Main content -->
+  <section class="content">
+    <br>
+
+    <div class="box box-default">
+      <div class="box-header with-border">
+        <h3 class="box-title">Los Nombres de los archivos permitos son</h3>
+        <div class="box-tools pull-right">
+          <button class="btn btn-box-tool" data-widget="collapse" data-toggle="tooltip" title="Collapse"><i class="fa fa-minus"></i></button>
+        </div><!-- /.box-tools -->
+      </div><!-- /.box-header -->
+      <div class="box-body">
+        
+       
+        <ul>
+          <li>Ma(*.xlsx) - Maticlo.</li>
+          <li>Mo(*.txt) - Morpheus.</li>
+          <li>P, 1-2-3 (*.txt) - Pos.</li>
+          <li>A, 1-2-3 (*.txt) - Alien.</li>
+          <li>T, 1-2-3 (*.txt) - Turco.</li>
+          <li>Il(*.csv) - Ilbanquero.</li>
+          <li>Cy(*.csv) - CyberParley.</li>
+          <li>Sp(*.prn) - Sport17.</li>
+        </ul>
+        <form method="post" enctype="multipart/form-data" id="forma" action="subirl">
+          
+          <input type="hidden" name="fecha" id="fecha" value="2017-01-22" readonly="readonly"><br> 
+          <label for="file">Nombre del Archivo: </label>
+          <input type="file" accept=".txt,.xlsx,.csv,.prn" name="archivo" id="archivo" multiple><br>
+        </form>
+        <button id="enviar"  class="btn btn-success" onclick="enviarArchivo()">
+          <i class="fa fa-download"></i> Enviar Archivo</button>
+        <!-- Your Page Content Here -->
+      </div><!-- /.box-body -->
+      <div class="overlay"  id="cargando">
+        <i class="fa fa-refresh fa-spin" ></i>
+      </div>
+
+    </div><!-- /.box -->
+
+
+  </section>
+  <!-- /.content -->

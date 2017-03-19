@@ -118,6 +118,7 @@ func (a *Reporte) SaldosGeneralesPorSistema(w http.ResponseWriter, r *http.Reque
 
 }
 
+//SaldosGeneralesTotales Generales
 func (a *Reporte) SaldosGeneralesTotales(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 
@@ -146,6 +147,7 @@ func (a *Reporte) SaldosGeneralesTotales(w http.ResponseWriter, r *http.Request)
 
 }
 
+//BalanceGeneral Reglas de balance
 func (a *Reporte) BalanceGeneral(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 

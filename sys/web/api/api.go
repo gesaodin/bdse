@@ -104,6 +104,35 @@ func (p *Pago) GenerarCobrosYPagos(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+//GenerarCobrosYPagosGrupo De las consultas web
+func (p *Pago) GenerarCobrosYPagosGrupo(w http.ResponseWriter, r *http.Request) {
+	Cabecera(w, r.Header.Get("Origin"))
+	var pagos balance.Pago
+	err := json.NewDecoder(r.Body).Decode(&pagos)
+
+	if err != nil {
+		fmt.Println("Estoy en un error ", err.Error())
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := pagos.GenerarCobrosYPagosGrupo()
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
 //GenerarCobrosYPagosSistemas Programas MATICLOT, MORPHEUS, POS
 func (p *Pago) GenerarCobrosYPagosSistemas(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
@@ -209,6 +238,36 @@ func (p *Pago) CierreDiario(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, e := pago.GenerarCierreDiario(dataJSON)
+
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
+//EstadoDeCuentaGrupo Pos los saldos acumulados
+func (p *Pago) EstadoDeCuentaGrupo(w http.ResponseWriter, r *http.Request) {
+	Cabecera(w, r.Header.Get("Origin"))
+	var dataJSON balance.Pago
+	err := json.NewDecoder(r.Body).Decode(&dataJSON)
+	if err != nil {
+		fmt.Println("Estoy en un error ", err.Error())
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := dataJSON.EstadoDeCuentasGrupo()
+
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Error al consultar los datos"))

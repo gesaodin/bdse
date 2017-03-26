@@ -151,6 +151,7 @@ CREATE TABLE movimiento_ingreso
 	agenc int, -- Agencia
 	agen character varying(254), -- Agencia
 	fech date,
+	fope date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
 	tipo int, -- Tipo de Operacion	
@@ -176,6 +177,7 @@ CREATE TABLE movimiento_egreso
 	agenc int, -- Agencia
 	agen character varying(254), -- Agencia
 	fech date,
+	fope date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
 	tipo int, -- Tipo de Operacion	
@@ -202,6 +204,7 @@ CREATE TABLE movimiento_prestamo
 	agen char varying(256),
 	tipo int,
 	fech date,
+	fope date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
 	mcuo int,	
@@ -236,6 +239,23 @@ CREATE TABLE cobrosypagos
 );
 CREATE INDEX cobrosypagos_oida_idx ON cobrosypagos USING btree (oida);
 CREATE INDEX cobrosypagos_fech_idx ON cobrosypagos USING btree (fech);
+
+DROP TABLE IF EXISTS cobrosypagos_agencia;
+CREATE TABLE cobrosypagos_agencia
+(
+	oid serial NOT NULL,
+	oida int,
+	fech timestamp without time zone,
+	vien numeric, --BALANCE DE REGISTRO
+	sald numeric,
+	movi numeric,
+	van numeric, --BALANCE DE REGISTRO	
+	CONSTRAINT cobrosypagos_agencia_pkey PRIMARY KEY (oid)
+);
+CREATE INDEX cobrosypagos_agencia_oida_idx ON cobrosypagos_agencia USING btree (oida);
+CREATE INDEX cobrosypagos_agencia_fech_idx ON cobrosypagos_agencia USING btree (fech);
+
+
 
 
 DROP TABLE IF EXISTS cobrosypagoscierre;

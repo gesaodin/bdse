@@ -26,7 +26,7 @@ $(function () {
     if ($('#cuentahaber').val() != undefined) LCuentaM();
     if ($('#estado').val() != undefined) LEstado();
     if ($('#taquilla').val() != undefined) LProgramas();
-    if($('#mdlER').html() != undefined) LCuentaB(); 
+    if($('#mdlER').html() != undefined) LCuentaB();
     CargarPerfil();
     CargarCalendario();
 
@@ -70,12 +70,12 @@ function CargarPerfil() {
         var data = JSON.stringify({ id: 1 });
         $.post("api/perfil/comercializadora", data)
             .done(function (data) {
-                sessionStorage.setItem('perfil', JSON.stringify(data));               
+                sessionStorage.setItem('perfil', JSON.stringify(data));
                 $("#lblGastos").html(parseFloat(data.gastos).toFixed(2) + " Bs.");
             });
     } else {
         if ($("#lblGastos").html() != undefined) {
-            perfil = JSON.parse(sessionStorage.perfil);            
+            perfil = JSON.parse(sessionStorage.perfil);
             $("#lblGastos").html(parseFloat(perfil.gastos).toFixed(2) + " Bs.");
             $.each(perfil.lgrupo, function(c, v){
                 console.log(v.nombre);
@@ -87,7 +87,7 @@ function CargarPerfil() {
 function LGrupos(){
     perfil = JSON.parse(sessionStorage.perfil);
     $.each(perfil.lgrupo, function(c, v){
-        $("#listagrupo").append(ListarGrupos(v.nombre));  
+        $("#listagrupo").append(ListarGrupos(v.nombre));
     });
 }
 
@@ -110,7 +110,7 @@ function LCuentaM(id) {
  * Listar Cuentas para Bancos
  */
 function LCuentaB() {
-    
+
     $('#cuentaer').html('<option value="--" >Seleccionar...</option>');
     var data = JSON.stringify({operacion:1});
     $.post("api/movimiento/listarcuentas", data)
@@ -187,7 +187,7 @@ function LProgramas() {
         "info": false,
         "searching": false
     });
-   
+
     var data = JSON.stringify({ id: 3 });
 
     var table = $('#tblprograma').DataTable({
@@ -213,7 +213,7 @@ function LProgramas() {
         });
 
 
-  
+
 
 
 }
@@ -853,7 +853,6 @@ function GC(tipo) {
         fecha: fecha
     });
     url = evalTipo();
-
     $.post(url, data)
         .done(function (data) {
             t.clear().draw();
@@ -873,15 +872,15 @@ function GC(tipo) {
                 x = parseFloat(entregado) - parseFloat(recibido);
                 //console.log("SALDO: " + v.saldo + " X: " + x + " MOVIMIENTO : " + movimiento);
                 total = vienen + parseFloat(saldo) + movimiento + x;
-                
+
                 if ($("#txtSeleccion").val() == "0"){
                     accion = btnAccion(c, v.observacion, total);
                     nombre =  v.observacion;
                 }else{
-                    accion = btnAccion(v.agencia, v.agencia, total);
+                    accion = btnAccion(v.oid, v.agencia, total);
                     nombre = v.agencia;
                 }
-                
+
                 i++
                 if (v.estatus != null) {
                     if (v.estatus == 1) {
@@ -1006,16 +1005,18 @@ function btnAccion(valor, texto, monto) {
 
 function GCD() {
     fecha = $("#fecha").val();
+    fecha = fecha.replace(/-/g, "/");
+    fecha = OperarFecha(fecha, -1);
     var data = JSON.stringify({
         fecha: fecha,
         cierre: 1
     });
-    //console.log(data);
+    console.log(data);
 
     $.post("api/balance/cierrediario", data)
         .done(function (data) {
             $.notify("Proceso exitos: Se han generado todos los eventos del día siguiente...", "success");
-        });
+    });
 
 }
 /**
@@ -1319,11 +1320,24 @@ function RegistrarER() {
     if ( monto < 0){
         monto = parseFloat($("#montoer").val()) *- 1;
     }
+    grupo = 0;
+    agencia = 0;
+    sel = parseInt($("#txtSeleccion").val());
+    codigo = parseInt($("#coder").html());
+    if(sel == 0 ){
+      grupo = codigo;
+    }else if(sel == 2){
+      agencia = codigo;
+    }
     var EntregadoRecibido = JSON.stringify({
-        grupo: parseInt($("#coder").html()),
+        oid : agencia,
+        subgrupo : 0,
+        colector : 0,
+        grupo: grupo,
         estatus: 1,
         fecha: $("#fechadere").val(),
-        fechaaprobado: $("#fechadere").val(),
+        fechaaprobado: $("#lblFechade").html(),
+        fechaoperacion: $("#fecha").val(),
         deposito: $("#fechadepositore").val(),
         forma: parseInt($("#tipoer option:selected").val()), //0 Entregado: DEBE 1 Recibido:HABER
         banco: parseInt($("#cuentaer option:selected").val()),
@@ -1336,8 +1350,9 @@ function RegistrarER() {
     $.post(url, EntregadoRecibido)
         .done(function (data) {
             $('#mdlER').modal('hide');
-            $.notify("El registro ha sido exitoso, si desea verlo en pantalla presione F5.", "success");
+            $.notify("El registro ha sido exitoso, si desea verlo en pantalla presione F5.", "success");ss
             $("#voucer").val('');
+            GC(0);
         });
 
 }
@@ -1702,4 +1717,3 @@ function SeAgencia(){
     $("#txtSeleccion").val("2");
     $("#btnSeleccion").html('Agencia&nbsp;&nbsp;<span class="fa fa-caret-down"></span>');
 }
-

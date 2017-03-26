@@ -18,7 +18,7 @@
           <h3 class="box-title">Cobros y pagos por grupos</h3>
         </div>
         <div class="box-body">
-          <div class="row"> 
+          <div class="row">
 
             <div class="col-xs-4 col-lg-4">
                 <div class="input-group date">
@@ -27,27 +27,27 @@
                         <button type="button" id="btnSeleccion" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">Selección&nbsp;&nbsp;
                           <span class="fa fa-caret-down"></span></button>
                           <ul class="dropdown-menu">
-                            <li><a href="#" onclick="SeGrupo()">Grupo</a></li>                            
+                            <li><a href="#" onclick="SeGrupo()">Grupo</a></li>
                             <li><a href="#" onclick="SeColector()">Colector</a></li>
                             <li><a href="#" onclick="SeAgencia()">Agencia</a></li>
-                            
+
                           </ul>
                       </div>
                       <!-- /btn-group -->
                       <input type="hidden" id="txtSeleccion" value="0"/>
                       <input type="text" class="form-control" placeholder="Fecha"  id="fecha">
                       <div class="input-group-addon"><span class="fa fa-calendar"></span></div>
-                    </div>     
-                    
+                    </div>
+
                 </div>
-            </div> 
-            <div class="col-xs-2 col-lg-2"> 
+            </div>
+            <div class="col-xs-2 col-lg-2">
 
              <button type="button" onclick="GC(0)" class="btn btn-info " id="consultar" style="width:100%">
                <span><i class="fa fa-list"></i>&nbsp;&nbsp;Listar&nbsp;</span>
              </button>
-          </div>  
-           <div class="col-xs-2 col-lg-2"> 
+          </div>
+           <div class="col-xs-2 col-lg-2">
 
              <button type="button" onclick="GC(1)" class="btn btn-success " id="consultar" style="width:100%">
                <span><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Cobros&nbsp;</span>
@@ -58,25 +58,25 @@
                <span><i class="fa fa-minus-square"></i>&nbsp;&nbsp;Pagos&nbsp;</span>
              </button>
           </div>
-          <div class="col-xs-2 col-lg-2"> 
+          <div class="col-xs-2 col-lg-2">
 
              <button type="button" onclick="DP()" class="btn btn-warning " id="consultar" style="width:100%">
                <span><i class="fa fa-gavel"></i>&nbsp;&nbsp;Pendientes&nbsp;</span>
-             </button> 
+             </button>
           </div>
-        </div>  
+        </div>
         <br>
           <div id="divReporte">
-            
+
           </div>
-          
+
         </div>
         <div class="overlay" id="cargando">
               <i class="fa fa-refresh fa-spin"></i>
           </div>
       </div>
     </div>
-  </div> 
+  </div>
 
 
 <div id="mdlMovimiento" class="modal fade" role="dialog">
@@ -89,36 +89,36 @@
         <h4 class="modal-title">
           <p>
             Crear Movimientos (
-              <span id="codt" 
+              <span id="codt"
                 class="text-red" style="font-size:13px">
                 ASDF0001
               </span>
               <span id="cod" style="display:none"> ASDF0001</span> )
-          </p>  
+          </p>
         </h4>
       </div>
       <div class="modal-body">
         <div class="row">
 
             <div class="col-md-6">
-               <label>Fecha de Operación: </label>
+               <label>Fecha de Trabajo: </label>
               <div class="input-group date">
-                <input type="text" class="form-control" 
+                <input type="text" class="form-control"
                   placeholder="Fecha Operación:" value="" id="fechade" required>
                   <div class="input-group-addon">
                   <span class="fa fa-calendar"></span>
-                </div>               
+                </div>
               </div>
-            </div>    
+            </div>
 
             <div class="col-md-6">
                <label>Movimiento: </label>
               <div class="input-group">
                 <select id="tipo"
-                    class="form-control select2 select2-hidden-accessible" 
+                    class="form-control select2 select2-hidden-accessible"
                     style="width:100%">
                     <option value="--" >Seleccionar</option>
-                    
+
                     <option value=1>Ingreso</option>
                     <option value=4>Depósito</option>
                     <option value=5>Nota de Credito</option>
@@ -128,7 +128,7 @@
                   </select>
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                </div>               
+                </div>
               </div>
             </div>
         </div>
@@ -136,9 +136,9 @@
         <div class="row">
           <div class="col-md-6">
               <label>Cuenta Afectada: </label>
-              <div class="input-group">  
+              <div class="input-group">
                 <select id="tmovimiento"
-                    class="form-control select2 select2-hidden-accessible" 
+                    class="form-control select2 select2-hidden-accessible"
                     style="width:100%">
                     <option value="--" >Seleccionar</option>
                     <option value=0>Banco</option>
@@ -146,32 +146,32 @@
                   </select>
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                </div>               
+                </div>
               </div>
             </div>
 
           <div class="col-md-6">
              <label>Monto de la Operación: </label>
               <div class="input-group">
-                <input type="text" class="form-control" 
+                <input type="text" class="form-control"
                   placeholder="Monto Operación:" value="" id="mmovimiento" required>
-                  
+
                   <span class="input-group-addon">.00</span>
-                              
+
               </div>
-            </div>  
+            </div>
         </div>
         <br>
         <div class="row">
           <div class="col-md-12">
              <label>Descripción: </label>
               <div class="input-group">
-                <input type="text" class="form-control" 
+                <input type="text" class="form-control"
                   placeholder="Descripción:" value="" id="descripción" required>
-                  
+
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                              
+
               </div>
             </div>
         </div>
@@ -185,7 +185,7 @@
 
   </div>
 </div>
-  
+
 <!-- Entregado y Recibidos -->
 <label id="lblFechade" style="display: none"></label>
 <div id="mdlER" class="modal fade" role="dialog">
@@ -198,12 +198,12 @@
         <h4 class="modal-title">
           <p>
             Registrar Entregados y Recibidos (
-               <span id="codert" 
+               <span id="codert"
                 class="text-red" style="font-size:13px">
                 ASDF0001
               </span>
               <span id="coder" style="display: none">ASDF0001</span> )
-          </p>  
+          </p>
         </h4>
       </div>
       <div class="modal-body">
@@ -211,38 +211,38 @@
 
             <div class="col-md-6">
               <label>Fecha del deposito:</label>
-              <div class="input-group date">                
-                <input type="text" class="form-control" 
+              <div class="input-group date">
+                <input type="text" class="form-control"
                   placeholder="Fecha del Deposito:" value="" id="fechadepositore" required>
                   <div class="input-group-addon">
                   <span class="fa fa-calendar"></span>
-                </div>               
+                </div>
               </div>
-            </div>    
+            </div>
 
             <div class="col-md-6">
-              <label>Fecha de la operación:</label>
-              <div class="input-group date">                
-                <input type="text" class="form-control" 
+              <label>Fecha de trabajo:</label>
+              <div class="input-group date">
+                <input type="text" class="form-control"
                   placeholder="Fecha Operación:" value="" id="fechadere" required>
                   <div class="input-group-addon">
                   <span class="fa fa-calendar"></span>
-                </div>               
+                </div>
               </div>
             </div>
-            
+
         </div>
         <br>
 
         <div class="row">
 
-                
+
 
             <div class="col-md-6">
               <label>Tipo de Operación:</label>
-              <div class="input-group">                
+              <div class="input-group">
                 <select id="tipoer"
-                    class="form-control select2 select2-hidden-accessible" 
+                    class="form-control select2 select2-hidden-accessible"
                     style="width:100%">
                     <option value="--" >Seleccionar</option>
                     <option value=0>Entregado</option>
@@ -250,14 +250,14 @@
                   </select>
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                </div>               
+                </div>
               </div>
             </div>
             <div class="col-md-6">
               <label id="codigoer"></label>
               <label>Cuenta Afectada: </label>
 
-              <div class="input-group">  
+              <div class="input-group">
                 <select id="cuentaer"
                     class="form-control select2 select2-hidden-accessible" style="width:100%">
                     <option value="--" >Seleccionar</option>
@@ -265,7 +265,7 @@
                   </select>
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                </div>               
+                </div>
               </div>
             </div>
 
@@ -273,14 +273,14 @@
         </div>
         <br>
         <div class="row">
-          
-          
+
+
           <div class="col-md-6">
             <label>Monto de Operación:</label>
               <div class="input-group">
-                <input type="text" class="form-control" 
-                  placeholder="Monto Operación:" value="" id="montoer" required>                  
-                  <span class="input-group-addon">.00</span>                              
+                <input type="text" class="form-control"
+                  placeholder="Monto Operación:" value="" id="montoer" required>
+                  <span class="input-group-addon">.00</span>
               </div>
           </div>
           <div class="col-md-6">
@@ -289,7 +289,7 @@
                   <span class="input-group-addon"><span class="fa  fa-pencil-square-o"></span></span>
                   <input type="text" id="voucer" class="form-control" placeholder="N° de Voucher:" required="Debe ingresar un N° de Baucher">
               </div>
-            
+
           </div>
         </div>
         <br>
@@ -299,12 +299,12 @@
           <div class="col-md-12">
              <label>Descripción: </label>
               <div class="input-group">
-                <input type="text" class="form-control" 
+                <input type="text" class="form-control"
                   placeholder="Descripción:" value="" id="descripcioner" required>
-                  
+
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                              
+
               </div>
             </div>
         </div>
@@ -319,7 +319,7 @@
   </div>
 </div>
 
-<!-- Fin de Entregados --> 
+<!-- Fin de Entregados -->
 
 
 <!-- Prestamos -->
@@ -334,12 +334,12 @@
         <h4 class="modal-title">
           <p>
             Prestamos (
-              <span id="codpret" 
+              <span id="codpret"
                 class="text-red" style="font-size:13px">
                 ASDF0001
               </span>
               <span id="codpre" style="display: none"></span> )
-          </p>  
+          </p>
         </h4>
       </div>
       <div class="modal-body">
@@ -347,27 +347,27 @@
 
             <div class="col-md-6">
               <label>Fecha de la operación:</label>
-              <div class="input-group date">                
-                <input type="text" class="form-control" 
+              <div class="input-group date">
+                <input type="text" class="form-control"
                   placeholder="Fecha Operación:" value="" id="fechadepre" required>
                   <div class="input-group-addon">
                   <span class="fa fa-calendar"></span>
-                </div>               
+                </div>
               </div>
-            </div>    
+            </div>
 
             <div class="col-md-6">
               <label>Tipo de Cuenta:</label>
-              <div class="input-group">                
+              <div class="input-group">
                 <select id="tipopre"
-                    class="form-control select2 select2-hidden-accessible" 
+                    class="form-control select2 select2-hidden-accessible"
                     style="width:100%" >
                     <option value="--" >Seleccionar</option>
-                    
+
                   </select>
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                </div>               
+                </div>
               </div>
             </div>
         </div>
@@ -375,9 +375,9 @@
         <div class="row">
           <div class="col-md-6">
               <label>Modo de Cobro: </label>
-              <div class="input-group">  
+              <div class="input-group">
                 <select id="cuentaper"
-                    class="form-control select2 select2-hidden-accessible" 
+                    class="form-control select2 select2-hidden-accessible"
                     style="width:100%">
                     <option value="--" >Seleccionar</option>
                     <option value=0>Diario</option>
@@ -387,29 +387,29 @@
                   </select>
                   <div class="input-group-addon">
                   <span class="fa fa-archive"></span>
-                </div>               
+                </div>
               </div>
             </div>
-          
+
           <div class="col-md-6">
             <label>Monto de la Cuota:</label>
               <div class="input-group">
-                <input type="text" class="form-control" 
-                  placeholder="Monto Cuota:" value="" id="montopre" required>                  
-                  <span class="input-group-addon">.00</span>                              
+                <input type="text" class="form-control"
+                  placeholder="Monto Cuota:" value="" id="montopre" required>
+                  <span class="input-group-addon">.00</span>
               </div>
-            </div>  
+            </div>
         </div>
         <br>
         <div class="row">
           <div class="col-md-6">
             <label>Monto Del Prestamo:</label>
               <div class="input-group">
-                <input type="text" class="form-control" 
-                  placeholder="Monto Total:" value="" id="montopre" required>                  
-                  <span class="input-group-addon">.00</span>                              
+                <input type="text" class="form-control"
+                  placeholder="Monto Total:" value="" id="montopre" required>
+                  <span class="input-group-addon">.00</span>
               </div>
-            </div> 
+            </div>
         </div>
       </div>
       <div class="modal-footer">
@@ -421,7 +421,7 @@
   </div>
 </div>
 
-<!-- Fin de Prestamos --> 
+<!-- Fin de Prestamos -->
 
 
 
@@ -446,7 +446,7 @@
                 <th>Grupo</th>
                 <th>Banco</th>
                 <th>Voucher</th>
-                <th>Monto</th>               
+                <th>Monto</th>
               </tr>
             </thead>
           </table>
@@ -474,7 +474,7 @@
         <button type="button" class="close" data-dismiss="modal">&times;</button>
         <h4 class="modal-title"> <p>
             Estado de Cuenta (
-              <span id="codect" 
+              <span id="codect"
                 class="text-red" style="font-size:13px">
                 ASDF0001
               </span>
@@ -484,11 +484,11 @@
           </p> </h4>
       </div>
       <div class="modal-body">
-        <div class="row">        
-           <div class="col-md-8"> 
+        <div class="row">
+           <div class="col-md-8">
 
             <div class="input-group">
-               <select class="form-control" placeholder="Seleccionar Mes:" id="fecharangoec" 
+               <select class="form-control" placeholder="Seleccionar Mes:" id="fecharangoec"
                   required="">
                     <option value="0-1" selected>Saldo A la fecha</option>
                     <option value="2017/01/01 - 2017/01/31">Enero</option>
@@ -506,19 +506,19 @@
                 </select>  <span class="input-group-addon">  <span class="fa fa-bank "></span>
             </div>
           </div>
-          
-  
-          
+
+
+
           <div class="col-md-4 ">
              <button type="button" onclick="EC()" class="btn btn-success " id="consultar" style="width:100%">
                <span><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Listar&nbsp;</span>
              </button>
           </div>
-        </div>  
-        
+        </div>
+
         <br>
 
-        <div class="row"> 
+        <div class="row">
           <div class="col-md-12 ">
             <div class="box box-solid box-success">
               <div class="box-header with-border">
@@ -526,25 +526,25 @@
                 <div class="box-tools pull-right">
                   <!-- Buttons, labels, and many other things can be placed here! -->
                   <!-- Here is a label for example -->
-                  
+
                 </div><!-- /.box-tools -->
               </div><!-- /.box-header -->
               <div class="box-body">
                 <div id="divTablaec"></div>
-              
+
 
               </div><!-- /.box-body -->
               <div class="overlay" id="cargandoec" style="display:none">
                 <i class="fa fa-refresh fa-spin"></i>
               </div>
-            </div><!-- /.box -->                
+            </div><!-- /.box -->
           </div>
 
         </div>
       </div>
 
       <div class="modal-footer">
-        
+
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
       </div>
     </div>

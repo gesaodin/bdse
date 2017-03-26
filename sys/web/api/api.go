@@ -35,6 +35,10 @@ type Registro struct{}
 //Comercializadora compuesta por grupo, subgrupo, colector, agencia
 type Comercializadora struct{}
 
+//Transferencia Solicitud de operaciones bancarias
+type Transferencia struct{}
+
+
 var pago balance.Pago
 
 //Salvar un registro web

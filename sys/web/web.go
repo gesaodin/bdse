@@ -61,6 +61,7 @@ func WAPI() {
 	var Localizacion = api.Localizacion{}
 	var Registro = api.Registro{}
 	var Comercializadora = api.Comercializadora{}
+	var Transferencia = api.Transferencia{}
 
 	url := "/bdse-admin/gpanel/api/"
 
@@ -106,6 +107,11 @@ func WAPI() {
 	//PERFIL DE LA Comercializadora
 	Enrutador.HandleFunc(url+"perfil/comercializadora", Comercializadora.Consultar).Methods("POST")
 
+
+	//TRANSFERENCIAS REGISTRO Y SOLICITUD
+	Enrutador.HandleFunc(url+"transferencia/registrar", Transferencia.Registrar).Methods("POST")
+	Enrutador.HandleFunc(url+"transferencia/listaagencia", Transferencia.ListarAgencia).Methods("POST")
+	Enrutador.HandleFunc(url+"transferencia/listagrupo", Transferencia.ListarGrupo).Methods("POST")
 }
 
 //WChat Chat de Presentacion

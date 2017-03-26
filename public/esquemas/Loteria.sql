@@ -160,6 +160,7 @@ CREATE TABLE movimiento_ingreso
 	obse character varying(254),
 	mont numeric,
 	toke character varying(254),
+	tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
 	CONSTRAINT movimiento_ingreso_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX movimiento_ingreso_toke_idx ON movimiento_ingreso USING btree (toke COLLATE pg_catalog."default");
@@ -186,6 +187,7 @@ CREATE TABLE movimiento_egreso
 	obse character varying(254),
 	mont numeric,
 	toke character varying(254),
+	tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
 	CONSTRAINT movimiento_egreso_pkey PRIMARY KEY (oid)	
 );
 CREATE INDEX movimiento_egreso_toke_idx ON movimiento_egreso USING btree (toke COLLATE pg_catalog."default");
@@ -214,6 +216,7 @@ CREATE TABLE movimiento_prestamo
 	form int, -- Forma de Pago
 	mont numeric,
 	toke character varying(254),
+	tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
 	CONSTRAINT movimiento_prestamo_pkey PRIMARY KEY (oid)	
 );
 CREATE INDEX movimiento_prestamo_toke_idx ON movimiento_prestamo USING btree (toke COLLATE pg_catalog."default");
@@ -365,6 +368,7 @@ CREATE TABLE debe
   esta integer, -- 0 activos
   obse character varying(254),
   resp character varying(254), --Respuesta
+  tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
   CONSTRAINT debe_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX debe_fapr_idx ON debe USING btree (fapr);
@@ -394,6 +398,7 @@ CREATE TABLE haber
   esta integer, -- 0 Pendiente Por Procesar  | 1 Activo
   obse character varying(254),
   resp character varying(254), --Respuesta
+  tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
   CONSTRAINT haber_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX haber_fapr_idx ON haber USING btree (fapr);
@@ -420,3 +425,29 @@ CREATE TABLE cuenta (
     num character varying(20),
     tipo integer
 );
+
+
+DROP TABLE IF EXISTS solicitud_transferencia;
+CREATE TABLE solicitud_transferencia
+(
+  oid serial NOT NULL PRIMARY KEY,
+  comer int, -- Comercializadora
+  grupo int, -- Grupo
+  subgr int, -- Sub Grupo
+  colec int, -- Colector
+  oida int,
+  cedul character varying(16), -- Cédula del la cuenta
+  nombr character varying(256), -- Nombre o Razón Social
+  corre character varying(256), -- Correo Electrónico
+  cuent char varying(23), -- 20 DIGITOS MAS EL FORMATO
+  tick char varying(32),
+  seria char varying(32),
+  sist int,
+  montt numeric, -- Monto del ticket
+  monts numeric, --Monto Solicitado
+  fech timestamp without time zone
+);
+
+
+
+

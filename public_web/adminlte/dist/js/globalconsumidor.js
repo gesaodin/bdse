@@ -19,15 +19,15 @@ $('#reporteSaldosSistemas').DataTable(opcionesfalso);
 $('#reporteSaldosSistemasParley').DataTable(opcionesfalso);
  idleTime = 0;
 $(function(){
-    /** 
+    /**
      * Declaración de variables globales
-     */ 
+     */
     //var rS = $('#reporteSaldos').DataTable();
 
-   
+
 
     //Increment the idle time counter every minute.
-   
+
     var idleInterval = setInterval("timerIncrement()", 60000); // 1 minute
     //Zero the idle timer on mouse movement.
     $(this).mousemove(function (e) {
@@ -38,15 +38,15 @@ $(function(){
         idleTime = 0;
     });
 
+    if ($('#bancrp').val() != undefined) LCuentaM();
 
 
-
-    $("#cargando").hide();        
+    $("#cargando").hide();
     socket.addEventListener('message', function (e) {
         var js = JSON.parse(e.data);
         if (js.tipo != null) {
            switch (js.tipo) {
-               case 0:                
+               case 0:
                 break;
                case 1:
                 CrearNotificacion(js.tiempo, js.msj)
@@ -54,28 +54,44 @@ $(function(){
               case 2:
                 break;
               case 3:
-               ActivarChat(js.De, js.msj, js.tiempo);  
+               ActivarChat(js.De, js.msj, js.tiempo);
                default:
                    break;
            }
            //console.log(e.data);
         }
-        
+
     });
     socket.addEventListener('open', function (e) {
         console.log("Se establecio la conexión con el socket...");
     });
-    socket.addEventListener('close', function (e) {    
-        console.log("Se ha cerrado la conexión");    
+    socket.addEventListener('close', function (e) {
+        console.log("Se ha cerrado la conexión");
     });
-    
-    
-    CargarCalendario();    
+
+
+    CargarCalendario();
 });
 
+
+/**
+ * Listar Cuentas para Movimientos
+ */
+function LCuentaM(id) {
+    $('#cuentadebe').html('<option value="--" >Seleccionar...</option>');
+    var data = JSON.stringify({operacion:0});
+    $.post("api/movimiento/listarcuentas", data)
+        .done(function (data) {
+            $.each(data, function (c, v) {
+                $('#cuentadebe').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.nombre + '</option>');
+            })
+        });
+}
+
+
 function CargarCalendario(){
-    
-    
+
+
     $('#fecha').datepicker({autoclose: true, format: 'yyyy-mm-dd'});
     $('#fechade').datepicker({autoclose: true, format: 'yyyy-mm-dd' });
     $('#fechadere').datepicker({autoclose: true, format: 'yyyy-mm-dd' });
@@ -98,10 +114,10 @@ function LPago(){
     });
     rS.clear().draw();
     $.post("api/balance/listarpagos", Pago)
-    .done(function (data){    
+    .done(function (data){
         var i = 1;
         $.each(data, function(c, v) {
-            
+
             estatus = v.estatus == null?0:v.estatus;
             fechaaprobado = v.fechaaprobado == "null"?'':v.fechaaprobado;
             observacion = v.estatus == null?0:v.estatus;
@@ -115,23 +131,23 @@ function LPago(){
                     case 2:
                         estatus = '<span class="label label-danger">Rechazado</span>';
                         fechaaprobado = v.observacion;
-                        break;    
+                        break;
                     default:
                         //estatus = '<span class="label label-info">Pendiente</span>';
                         break;
             }
-            
+
             rS.row.add([
                 i++,
                 v.banconombre,
                 v.fecha,
-                fechaaprobado,                
+                fechaaprobado,
                 v.voucher,
                 parseFloat(v.monto).toFixed(2),
                 estatus
             ]).draw();
         });
-    });    
+    });
 
 
 }
@@ -160,11 +176,11 @@ function RPago(){
         observacion: $("#obse").val()
     });
     $.post("api/balance/registrarpago", Pago)
-    .done(function (data){    
+    .done(function (data){
         $.notify("Proceso exitoso ", "success");
         LFPago();
         LPago();
-    });    
+    });
 }
 
 
@@ -183,7 +199,7 @@ function LFPago(){
 }
 
 function LstSaldoGPS(){
-    
+
     var f = $('#fecharango option:selected').val();
     var suma = 0;
 
@@ -198,20 +214,20 @@ function LstSaldoGPS(){
 
         var rfecha =JSON.stringify({
             agencia : $("#agencia").html(),
-            desde: desdeA.replace(/\//g, "-"), 
-            hasta: hastaA.replace(/\//g, "-")          
+            desde: desdeA.replace(/\//g, "-"),
+            hasta: hastaA.replace(/\//g, "-")
         });
-        url = "api/balance/cobrosypagos";       
-       
+        url = "api/balance/cobrosypagos";
+
 
         $.post(url,rfecha)
-        .done(function(data){ 
-           
+        .done(function(data){
+
             PTotales(desdeA, hastaA, data);
 
         });
 
-       
+
 
     }else{
         $.notify("Debe seleccionar un rango", "error");
@@ -220,7 +236,7 @@ function LstSaldoGPS(){
 
 function psFila(fila, buscar){
     var pos = 0;
-   
+
     $.each(fila, function(c, v){
         if (buscar == v){
             pos = c;
@@ -231,7 +247,7 @@ function psFila(fila, buscar){
 
 /**
  * Listar Totales de los saldos para estado de Cuenta
- * 
+ *
  */
 
 function PTotales(desde, hasta, data){
@@ -241,11 +257,11 @@ function PTotales(desde, hasta, data){
     var i = 0;
     var total = 0;
      if (data == null){
-        
+
         $.notify("No se encontrarón registros", "error")
         return
-    }           
-    $.each(data, function(c, v){        
+    }
+    $.each(data, function(c, v){
         console.log(v);
         sAnt = v.vienen == null?0:v.vienen;
         sTotal = v.van == null?0:v.van;
@@ -259,7 +275,7 @@ function PTotales(desde, hasta, data){
         saldo = v.saldo == null?0:v.saldo;
         x = parseFloat(entregado) - parseFloat(recibido);
         total = parseFloat(v.saldo) + movimiento + x + sAnt;
-        
+
         fil = psFila(fila,v.fecha);
         //rS.cell(fil,1).data(sAnt.toFixed(2)).draw();
         rS.cell(fil,2).data(sAnt.toFixed(2)).draw();
@@ -271,21 +287,21 @@ function PTotales(desde, hasta, data){
 
         rS.cell(fil,7).data(sTotal.toFixed(2)).draw();
         //sAnt = total;
-        
+
     } );
-   
-    
-    var table = $('#reporteSaldosGeneral').DataTable();    
+
+
+    var table = $('#reporteSaldosGeneral').DataTable();
         $('#reporteSaldosGeneral tbody').on( 'click', 'tr', function () {
-            var data = table.row( this ).data(); 
+            var data = table.row( this ).data();
             var lot = $('#reporteSaldosSistemas').DataTable();
-            var par = $('#reporteSaldosSistemasParley').DataTable();          
+            var par = $('#reporteSaldosSistemasParley').DataTable();
             lot.clear().draw();
             par.clear().draw();
             VentanaEmergente(data[0], data[1]);
         } );
 
-} 
+}
 
 function CBTotales(){
     $("#divTabla").html('\
@@ -311,7 +327,7 @@ function CBTotales(){
                             $('td', row).eq(2).addClass('highlight');
                         }
                     }
-        } 
+        }
     );
     rS.column( 0 ).visible( false );
 
@@ -321,37 +337,37 @@ function CBTotales(){
 
 
 /**
- * 
+ *
  */
 function VentanaEmergente(id, fechaAux){
     $('#lbldia').text(id);
     $('#lbldiaA').text(fechaAux);
-    $('#ventanaReporteTitulo').html('Saldos por programas para el día (' + fechaAux + ')');  
+    $('#ventanaReporteTitulo').html('Saldos por programas para el día (' + fechaAux + ')');
     CargarDatosSistemas(id, $("#agencia").html());
-    CargarDatosSistemasParley(id, $("#agencia").html());     
+    CargarDatosSistemasParley(id, $("#agencia").html());
     $('#ventanaReporte').modal({ keyboard: false });   // initialized with no keyboard
-    $('#ventanaReporte').modal('show');                // initializes and invokes show   
+    $('#ventanaReporte').modal('show');                // initializes and invokes show
 }
 
 function CargarDatosSistemas(fecha, agencia){
     var data = JSON.stringify({
-        agencia: agencia, 
-        desde:fecha, 
+        agencia: agencia,
+        desde:fecha,
         hasta:fecha
-    });    
-    url = "api/balance/cobrosypagossistemas";   
+    });
+    url = "api/balance/cobrosypagossistemas";
     $.post(url,data)
-    .done(function(data){        
+    .done(function(data){
         var rs = $('#reporteSaldosSistemas').DataTable();
         rs.clear().draw(false);
         rs.row.add([0,0,0,0,0,0,0,0,0]).draw(false);
         suma = 0;
-        $.each(data, function(c, v){            
+        $.each(data, function(c, v){
             if (v.archivo == null){
                 suma += v.saldo;
                 var id = SeleccionarSistemas(v.sistema);
-                rs.cell(0,id).data(v.saldo.toFixed(2)).draw(); 
-            }            
+                rs.cell(0,id).data(v.saldo.toFixed(2)).draw();
+            }
         });
         $('#saldoloteria').html('Total Saldo Por Loteria (' + suma.toFixed(2) + ')');
     });
@@ -359,28 +375,28 @@ function CargarDatosSistemas(fecha, agencia){
 
 function CargarDatosSistemasParley(fecha, agencia){
     var data = JSON.stringify({
-        agencia: agencia, 
-        desde:fecha, 
+        agencia: agencia,
+        desde:fecha,
         hasta:fecha
-    });    
+    });
 
-    url = "api/balance/cobrosypagossistemas";   
+    url = "api/balance/cobrosypagossistemas";
     $.post(url,data)
-    .done(function(data){        
+    .done(function(data){
         var rs = $('#reporteSaldosSistemasParley').DataTable();
         rs.clear().draw(false);
-        
+
         rs.row.add([0,0,0]).draw(false);
         suma = 0;
         $.each(data, function(c, v){
             if (v.archivo != null){
-                suma += v.saldo;           
+                suma += v.saldo;
                 var id = SeleccionarSistemas(v.sistema);
                 rs.cell(0,id).data(v.saldo.toFixed(2)).draw();
-               
-            }            
-        });    
-        $('#saldoparley').html('Total Saldo Por Parley (' + suma.toFixed(2) + ')');      
+
+            }
+        });
+        $('#saldoparley').html('Total Saldo Por Parley (' + suma.toFixed(2) + ')');
     });
 }
 
@@ -434,27 +450,27 @@ function VerDetallesTaquillas(id){
     fechaA =  $('#lbldiaA').text();
     $('#ventanaEmergenteTitulo').html('Detalles del día (' + fechaA + ')');
     var data = JSON.stringify({
-        agencia: $("#agencia").html(), 
-        desde:fecha, 
+        agencia: $("#agencia").html(),
+        desde:fecha,
         hasta:fecha
-    });   
-   
-    url = "api/balance/cobrosypagosdetallados";   
+    });
+
+    url = "api/balance/cobrosypagosdetallados";
     $.post(url,data)
-    .done(function(data){        
+    .done(function(data){
         tabla = '<table class="table table-striped table-bordered table-hover" data-page-length="5" id="reporteSaldosDetallados" width="100%"><thead><tr>\
         <th>Taquila</th><th>Venta</th><th>Premio</th><th>Comision</th><th>Saldo</th><th>Programa</th>\
         <tbody>';
         tabla += '</tbody></tr></thead></table>';
         $('#ventanaEmergenteContenido').html(tabla);
-        var rs = $('#reporteSaldosDetallados').DataTable({            
+        var rs = $('#reporteSaldosDetallados').DataTable({
             "ordering":  false,
             "info":      false,
             "searching": false,
             "paging":    true
         });
         rs.clear().draw();
-        $.each(data, function(c, v){            
+        $.each(data, function(c, v){
             venta = v.venta == null?0:v.venta;
             premio = v.premio == null?0:v.premio;
             comision = v.comision == null?0:v.comision;
@@ -470,13 +486,13 @@ function VerDetallesTaquillas(id){
                 v.observacion
             ]).draw(false);
         });
-        
-        
-        
+
+
+
     });
-    
+
     $('#ventanaEmergente').modal({ keyboard: false });   // initialized with no keyboard
-    $('#ventanaEmergente').modal('show');                // initializes and invokes show   
+    $('#ventanaEmergente').modal('show');                // initializes and invokes show
 }
 
 
@@ -487,12 +503,12 @@ function VerDetallesTaquillas(id){
  */
 function RecorreFechas(desde, hasta, rS){
     fauxd = desde.split("/");
-    fauxh = hasta.split("/");    
-    danio = parseInt(fauxd[0]); 
+    fauxh = hasta.split("/");
+    danio = parseInt(fauxd[0]);
     dmes =  parseInt(fauxd[1]);
     ddia =  parseInt(fauxd[2]);
 
-    hanio = parseInt(fauxh[0]); 
+    hanio = parseInt(fauxh[0]);
     hmes =  parseInt(fauxh[1]);
     hdia =  parseInt(fauxh[2]);
     var fila = {};
@@ -515,7 +531,7 @@ function RecorreFechas(desde, hasta, rS){
                     inicio = '<label style="color:green">';
                     fin = '</label>'
                 }
-                fila[count] = fecha; 
+                fila[count] = fecha;
                  rS.row.add( [
                     fecha,
                     inicio + _SAV[pos] + ' ' + fechaX + fin,
@@ -524,14 +540,14 @@ function RecorreFechas(desde, hasta, rS){
                     0,
                     0,
                     0,
-                    0,                                               
+                    0,
                 ] ).draw( false );
                 count++;
                 //console.log(danio + "-" + i + "-" + j);
-                if(hanio == h && hmes == i && hdia == j )break;                
+                if(hanio == h && hmes == i && hdia == j )break;
             }
             ddia = 1;
-        } 
+        }
     }
     return fila;
 }
@@ -560,5 +576,5 @@ function btnAccion(id){
  * Listar Cuentas para Movimientos
  */
 function LCuentaM(id){
-    
+
 }

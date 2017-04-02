@@ -93,7 +93,7 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	s += "'" + data.Deposito + "',now()," + operacion + aprobado + forma
 	s += "," + banco + "," + estatus + ",'" + data.Observacion + "');"
 
-	//fmt.Println(s)
+	fmt.Println(s)
 	rs, err := sys.PostgreSQL.Exec(s)
 	if err != nil {
 		fmt.Println(s)

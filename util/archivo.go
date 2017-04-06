@@ -651,7 +651,7 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 func (a *Archivo) LeerEntregados() bool{
 		var sql string
 
-		archivo, err := os.Open("public/temp/enero.csv")
+		archivo, err := os.Open("public/temp/EOAG012017.csv")
 		Error(err)
 		var i int
 		scan := bufio.NewScanner(archivo)
@@ -667,8 +667,9 @@ func (a *Archivo) LeerEntregados() bool{
 						voucher := linea[7]
 						observacion := linea[13] + "|" + cuenta + "|" + linea[9] + "|" + linea[10] + "|" + linea[11]
 						monto := ConvertirMonedaANumero(linea[12])
-						fmt.Println(agencia)
+						//fmt.Println(agencia)
 						sql = `SELECT oid FROM agencia WHERE obse='` + agencia + `'`
+						//fmt.Println(sql)
 						row, err := a.PostgreSQL.Query(sql)
 						if err != nil {
 							fmt.Println("A ocurrido un error en la conexion")
@@ -679,7 +680,60 @@ func (a *Archivo) LeerEntregados() bool{
 
 						if(id != 0){
 							s	 := `INSERT INTO debe (comer,grupo,subgr,colec,oida,agen,mont,vouc,banc,fdep,freg,fope,fapr,tipo,esta,obse) VALUES
-								(0,0,0,0,` + strconv.Itoa(id) + `,'` + agencia +`',` + monto +`,'` + voucher + `',` +
+								(1,0,0,0,` + strconv.Itoa(id) + `,'` + agencia +`',` + monto +`,'` + voucher + `',` +
+								codcuentas + `,'`	+ fecha + `','` + fecha +`','` + fecha +`'::DATE -1, '` + fecha + `',1,1,'` + observacion + `');`
+							_, err := a.PostgreSQL.Exec(s)
+							if err != nil {
+								fmt.Println(s)
+								fmt.Println(err.Error())
+							}
+
+						}
+
+
+				}
+
+		}
+
+		return true
+}
+
+
+
+
+func (a *Archivo) LeerEntregadosGrupo() bool{
+		var sql string
+
+		archivo, err := os.Open("public/temp/EOGR012017.csv")
+		Error(err)
+		var i int
+		scan := bufio.NewScanner(archivo)
+		for scan.Scan(){
+				var id int
+				i++
+				linea := strings.Split(scan.Text(), ";")
+				if(i > 1){
+						fecha := linea[0]
+						codcuentas := linea[3]
+						cuenta := linea[6]
+						grupo := linea[8]
+						voucher := linea[7]
+						observacion := linea[13] + "|" + cuenta + "|" + linea[9] + "|" + linea[10] + "|" + linea[11]
+						monto := ConvertirMonedaANumero(linea[12])
+						fmt.Println(grupo)
+						sql = `SELECT oid FROM grupo WHERE obse='` + grupo + `'`
+						row, err := a.PostgreSQL.Query(sql)
+						if err != nil {
+							fmt.Println("A ocurrido un error en la conexion")
+						}
+						for row.Next(){
+							row.Scan(&id)
+						}
+
+
+						if(id != 0){
+							s	 := `INSERT INTO debe (comer,grupo,subgr,colec,oida,agen,mont,vouc,banc,fdep,freg,fope,fapr,tipo,esta,obse) VALUES
+								(1,` + strconv.Itoa(id) + `,0,0,0,'',` + monto +`,'` + voucher + `',` +
 								codcuentas + `,'`	+ fecha + `','` + fecha +`','` + fecha +`'::DATE -1, '` + fecha + `',1,1,'` + observacion + `');`
 							_, err := a.PostgreSQL.Exec(s)
 							if err != nil {

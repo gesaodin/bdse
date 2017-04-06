@@ -19,7 +19,8 @@ func main() {
 	leer()
 	var archivo = util.Archivo{}
 	archivo.PostgreSQL = sys.PostgreSQL
-	archivo.LeerEntregados()
+	//archivo.LeerEntregados()
+  archivo.LeerEntregadosGrupo()
 	//archivo.LeerCodigosYCrearAgencias()
 	//archivo.LeerCodigosYCrearSaldos()
 }

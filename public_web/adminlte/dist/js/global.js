@@ -856,9 +856,10 @@ function GC(tipo) {
     $.post(url, data)
         .done(function (data) {
             t.clear().draw();
-            var i = 1;
+            var i = 0;
+
             $.each(data, function (c, v) {
-                console.log(v);
+
                 vienen = v.vienen == null ? 0 : v.vienen;
                 saldo = v.saldo == null ? 0 : v.saldo;
                 ingreso = v.ingreso == null ? 0 : v.ingreso;
@@ -881,13 +882,19 @@ function GC(tipo) {
                     nombre = v.agencia;
                 }
 
-                i++
-                if (v.estatus != null) {
-                    if (v.estatus == 1) {
-                        accion = "";
-                        t.column(0).visible(false); //Ocultar la columna 0
-                    }
+                i++;
+                if(i == 1){
+
+                  if (v.estatus != null) {
+
+                      if (v.estatus == 1) {
+                          accion = "";
+                          t.column(0).visible(false); //Ocultar la columna 0
+                      }
+                  }
                 }
+
+
                 switch (parseInt(tipo)) {
                     case 0:
                         //console.log('CERO... ');
@@ -932,7 +939,7 @@ function GC(tipo) {
                 }
 
 
-            })
+            });
             $("#cargando").hide();
 
         })

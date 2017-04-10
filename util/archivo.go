@@ -637,116 +637,209 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 		cap := linea[0]
 		saldo := linea[1]
 		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
-		sql = `INSERT INTO cobrosypagos (oida, fech, vien) VALUES (` + dondeagencia + `,'2017-01-01'::TIMESTAMP,` + saldo + `);`
+		sql = `INSERT INTO cobrosypagos (oida, fech, vien) VALUES (` + dondeagencia + `,'2016-12-31'::TIMESTAMP,` + saldo + `);`
 		_, err := a.PostgreSQL.Exec(sql)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-		fmt.Println(sql)
 
+		//fmt.Println(sql)
+
+	}
+	sql = `INSERT INTO cobrosypagos_grupo (oidg,fech,vien,sald,movi,van,erec)
+	select gr.oid, '2016-12-31'::TIMESTAMP, sum(cyp.vien),0,0,sum(cyp.vien),0 from grupo gr
+	JOIN agencia ag ON ag.grupo=gr.oid
+	JOIN cobrosypagos cyp ON ag.oid=cyp.oida
+	GROUP BY gr.oid`
+	_, err = a.PostgreSQL.Exec(sql)
+	if err != nil {
+		fmt.Println(err.Error())
 	}
 	return true
 }
 
-func (a *Archivo) LeerEntregados() bool{
-		var sql string
+func (a *Archivo) LeerEntregados() bool {
+	var sql string
 
-		archivo, err := os.Open("public/temp/EOAG012017.csv")
-		Error(err)
-		var i int
-		scan := bufio.NewScanner(archivo)
-		for scan.Scan(){
-				var id int
-				i++
-				linea := strings.Split(scan.Text(), ";")
-				if(i > 1){
-						fecha := linea[0]
-						codcuentas := linea[3]
-						cuenta := linea[6]
-						agencia := linea[8]
-						voucher := linea[7]
-						observacion := linea[13] + "|" + cuenta + "|" + linea[9] + "|" + linea[10] + "|" + linea[11]
-						monto := ConvertirMonedaANumero(linea[12])
-						//fmt.Println(agencia)
-						sql = `SELECT oid FROM agencia WHERE obse='` + agencia + `'`
-						//fmt.Println(sql)
-						row, err := a.PostgreSQL.Query(sql)
-						if err != nil {
-							fmt.Println("A ocurrido un error en la conexion")
-						}
-						for row.Next(){
-							row.Scan(&id)
-						}
+	archivo, err := os.Open("public/temp/EOAG012017.csv")
+	Error(err)
+	var i int
+	scan := bufio.NewScanner(archivo)
+	for scan.Scan() {
+		var id int
+		i++
+		linea := strings.Split(scan.Text(), ";")
+		if i > 1 {
+			fecha := linea[0]
+			codcuentas := linea[3]
+			cuenta := linea[6]
+			agencia := linea[8]
+			voucher := linea[7]
+			observacion := linea[13] + "|" + cuenta + "|" + linea[9] + "|" + linea[10] + "|" + linea[11]
+			monto := ConvertirMonedaANumero(linea[12])
+			//fmt.Println(agencia)
+			sql = `SELECT oid FROM agencia WHERE obse='` + agencia + `'`
+			//fmt.Println(sql)
+			row, err := a.PostgreSQL.Query(sql)
+			if err != nil {
+				fmt.Println("A ocurrido un error en la conexion")
+			}
+			for row.Next() {
+				row.Scan(&id)
+			}
 
-						if(id != 0){
-							s	 := `INSERT INTO debe (comer,grupo,subgr,colec,oida,agen,mont,vouc,banc,fdep,freg,fope,fapr,tipo,esta,obse) VALUES
-								(1,0,0,0,` + strconv.Itoa(id) + `,'` + agencia +`',` + monto +`,'` + voucher + `',` +
-								codcuentas + `,'`	+ fecha + `','` + fecha +`','` + fecha +`'::DATE -1, '` + fecha + `',1,1,'` + observacion + `');`
-							_, err := a.PostgreSQL.Exec(s)
-							if err != nil {
-								fmt.Println(s)
-								fmt.Println(err.Error())
-							}
-
-						}
-
-
+			if id != 0 {
+				s := `INSERT INTO debe (comer,grupo,subgr,colec,oida,agen,mont,vouc,banc,fdep,freg,fope,fapr,tipo,esta,obse) VALUES
+								(1,0,0,0,` + strconv.Itoa(id) + `,'` + agencia + `',` + monto + `,'` + voucher + `',` +
+					codcuentas + `,'` + fecha + `','` + fecha + `','` + fecha + `'::DATE -1, '` + fecha + `',1,1,'` + observacion + `');`
+				_, err := a.PostgreSQL.Exec(s)
+				if err != nil {
+					fmt.Println(s)
+					fmt.Println(err.Error())
 				}
+
+			}
 
 		}
 
-		return true
+	}
+
+	return true
 }
 
+func (a *Archivo) LeerEntregadosGrupo() bool {
+	var sql string
 
+	archivo, err := os.Open("public/temp/EOGR012017.csv")
+	Error(err)
+	var i int
+	scan := bufio.NewScanner(archivo)
+	for scan.Scan() {
+		var id int
+		i++
+		linea := strings.Split(scan.Text(), ";")
+		if i > 1 {
+			fecha := linea[0]
+			codcuentas := linea[3]
+			cuenta := linea[6]
+			grupo := linea[8]
+			voucher := linea[7]
+			observacion := linea[13] + "|" + cuenta + "|" + linea[9] + "|" + linea[10] + "|" + linea[11]
+			monto := ConvertirMonedaANumero(linea[12])
+			fmt.Println(grupo)
+			sql = `SELECT oid FROM grupo WHERE obse='` + grupo + `'`
+			row, err := a.PostgreSQL.Query(sql)
+			if err != nil {
+				fmt.Println("A ocurrido un error en la conexion")
+			}
+			for row.Next() {
+				row.Scan(&id)
+			}
 
-
-func (a *Archivo) LeerEntregadosGrupo() bool{
-		var sql string
-
-		archivo, err := os.Open("public/temp/EOGR012017.csv")
-		Error(err)
-		var i int
-		scan := bufio.NewScanner(archivo)
-		for scan.Scan(){
-				var id int
-				i++
-				linea := strings.Split(scan.Text(), ";")
-				if(i > 1){
-						fecha := linea[0]
-						codcuentas := linea[3]
-						cuenta := linea[6]
-						grupo := linea[8]
-						voucher := linea[7]
-						observacion := linea[13] + "|" + cuenta + "|" + linea[9] + "|" + linea[10] + "|" + linea[11]
-						monto := ConvertirMonedaANumero(linea[12])
-						fmt.Println(grupo)
-						sql = `SELECT oid FROM grupo WHERE obse='` + grupo + `'`
-						row, err := a.PostgreSQL.Query(sql)
-						if err != nil {
-							fmt.Println("A ocurrido un error en la conexion")
-						}
-						for row.Next(){
-							row.Scan(&id)
-						}
-
-
-						if(id != 0){
-							s	 := `INSERT INTO debe (comer,grupo,subgr,colec,oida,agen,mont,vouc,banc,fdep,freg,fope,fapr,tipo,esta,obse) VALUES
-								(1,` + strconv.Itoa(id) + `,0,0,0,'',` + monto +`,'` + voucher + `',` +
-								codcuentas + `,'`	+ fecha + `','` + fecha +`','` + fecha +`'::DATE -1, '` + fecha + `',1,1,'` + observacion + `');`
-							_, err := a.PostgreSQL.Exec(s)
-							if err != nil {
-								fmt.Println(s)
-								fmt.Println(err.Error())
-							}
-
-						}
-
-
+			if id != 0 {
+				s := `INSERT INTO debe (comer,grupo,subgr,colec,oida,agen,mont,vouc,banc,fdep,freg,fope,fapr,tipo,esta,obse) VALUES
+								(1,` + strconv.Itoa(id) + `,0,0,0,'',` + monto + `,'` + voucher + `',` +
+					codcuentas + `,'` + fecha + `','` + fecha + `','` + fecha + `'::DATE -1, '` + fecha + `',1,1,'` + observacion + `');`
+				_, err := a.PostgreSQL.Exec(s)
+				if err != nil {
+					fmt.Println(s)
+					fmt.Println(err.Error())
 				}
+
+			}
 
 		}
 
-		return true
+	}
+
+	return true
+}
+
+func (a *Archivo) LeerEntregadosOficina() bool {
+
+	archivo, err := os.Open("public/temp/EOAD012017.csv")
+	Error(err)
+	var i int
+	scan := bufio.NewScanner(archivo)
+	for scan.Scan() {
+		i++
+		linea := strings.Split(scan.Text(), ";")
+
+		if i > 1 {
+			var mov Movimiento
+			mov.Fecha = linea[0]
+
+			mov.CuentaDebe, _ = strconv.Atoi(linea[3])
+			mov.TipoDebe = 1
+
+			mov.CuentaHaber, _ = strconv.Atoi(linea[8])
+			mov.TipoHaber = 1
+			mov.Voucher = linea[7]
+
+			mov.Monto = ConvertirMonedaANumero(linea[12])
+			mov.Observacion = linea[14] + "|" + linea[10] + "|" + linea[11]
+
+			ingreso, egreso := mov.generarSQL()
+			//fmt.Println(sql)
+			_, err = a.PostgreSQL.Exec(ingreso + egreso)
+
+			if err != nil {
+				fmt.Println(err.Error())
+			}
+		}
+
+	}
+
+	return true
+}
+
+type Movimiento struct {
+	Oid               int     `json:"oid,omitempty"`
+	Comercializadora  int     `json:"comercializadora,omitempty"`
+	Grupo             int     `json:"grupo,omitempty"`
+	SubGrupo          int     `json:"subgrupo,omitempty"`
+	Colector          int     `json:"colector,omitempty"`
+	AgenciaCod        int     `json:"agenciacod,omitempty"`
+	Agencia           string  `json:"agencia,omitempty"`
+	Nombre            string  `json:"nombre,omitempty"`
+	Fecha             string  `json:"fecha,omitempty"`
+	FDeposito         string  `json:"fdeposito,omitempty"`
+	FOperacion        string  `json:"foperacion,omitempty"`
+	Voucher           string  `json:"voucher,omitempty"`
+	FormaDePago       int     `json:"forma,omitempty"`
+	TipoDeOperacion   int     `json:"operacion,omitempty"`
+	TipoTabla         int     `json:"tipo,omitempty"`
+	Monto             string  `json:"monto,omitempty"`
+	Cuota             float64 `json:"cuota,omitempty"`
+	Cuenta            int     `json:"cuenta,omitempty"`
+	CuentaDebe        int     `json:"cuentadebe,omitempty"`
+	CuentaDebeNombre  string  `json:"cuentadeben,omitempty"`
+	TipoDebe          int     `json:"tipodebe,omitempty"`
+	CuentaHaber       int     `json:"cuentahaber,omitempty"`
+	CuentaHaberNombre string  `json:"cuentahabern,omitempty"`
+	TipoHaber         int     `json:"tipohaber,omitempty"`
+	Banco             int     `json:"banco,omitempty"`
+	BancoNombre       string  `json:"banconombre,omitempty"`
+	Estatus           int     `json:"estatus,omitempty"`
+	Observacion       string  `json:"observacion,omitempty"`
+	Token             string  `json:"token,omitempty"`
+}
+
+//generarSQL Consultar
+func (m *Movimiento) generarSQL() (sqlI string, sqlE string) {
+	sql1 := "INSERT INTO "
+	ie := "(comer,grupo,subgr,colec,agenc,fech,freg,tipo,cuen,mont,oper,obse, toke)" // INGRESO | EGRESO
+
+	iii := "(" + strconv.Itoa(m.Comercializadora) + "," + strconv.Itoa(m.Grupo)
+	iii += "," + strconv.Itoa(m.SubGrupo) + "," + strconv.Itoa(m.Colector) + "," + strconv.Itoa(m.AgenciaCod)
+	iii += ",'" + m.Fecha + "',now(),"
+	cuenta := strconv.Itoa(m.TipoDebe) + "," + strconv.Itoa(m.CuentaDebe) + ","
+	iff := m.Monto + ", '" + m.Voucher + "', '" + m.Observacion + "', md5('" + m.Fecha + m.Voucher + m.Monto + "'));"
+	sqlI = sql1 + "movimiento_ingreso " + ie + " VALUES " + iii + cuenta + iff
+
+	cuenta = strconv.Itoa(m.TipoHaber) + "," + strconv.Itoa(m.CuentaHaber) + ","
+	sqlE = sql1 + "movimiento_egreso " + ie + " VALUES " + iii + cuenta + iff
+	//sqlE = sqls + sqle
+
+	return
 }

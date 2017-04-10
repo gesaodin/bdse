@@ -14,41 +14,41 @@ import (
 
 //Pago Control de Pagos
 type Pago struct {
-	Oid           int     `json:"oid,omitempty"`
-	Banca         int     `json:"banca,omitempty"`
-	Grupo         int     `json:"grupo,omitempty"`
-	SubGrupo      int     `json:"subgrupo,omitempty"`
-	Colector      int     `json:"colector,omitempty"`
-	Agencia       string  `json:"agencia,omitempty"`
-	Taquilla      string  `json:"taquilla,omitempty"`
-	Voucher       string  `json:"voucher,omitempty"`
-	Desde         string  `json:"desde,omitempty"`
-	Hasta         string  `json:"hasta,omitempty"`
-	Deposito      string  `json:"deposito,omitempty"`
-	Banco         int     `json:"banco,omitempty"`
-	BancoNombre   string  `json:"banconombre,omitempty"`
-	Fecha         string  `json:"fecha,omitempty"`
-	FechaAprobado string  `json:"fechaaprobado,omitempty"`
+	Oid            int     `json:"oid,omitempty"`
+	Banca          int     `json:"banca,omitempty"`
+	Grupo          int     `json:"grupo,omitempty"`
+	SubGrupo       int     `json:"subgrupo,omitempty"`
+	Colector       int     `json:"colector,omitempty"`
+	Agencia        string  `json:"agencia,omitempty"`
+	Taquilla       string  `json:"taquilla,omitempty"`
+	Voucher        string  `json:"voucher,omitempty"`
+	Desde          string  `json:"desde,omitempty"`
+	Hasta          string  `json:"hasta,omitempty"`
+	Deposito       string  `json:"deposito,omitempty"`
+	Banco          int     `json:"banco,omitempty"`
+	BancoNombre    string  `json:"banconombre,omitempty"`
+	Fecha          string  `json:"fecha,omitempty"`
+	FechaAprobado  string  `json:"fechaaprobado,omitempty"`
 	FechaOperacion string  `json:"fechaoperacion,omitempty"`
-	FormaDePago   int     `json:"forma,omitempty"`
-	Monto         float64 `json:"monto,omitempty"`
-	Venta         float64 `json:"venta,omitempty"`
-	Premio        float64 `json:"premio,omitempty"`
-	Comision      float64 `json:"comision,omitempty"`
-	Saldo         float64 `json:"saldo,omitempty"`
-	Vienen        float64 `json:"vienen,omitempty"`
-	Van           float64 `json:"van,omitempty"`
-	Recibido      float64 `json:"recibido,omitempty"`
-	Entregado     float64 `json:"entregado,omitempty"`
-	Ingreso       float64 `json:"ingreso,omitempty"`
-	Egreso        float64 `json:"egreso,omitempty"`
-	Prestamo      float64 `json:"prestamo,omitempty"`
-	Cuota         float64 `json:"cuota,omitempty"`
-	Estatus       int     `json:"estatus,omitempty"`
-	Observacion   string  `json:"observacion,omitempty"`
-	Sistema       int     `json:"sistema,omitempty"`
-	Archivo       int     `json:"archivo,omitempty"`
-	Cierre        int     `json:"cierre,omitempty"`
+	FormaDePago    int     `json:"forma,omitempty"`
+	Monto          float64 `json:"monto,omitempty"`
+	Venta          float64 `json:"venta,omitempty"`
+	Premio         float64 `json:"premio,omitempty"`
+	Comision       float64 `json:"comision,omitempty"`
+	Saldo          float64 `json:"saldo,omitempty"`
+	Vienen         float64 `json:"vienen,omitempty"`
+	Van            float64 `json:"van,omitempty"`
+	Recibido       float64 `json:"recibido,omitempty"`
+	Entregado      float64 `json:"entregado,omitempty"`
+	Ingreso        float64 `json:"ingreso,omitempty"`
+	Egreso         float64 `json:"egreso,omitempty"`
+	Prestamo       float64 `json:"prestamo,omitempty"`
+	Cuota          float64 `json:"cuota,omitempty"`
+	Estatus        int     `json:"estatus,omitempty"`
+	Observacion    string  `json:"observacion,omitempty"`
+	Sistema        int     `json:"sistema,omitempty"`
+	Archivo        int     `json:"archivo,omitempty"`
+	Cierre         int     `json:"cierre,omitempty"`
 }
 
 //Respuesta Generales
@@ -82,13 +82,13 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 		operacion = "'" + data.FechaOperacion + "',"
 	}
 
-	if  data.Oid != 0 {
+	if data.Oid != 0 {
 		agencia = "(SELECT obse FROM agencia WHERE oid=" + strconv.Itoa(data.Oid) + ")"
 	}
 
 	s := "INSERT INTO " + tabla + " (comer,grupo,subgr,colec,oida,agen,mont,vouc,fdep,freg," + campo_oper + campo + "tipo,banc,esta,obse) VALUES "
 	s += "(" + strconv.Itoa(data.Banca) + "," + strconv.Itoa(data.Grupo) + "," + strconv.Itoa(data.SubGrupo)
-	s += "," + strconv.Itoa(data.Colector) + "," +  strconv.Itoa(data.Oid)
+	s += "," + strconv.Itoa(data.Colector) + "," + strconv.Itoa(data.Oid)
 	s += "," + agencia + "," + monto + ",'" + data.Voucher + "',"
 	s += "'" + data.Deposito + "',now()," + operacion + aprobado + forma
 	s += "," + banco + "," + estatus + ",'" + data.Observacion + "');"
@@ -235,14 +235,14 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	tabla = "cobrosypagoscierre"
 	fecha := `'` + data.Fecha + ` 00:00:00'::TIMESTAMP + '1 day'`
 	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 0);
-				UPDATE ` + tabla +  ` SET esta=1 WHERE fech='` + data.Fecha + ` 00:00:00'::TIMESTAMP`
+				UPDATE ` + tabla + ` SET esta=1 WHERE fech='` + data.Fecha + ` 00:00:00'::TIMESTAMP`
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
 	}
 	tabla = "cobrosypagoscierre_grupo"
 	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 0);
-				UPDATE ` + tabla +  ` SET esta=1 WHERE fech='` + data.Fecha + ` 00:00:00'::TIMESTAMP`
+				UPDATE ` + tabla + ` SET esta=1 WHERE fech='` + data.Fecha + ` 00:00:00'::TIMESTAMP`
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
@@ -676,8 +676,9 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 	//fecha control
 	//var fecha string = time.Now().String()[0:10]
 	//fmt.Println(p.Cierre)
-	row, err := sys.PostgreSQL.Query(gCPGrupoDiario(p.Fecha))
-	//fmt.Println(gCPGrupoDiario(p.Fecha))
+	s := gCPGrupoDiario(p.Fecha)
+	row, err := sys.PostgreSQL.Query(s)
+	//fmt.Println(s)
 	if err != nil {
 		return
 	}
@@ -754,9 +755,12 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 		pago.Estatus = esta
 		pago.Observacion = util.ValidarNullString(nomb)
 		auxiliarFecha := util.ValidarNullString(fvien)
+		fmt.Println(auxiliarFecha)
 		if auxiliarFecha != "" {
+
 			auxiliarFecha = auxiliarFecha[0:10]
 		} else {
+
 			pago.Estatus = 1
 		}
 		pago.Fecha = auxiliarFecha

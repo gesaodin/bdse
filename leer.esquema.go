@@ -1,4 +1,4 @@
- package main
+package main
 
 import (
 	"fmt"
@@ -19,8 +19,9 @@ func main() {
 	leer()
 	var archivo = util.Archivo{}
 	archivo.PostgreSQL = sys.PostgreSQL
+	archivo.LeerCodigosYCrearSaldos()
 	//archivo.LeerEntregados()
-  archivo.LeerEntregadosGrupo()
+	//archivo.LeerEntregadosOficina()
 	//archivo.LeerCodigosYCrearAgencias()
 	//archivo.LeerCodigosYCrearSaldos()
 }

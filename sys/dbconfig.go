@@ -10,3 +10,4 @@ type BaseDeDatosPermisos struct {
 	EliminarFunciones    bool
 	EliminarDisparadores bool
 }
+//pg_restore --host localhost --port 5432 --username "postgres" --dbname "banca" --no-password  --verbose "/home/crash/bdse/public/temp/banca20032017.backup"

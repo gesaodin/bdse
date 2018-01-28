@@ -151,6 +151,7 @@ CREATE TABLE movimiento_ingreso
 	agenc int, -- Agencia
 	agen character varying(254), -- Agencia
 	fech date,
+	fope date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
 	tipo int, -- Tipo de Operacion	
@@ -159,6 +160,7 @@ CREATE TABLE movimiento_ingreso
 	obse character varying(254),
 	mont numeric,
 	toke character varying(254),
+	tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
 	CONSTRAINT movimiento_ingreso_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX movimiento_ingreso_toke_idx ON movimiento_ingreso USING btree (toke COLLATE pg_catalog."default");
@@ -176,6 +178,7 @@ CREATE TABLE movimiento_egreso
 	agenc int, -- Agencia
 	agen character varying(254), -- Agencia
 	fech date,
+	fope date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
 	tipo int, -- Tipo de Operacion	
@@ -184,6 +187,7 @@ CREATE TABLE movimiento_egreso
 	obse character varying(254),
 	mont numeric,
 	toke character varying(254),
+	tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
 	CONSTRAINT movimiento_egreso_pkey PRIMARY KEY (oid)	
 );
 CREATE INDEX movimiento_egreso_toke_idx ON movimiento_egreso USING btree (toke COLLATE pg_catalog."default");
@@ -202,6 +206,7 @@ CREATE TABLE movimiento_prestamo
 	agen char varying(256),
 	tipo int,
 	fech date,
+	fope date,
 	fapr timestamp without time zone,
 	freg timestamp without time zone,
 	mcuo int,	
@@ -211,6 +216,7 @@ CREATE TABLE movimiento_prestamo
 	form int, -- Forma de Pago
 	mont numeric,
 	toke character varying(254),
+	tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
 	CONSTRAINT movimiento_prestamo_pkey PRIMARY KEY (oid)	
 );
 CREATE INDEX movimiento_prestamo_toke_idx ON movimiento_prestamo USING btree (toke COLLATE pg_catalog."default");
@@ -236,6 +242,23 @@ CREATE TABLE cobrosypagos
 );
 CREATE INDEX cobrosypagos_oida_idx ON cobrosypagos USING btree (oida);
 CREATE INDEX cobrosypagos_fech_idx ON cobrosypagos USING btree (fech);
+
+DROP TABLE IF EXISTS cobrosypagos_agencia;
+CREATE TABLE cobrosypagos_agencia
+(
+	oid serial NOT NULL,
+	oida int,
+	fech timestamp without time zone,
+	vien numeric, --BALANCE DE REGISTRO
+	sald numeric,
+	movi numeric,
+	van numeric, --BALANCE DE REGISTRO	
+	CONSTRAINT cobrosypagos_agencia_pkey PRIMARY KEY (oid)
+);
+CREATE INDEX cobrosypagos_agencia_oida_idx ON cobrosypagos_agencia USING btree (oida);
+CREATE INDEX cobrosypagos_agencia_fech_idx ON cobrosypagos_agencia USING btree (fech);
+
+
 
 
 DROP TABLE IF EXISTS cobrosypagoscierre;
@@ -328,11 +351,11 @@ DROP TABLE IF EXISTS debe;
 CREATE TABLE debe
 (
   oid serial NOT NULL,
-  comer int, -- Comercializadora
-  grupo int, -- Grupo
-  subgr int, -- Sub Grupo
-  colec int, -- Colector
-  oida int,
+  comer integer,
+  grupo integer,
+  subgr integer,
+  colec integer,
+  oida integer,
   agen character varying(32),
   mont numeric,
   vouc character varying(254),
@@ -342,9 +365,10 @@ CREATE TABLE debe
   fapr date,
   tipo integer,
   banc integer,
-  esta integer, -- 0 activos
-  obse character varying(254),
-  resp character varying(254), --Respuesta
+  esta integer,
+  obse text,
+  resp character varying(254),
+  tsoli integer,
   CONSTRAINT debe_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX debe_fapr_idx ON debe USING btree (fapr);
@@ -372,8 +396,9 @@ CREATE TABLE haber
   tipo integer,
   banc integer,
   esta integer, -- 0 Pendiente Por Procesar  | 1 Activo
-  obse character varying(254),
+  obse text,
   resp character varying(254), --Respuesta
+  tsoli int, --Tipo de solicitud Transferecia - Cheque u otros
   CONSTRAINT haber_pkey PRIMARY KEY (oid)
 );
 CREATE INDEX haber_fapr_idx ON haber USING btree (fapr);
@@ -400,3 +425,30 @@ CREATE TABLE cuenta (
     num character varying(20),
     tipo integer
 );
+
+
+DROP TABLE IF EXISTS solicitud_transferencia;
+CREATE TABLE solicitud_transferencia
+(
+  oid serial NOT NULL PRIMARY KEY,
+  comer int, -- Comercializadora
+  grupo int, -- Grupo
+  subgr int, -- Sub Grupo
+  colec int, -- Colector
+  oida int,
+  cedul character varying(16), -- Cédula del la cuenta
+  nombr character varying(256), -- Nombre o Razón Social
+  corre character varying(256), -- Correo Electrónico
+  cuent char varying(23), -- 20 DIGITOS MAS EL FORMATO
+  ticke char varying(32),
+  seria char varying(32),
+  sist int,
+  montt numeric, -- Monto del ticket
+  monts numeric, --Monto Solicitado
+  fech timestamp without time zone,
+  esta int
+);
+
+
+
+

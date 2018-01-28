@@ -14,40 +14,41 @@ import (
 
 //Pago Control de Pagos
 type Pago struct {
-	Oid           int     `json:"oid,omitempty"`
-	Banca         int     `json:"banca,omitempty"`
-	Grupo         int     `json:"grupo,omitempty"`
-	SubGrupo      int     `json:"subgrupo,omitempty"`
-	Colector      int     `json:"colector,omitempty"`
-	Agencia       string  `json:"agencia,omitempty"`
-	Taquilla      string  `json:"taquilla,omitempty"`
-	Voucher       string  `json:"voucher,omitempty"`
-	Desde         string  `json:"desde,omitempty"`
-	Hasta         string  `json:"hasta,omitempty"`
-	Deposito      string  `json:"deposito,omitempty"`
-	Banco         int     `json:"banco,omitempty"`
-	BancoNombre   string  `json:"banconombre,omitempty"`
-	Fecha         string  `json:"fecha,omitempty"`
-	FechaAprobado string  `json:"fechaaprobado,omitempty"`
-	FormaDePago   int     `json:"forma,omitempty"`
-	Monto         float64 `json:"monto,omitempty"`
-	Venta         float64 `json:"venta,omitempty"`
-	Premio        float64 `json:"premio,omitempty"`
-	Comision      float64 `json:"comision,omitempty"`
-	Saldo         float64 `json:"saldo,omitempty"`
-	Vienen        float64 `json:"vienen,omitempty"`
-	Van           float64 `json:"van,omitempty"`
-	Recibido      float64 `json:"recibido,omitempty"`
-	Entregado     float64 `json:"entregado,omitempty"`
-	Ingreso       float64 `json:"ingreso,omitempty"`
-	Egreso        float64 `json:"egreso,omitempty"`
-	Prestamo      float64 `json:"prestamo,omitempty"`
-	Cuota         float64 `json:"cuota,omitempty"`
-	Estatus       int     `json:"estatus,omitempty"`
-	Observacion   string  `json:"observacion,omitempty"`
-	Sistema       int     `json:"sistema,omitempty"`
-	Archivo       int     `json:"archivo,omitempty"`
-	Cierre        int     `json:"cierre,omitempty"`
+	Oid            int     `json:"oid,omitempty"`
+	Banca          int     `json:"banca,omitempty"`
+	Grupo          int     `json:"grupo,omitempty"`
+	SubGrupo       int     `json:"subgrupo,omitempty"`
+	Colector       int     `json:"colector,omitempty"`
+	Agencia        string  `json:"agencia,omitempty"`
+	Taquilla       string  `json:"taquilla,omitempty"`
+	Voucher        string  `json:"voucher,omitempty"`
+	Desde          string  `json:"desde,omitempty"`
+	Hasta          string  `json:"hasta,omitempty"`
+	Deposito       string  `json:"deposito,omitempty"`
+	Banco          int     `json:"banco,omitempty"`
+	BancoNombre    string  `json:"banconombre,omitempty"`
+	Fecha          string  `json:"fecha,omitempty"`
+	FechaAprobado  string  `json:"fechaaprobado,omitempty"`
+	FechaOperacion string  `json:"fechaoperacion,omitempty"`
+	FormaDePago    int     `json:"forma,omitempty"`
+	Monto          float64 `json:"monto,omitempty"`
+	Venta          float64 `json:"venta,omitempty"`
+	Premio         float64 `json:"premio,omitempty"`
+	Comision       float64 `json:"comision,omitempty"`
+	Saldo          float64 `json:"saldo,omitempty"`
+	Vienen         float64 `json:"vienen,omitempty"`
+	Van            float64 `json:"van,omitempty"`
+	Recibido       float64 `json:"recibido,omitempty"`
+	Entregado      float64 `json:"entregado,omitempty"`
+	Ingreso        float64 `json:"ingreso,omitempty"`
+	Egreso         float64 `json:"egreso,omitempty"`
+	Prestamo       float64 `json:"prestamo,omitempty"`
+	Cuota          float64 `json:"cuota,omitempty"`
+	Estatus        int     `json:"estatus,omitempty"`
+	Observacion    string  `json:"observacion,omitempty"`
+	Sistema        int     `json:"sistema,omitempty"`
+	Archivo        int     `json:"archivo,omitempty"`
+	Cierre         int     `json:"cierre,omitempty"`
 }
 
 //Respuesta Generales
@@ -59,6 +60,7 @@ type Respuesta struct {
 //Registrar Un pago por movimiento de ingreso o egreso
 func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	monto := strconv.FormatFloat(data.Monto, 'f', 6, 64)
+	var agencia string
 	tabla := "haber"
 	if data.FormaDePago == 0 {
 		tabla = "debe"
@@ -68,17 +70,30 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	estatus := strconv.Itoa(data.Estatus)
 	aprobado := ""
 	campo := ""
+	campofechaperacopm := ""
+	operacion := ""
 	if data.FechaAprobado != "" {
 		campo = "fapr,"
 		aprobado = "'" + data.FechaAprobado + "',"
 	}
 
-	s := "INSERT INTO " + tabla + " (comer,grupo,subgr,colec,oida,agen,mont,vouc,fdep,freg," + campo + "tipo,banc,esta,obse) VALUES "
-	s += "(" + strconv.Itoa(data.Banca) + "," + strconv.Itoa(data.Grupo) + "," + strconv.Itoa(data.SubGrupo) + "," + strconv.Itoa(data.Colector) + ",0"
-	s += ",'" + data.Agencia + "'," + monto + ",'" + data.Voucher + "',"
-	s += "'" + data.Deposito + "',now()," + aprobado + "" + forma
+	if data.FechaOperacion != "" {
+		campofechaperacopm = "fope,"
+		operacion = "'" + data.FechaOperacion + "',"
+	}
+
+	if data.Oid != 0 {
+		agencia = "(SELECT obse FROM agencia WHERE oid=" + strconv.Itoa(data.Oid) + ")"
+	}
+
+	s := "INSERT INTO " + tabla + " (comer,grupo,subgr,colec,oida,agen,mont,vouc,fdep,freg," + campofechaperacopm + campo + "tipo,banc,esta,obse) VALUES "
+	s += "(" + strconv.Itoa(data.Banca) + "," + strconv.Itoa(data.Grupo) + "," + strconv.Itoa(data.SubGrupo)
+	s += "," + strconv.Itoa(data.Colector) + "," + strconv.Itoa(data.Oid)
+	s += "," + agencia + "," + monto + ",'" + data.Voucher + "',"
+	s += "'" + data.Deposito + "',now()," + operacion + aprobado + forma
 	s += "," + banco + "," + estatus + ",'" + data.Observacion + "');"
 
+	fmt.Println(s)
 	rs, err := sys.PostgreSQL.Exec(s)
 	if err != nil {
 		fmt.Println(s)
@@ -157,10 +172,12 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		}
 
 	}
-	fmt.Println(s)
+	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
+		fmt.Println(s)
+		fmt.Println(err.Error())
 		return
 	}
 	var lst []interface{}
@@ -207,7 +224,7 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	var r Respuesta
 
 	s = generarCobrosYPagosGeneralCierre(data.Fecha)
-
+	fmt.Println(s)
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
@@ -216,14 +233,16 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	data.GenerarCobrosYPagosGrupo() //Crear el cierre
 
 	tabla = "cobrosypagoscierre"
-	fecha := `'` + data.Fecha + ` 00:00:00'::TIMESTAMP `
-	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 1)`
+	fecha := `'` + data.Fecha + ` 00:00:00'::TIMESTAMP + '1 day'`
+	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 0);
+				UPDATE ` + tabla + ` SET esta=1 WHERE fech='` + data.Fecha + ` 00:00:00'::TIMESTAMP`
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
 	}
 	tabla = "cobrosypagoscierre_grupo"
-	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 1)`
+	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 0);
+				UPDATE ` + tabla + ` SET esta=1 WHERE fech='` + data.Fecha + ` 00:00:00'::TIMESTAMP`
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
@@ -323,7 +342,7 @@ func generarCobrosYPagosGeneral(fecha string) (s string) {
 
 			-- CIERRE
 			LEFT JOIN cobrosypagoscierre ON cobrosypagoscierre.fech=` + fechaAux + `
-			WHERE  g.obse='0'
+			WHERE  g.obse='AGE. DIRECTAS'
 			ORDER BY z.obse
 			) AS A
 	`
@@ -415,93 +434,93 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 	if data.Desde != "" {
 		fecha = ` AND lotepar.fech BETWEEN '` + data.Desde + ` 00:00:00'::TIMESTAMP AND '` + data.Hasta + ` 23:59:59'::TIMESTAMP`
 	}
-	s = `
-	SELECT cpc.oid, cpc.fech,
-			cyp.vien,
-			saldo,
-			entregado,
-			recibido,
-			ingreso,
-			egreso,
-			prestamo,
-			cuota,
-			COALESCE(saldo,0) + COALESCE(cyp.vien,0) +
-			(
-				COALESCE(entregado,0) - COALESCE(recibido,0)) +
+	s = `SELECT cpc.oid, cpc.fech,
+				cyp.vien,
+				saldo_agencia.saldo,
+				debe.monto AS entregado,
+				haber.monto AS recibido,
+				ingreso.monto AS ingreso,
+				egreso.monto AS egreso,
+				prestamo.monto AS prestamo,
+				prestamo.cuota AS cuota,
+				COALESCE(saldo,0) + COALESCE(cyp.vien,0) +
 				(
-					COALESCE(egreso,0) - (COALESCE(ingreso,0)+COALESCE(prestamo,0))
-				) AS van,
-			cpc.esta
-			FROM cobrosypagoscierre cpc
-	LEFT JOIN (
-	SELECT saldo_agencia.oid, saldo_agencia.fech, saldo_agencia.saldo,
-				debe.monto AS entregado, haber.monto AS recibido,
-				ingreso.monto AS ingreso, egreso.monto AS egreso,
-				prestamo.monto AS prestamo,prestamo.cuota AS cuota
-			FROM (
-			SELECT agencia.oid,agencia.obse, lotepar.fech, SUM(lotepar.saldo) AS saldo
-			FROM agencia
-			JOIN zr_agencia ON agencia.oid=zr_agencia.oida
-			JOIN (
-				SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria
-				UNION
-				SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
-			) AS lotepar ON zr_agencia.codi=lotepar.agen
+					COALESCE(debe.monto,0) - COALESCE(haber.monto,0)) +
+					(
+						COALESCE(egreso.monto,0) - (COALESCE(ingreso.monto,0)+COALESCE(prestamo.monto,0))
+					) AS van,
+				cpc.esta
+				FROM cobrosypagoscierre cpc
 
-			WHERE agencia.obse='` + data.Agencia + `' ` + fecha + `
-			GROUP BY agencia.oid,agencia.obse,lotepar.fech
-			) saldo_agencia
 
-			-- DEBE
-			LEFT JOIN (
-					SELECT agen, fapr, SUM(mont) AS monto FROM debe
+				--) AS f
+				--ON cpc.fech=f.fech
+
+				-- VIENEN
+				LEFT JOIN cobrosypagos cyp ON cyp.fech=cpc.fech
+				INNER JOIN agencia ON cyp.oida=agencia.oid
+
+
+				-- DEBE
+				LEFT JOIN (
+						SELECT agen, fapr AS fapr, SUM(mont) AS monto FROM debe
+						GROUP BY agen,fapr
+				) AS debe ON
+				debe.agen=agencia.obse AND debe.fapr=cyp.fech
+
+				-- HABER
+				LEFT JOIN (
+					SELECT agen, fapr, SUM(mont) AS monto FROM haber
 					GROUP BY agen,fapr
-			) AS debe ON
-			debe.agen=saldo_agencia.obse AND debe.fapr=saldo_agencia.fech
+				) AS haber ON
+				haber.agen=agencia.obse  AND haber.fapr=cyp.fech
 
-			-- HABER
-			LEFT JOIN (
-				SELECT agen, fapr, SUM(mont) AS monto FROM haber
-				GROUP BY agen,fapr
-			) AS haber ON
-			haber.agen=saldo_agencia.obse  AND haber.fapr=saldo_agencia.fech
+				--INGRESO
+				LEFT JOIN (
+					SELECT agen, fech,fapr, SUM(mont) AS monto FROM movimiento_ingreso
+					GROUP BY agen,fech,fapr
+				)
+				AS ingreso ON
+				ingreso.agen=agencia.obse  AND ingreso.fapr=cyp.fech
 
-			--INGRESO
-			LEFT JOIN (
-				SELECT agen, fech,fapr, SUM(mont) AS monto FROM movimiento_ingreso
-				GROUP BY agen,fech,fapr
-			)
-			AS ingreso ON
-			ingreso.agen=saldo_agencia.obse  AND ingreso.fapr=saldo_agencia.fech
+				-- EGRESO
+				LEFT JOIN (
+					SELECT agen, fech,fapr, SUM(mont) AS monto FROM movimiento_egreso
+					GROUP BY agen,fech,fapr
+				)
+				AS egreso ON
+				egreso.agen=agencia.obse  AND egreso.fapr=cyp.fech
 
-			-- EGRESO
-			LEFT JOIN (
-				SELECT agen, fech,fapr, SUM(mont) AS monto FROM movimiento_egreso
-				GROUP BY agen,fech,fapr
-			)
-			AS egreso ON
-			egreso.agen=saldo_agencia.obse  AND egreso.fapr=saldo_agencia.fech
+				-- PRESTAMOS
+				LEFT JOIN (
+					SELECT agen, fech, SUM(mont) AS monto, SUM(mcuo) AS cuota FROM movimiento_prestamo
+					GROUP BY agen,fech)
+				AS prestamo ON
+				prestamo.agen=agencia.obse AND prestamo.fech=cyp.fech
 
-			-- PRESTAMOS
-			LEFT JOIN (
-				SELECT agen, fech, SUM(mont) AS monto, SUM(mcuo) AS cuota FROM movimiento_prestamo
-				GROUP BY agen,fech)
-			AS prestamo ON
-			prestamo.agen=saldo_agencia.obse AND prestamo.fech=saldo_agencia.fech
 
-			-- VIENEN
-			-- LEFT JOIN cobrosypagos ON cobrosypagos.fech=saldo_agencia.fech
-			-- AND cobrosypagos.oida=saldo_agencia.oid
+				LEFT JOIN (
+					--SELECT saldo_agencia.oid, saldo_agencia.fech, saldo_agencia.saldo,
+					--	debe.monto AS entregado, haber.monto AS recibido,
+					--	ingreso.monto AS ingreso, egreso.monto AS egreso,
+					--	prestamo.monto AS prestamo,prestamo.cuota AS cuota
+					--FROM (
+					SELECT agencia.oid,agencia.obse, lotepar.fech, SUM(lotepar.saldo) AS saldo
+					FROM agencia
+					JOIN zr_agencia ON agencia.oid=zr_agencia.oida
+					JOIN (
+						SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria
+						UNION
+						SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+					) AS lotepar ON zr_agencia.codi=lotepar.agen
 
-			) AS f
-			ON cpc.fech=f.fech
+					WHERE agencia.obse='` + data.Agencia + `'  ` + fecha + `
+					GROUP BY agencia.oid,agencia.obse,lotepar.fech
+				) AS saldo_agencia ON saldo_agencia.obse=agencia.obse AND saldo_agencia.fech=cyp.fech
 
-			-- VIENEN
-			LEFT JOIN cobrosypagos cyp ON cyp.fech=cpc.fech
-			INNER JOIN agencia ON cyp.oida=agencia.oid
-			WHERE agencia.obse='` + data.Agencia + `' AND cyp.oida=agencia.oid
 
-	`
+				WHERE agencia.obse='` + data.Agencia + `' AND cyp.oida=agencia.oid
+				ORDER BY fech`
 	return
 }
 
@@ -657,8 +676,9 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 	//fecha control
 	//var fecha string = time.Now().String()[0:10]
 	//fmt.Println(p.Cierre)
-	row, err := sys.PostgreSQL.Query(gCPGrupoDiario(p.Fecha))
-	//fmt.Println(gCPGrupoDiario(p.Fecha))
+	s := gCPGrupoDiario(p.Fecha)
+	row, err := sys.PostgreSQL.Query(s)
+	//fmt.Println(s)
 	if err != nil {
 		return
 	}
@@ -735,9 +755,12 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 		pago.Estatus = esta
 		pago.Observacion = util.ValidarNullString(nomb)
 		auxiliarFecha := util.ValidarNullString(fvien)
+		fmt.Println(auxiliarFecha)
 		if auxiliarFecha != "" {
+
 			auxiliarFecha = auxiliarFecha[0:10]
 		} else {
+
 			pago.Estatus = 1
 		}
 		pago.Fecha = auxiliarFecha
@@ -861,7 +884,7 @@ func gCPGrupoDiario(fecha string) (s string) {
 
 				WHERE A.fech = ` + fecha + `
 				--AND g.freq=4
-				--AND g.obse != '0'
+				--AND g.obse != 'AGE. DIRECTAS'
 				GROUP BY g.oid, s.oid,  s.arch
 				ORDER BY g.oid
 				) AS b ON g.oid=B.goid
@@ -979,7 +1002,7 @@ func gCPGrupoParticipacionDiaria(fecha string) (s string) {
 
 					WHERE A.fech ='` + fecha + `'
 					--AND g.freq=1
-					--AND g.obse != '0'
+					--AND g.obse != 'AGE. DIRECTAS'
 					GROUP BY g.oid, agencia.obse, s.oid,  s.arch
 					ORDER BY g.oid
 				) AS b ON g.oid=B.goid
@@ -1133,7 +1156,7 @@ func gCPGrupoMensual(fecha string) (s string) {
 			JOIN sistema s ON s.oid=A.sist
 
 			WHERE A.fech BETWEEN '2017-01-01 00:00:00'::TIMESTAMP AND '2017-01-31 23:59:59'::TIMESTAMP
-			AND g.obse != '0'
+			AND g.obse != 'AGE. DIRECTAS'
 			GROUP BY g.oid
 			ORDER BY g.oid
 		) AS b
@@ -1166,7 +1189,7 @@ func gCPGrupoMensualQueda(fecha string) (lst map[string][]CobrosYPagos) {
 
 			WHERE A.fech BETWEEN '2017-01-01 00:00:00'::TIMESTAMP AND '2017-01-31 23:59:59'::TIMESTAMP
 			AND g.freq=4
-			AND g.obse != '0'
+			AND g.obse != 'AGE. DIRECTAS'
 
 
 			GROUP BY g.oid, A.sist, s.arch

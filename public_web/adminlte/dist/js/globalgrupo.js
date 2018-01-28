@@ -1,3 +1,5 @@
+
+var _TIPO = 0; //Tipo de Seleccion
 var opciones = {
     "paging": true,
     "ordering": true,
@@ -24,6 +26,7 @@ $(function () {
     if ($('#cuentahaber').val() != undefined) LCuentaM();
     if ($('#estado').val() != undefined) LEstado();
     if ($('#taquilla').val() != undefined) LProgramas();
+    if($('#mdlER').html() != undefined) LCuentaB();
     CargarPerfil();
     CargarCalendario();
 
@@ -67,12 +70,12 @@ function CargarPerfil() {
         var data = JSON.stringify({ id: 1 });
         $.post("api/perfil/comercializadora", data)
             .done(function (data) {
-                sessionStorage.setItem('perfil', JSON.stringify(data));               
+                sessionStorage.setItem('perfil', JSON.stringify(data));
                 $("#lblGastos").html(parseFloat(data.gastos).toFixed(2) + " Bs.");
             });
     } else {
         if ($("#lblGastos").html() != undefined) {
-            perfil = JSON.parse(sessionStorage.perfil);            
+            perfil = JSON.parse(sessionStorage.perfil);
             $("#lblGastos").html(parseFloat(perfil.gastos).toFixed(2) + " Bs.");
             $.each(perfil.lgrupo, function(c, v){
                 console.log(v.nombre);
@@ -84,7 +87,7 @@ function CargarPerfil() {
 function LGrupos(){
     perfil = JSON.parse(sessionStorage.perfil);
     $.each(perfil.lgrupo, function(c, v){
-        $("#listagrupo").append(ListarGrupos(v.nombre));  
+        $("#listagrupo").append(ListarGrupos(v.nombre));
     });
 }
 
@@ -94,7 +97,8 @@ function LGrupos(){
 function LCuentaM(id) {
     $('#cuentadebe').html('<option value="--" >Seleccionar...</option>');
     $('#cuentahaber').html('<option value="--" >Seleccionar...</option>');
-    $.getJSON("api/movimiento/listarcuentas")
+    var data = JSON.stringify({operacion:0});
+    $.post("api/movimiento/listarcuentas", data)
         .done(function (data) {
             $.each(data, function (c, v) {
                 $('#cuentadebe').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.nombre + '</option>');
@@ -102,6 +106,21 @@ function LCuentaM(id) {
             })
         });
 }
+/**
+ * Listar Cuentas para Bancos
+ */
+function LCuentaB() {
+
+    $('#cuentaer').html('<option value="--" >Seleccionar...</option>');
+    var data = JSON.stringify({operacion:1});
+    $.post("api/movimiento/listarcuentas", data)
+        .done(function (data) {
+            $.each(data, function (c, v) {
+                $('#cuentaer').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.nombre + '</option>');
+            })
+        });
+}
+
 
 
 /**
@@ -168,7 +187,7 @@ function LProgramas() {
         "info": false,
         "searching": false
     });
-   
+
     var data = JSON.stringify({ id: 3 });
 
     var table = $('#tblprograma').DataTable({
@@ -194,7 +213,7 @@ function LProgramas() {
         });
 
 
-  
+
 
 
 }
@@ -833,13 +852,14 @@ function GC(tipo) {
     var data = JSON.stringify({
         fecha: fecha
     });
-
-    $.post("api/balance/cobrosypagos", data)
+    url = evalTipo();
+    $.post(url, data)
         .done(function (data) {
             t.clear().draw();
-            var i = 1;
+            var i = 0;
+
             $.each(data, function (c, v) {
-                console.log(v);
+
                 vienen = v.vienen == null ? 0 : v.vienen;
                 saldo = v.saldo == null ? 0 : v.saldo;
                 ingreso = v.ingreso == null ? 0 : v.ingreso;
@@ -853,20 +873,34 @@ function GC(tipo) {
                 x = parseFloat(entregado) - parseFloat(recibido);
                 //console.log("SALDO: " + v.saldo + " X: " + x + " MOVIMIENTO : " + movimiento);
                 total = vienen + parseFloat(saldo) + movimiento + x;
-                accion = btnAccion(v.agencia, total);
-                i++
-                if (v.estatus != null) {
-                    if (v.estatus == 1) {
-                        accion = "";
-                        t.column(0).visible(false); //Ocultar la columna 0
-                    }
+
+                if ($("#txtSeleccion").val() == "0"){
+                    accion = btnAccion(c, v.observacion, total);
+                    nombre =  v.observacion;
+                }else{
+                    accion = btnAccion(v.oid, v.agencia, total);
+                    nombre = v.agencia;
                 }
+
+                i++;
+                if(i == 1){
+
+                  if (v.estatus != null) {
+
+                      if (v.estatus == 1) {
+                          accion = "";
+                          t.column(0).visible(false); //Ocultar la columna 0
+                      }
+                  }
+                }
+
+
                 switch (parseInt(tipo)) {
                     case 0:
                         //console.log('CERO... ');
                         t.row.add([
                             accion,
-                            v.agencia,
+                            nombre,
                             vienen.toFixed(2),
                             saldo.toFixed(2),
                             movimiento.toFixed(2),
@@ -876,10 +910,10 @@ function GC(tipo) {
                         break;
                     case 1:
                         //console.log('UNO... ');
-                        if (total > 0) {
+                        if (total >= 0) {
                             t.row.add([
                                 accion,
-                                v.agencia,
+                                nombre,
                                 vienen.toFixed(2),
                                 saldo.toFixed(2),
                                 movimiento.toFixed(2),
@@ -890,10 +924,10 @@ function GC(tipo) {
                         break;
                     default:
                         //console.log('DOS... ');
-                        if (total <= 0) {
+                        if (total < 0) {
                             t.row.add([
                                 accion,
-                                v.agencia,
+                                nombre,
                                 vienen.toFixed(2),
                                 saldo.toFixed(2),
                                 movimiento.toFixed(2),
@@ -905,10 +939,32 @@ function GC(tipo) {
                 }
 
 
-            })
+            });
             $("#cargando").hide();
 
         })
+}
+
+/**
+ *
+ */
+function evalTipo(){
+    var url = "";
+    switch ($("#txtSeleccion").val()) {
+        case "0":
+            url = "api/balance/cobrosypagosgrupo";
+            break;
+        case "1":
+            url =  "api/balance/cobrosypagoscolector";
+            break;
+        case "2":
+            url =  "api/balance/cobrosypagos";
+            break;
+        default:
+            url = "api/balance/cobrosypagosgrupo";
+            break;
+    }
+    return url;
 }
 
 /**
@@ -919,7 +975,7 @@ function tableGC() {
             <thead>\
               <tr>\
                 <th style="width: 60px">#</th>\
-                <th>Agencia</th>\
+                <th>Grupo</th>\
                 <th>S. Ant.</th>\
                 <th>S. Día</th>\
                 <th>Movimiento</th>\
@@ -935,7 +991,7 @@ function tableGC() {
 /**
  *
  */
-function btnAccion(valor, monto) {
+function btnAccion(valor, texto, monto) {
     s = '<div class="btn-group">\
         <button type="button" class="btn btn-success">\
         <span class="fa fa-cogs"></span></button>\
@@ -945,35 +1001,43 @@ function btnAccion(valor, monto) {
         <span class="sr-only">Toggle Dropdown</span>\
         </button>\
         <ul class="dropdown-menu" role="menu">\
-            <li><a href="#" onclick="mdlE(\'mdlMovimiento\',\'\' , \'' + valor + '\', \'' + monto + '\')">Registrar Movimiento</a></li>\
+            <li><a href="#" onclick="mdlE(\'mdlMovimiento\',\'\' , \'' + valor + '\', \'' + monto + '\', \'' + texto + '\')">Registrar Movimiento</a></li>\
             <li class="divider"></li>\
-            <li><a href="#" onclick="mdlE(\'mdlER\',\'er\', \'' + valor + '\', \'' + monto + '\')">Registrar +E -R</a></li>\
-            <li><a href="#" onclick="mdlE(\'mdlPre\',\'pre\', \'' + valor + '\', \'' + monto + '\')">Registrar Prestamos </a></li>\
-            <li><a href="#" onclick="mdlE(\'mdlEC\',\'ec\', \'' + valor + '\', \'' + monto + '\');">Estado de Cuenta </a></li>\
+            <li><a href="#" onclick="mdlE(\'mdlER\',\'er\', \'' + valor + '\', \'' + monto + '\', \'' + texto + '\')">Registrar +E -R</a></li>\
+            <li><a href="#" onclick="mdlE(\'mdlPre\',\'pre\', \'' + valor + '\', \'' + monto + '\', \'' + texto + '\')">Registrar Prestamos </a></li>\
+            <li><a href="#" onclick="mdlE(\'mdlEC\',\'ec\', \'' + valor + '\', \'' + monto + '\', \'' + texto + '\');">Estado de Cuenta </a></li>\
         </ul>\
     </div>';
     return s
 }
 
-
+/**
+ *
+ */
 function GCD() {
     fecha = $("#fecha").val();
+    fecha = fecha.replace(/-/g, "/");
+    fecha = OperarFecha(fecha, -1);
     var data = JSON.stringify({
-        fecha: fecha
+        fecha: fecha,
+        cierre: 1
     });
     console.log(data);
 
     $.post("api/balance/cierrediario", data)
         .done(function (data) {
             $.notify("Proceso exitos: Se han generado todos los eventos del día siguiente...", "success");
-        });
+    });
 
 }
+
 /**
+*
  */
-function mdlE(id, cod, valor, monto) {
+function mdlE(id, cod, valor, monto, texto) {
 
     $('#cod' + cod).html(valor);
+    $('#cod' + cod + 't').html(texto);
     $('#' + id).modal('show');
     $('#montoer').val(monto);
 
@@ -1173,7 +1237,6 @@ function TablaEstadoCuenta(fila, buscar) {
  * Listar Totales de los saldos para estado de Cuenta
  *
  */
-
 function PTotalesDetalles(desde, hasta, data) {
     rS = EstadoCuenta();
     var fila = RecorreFechas(desde, hasta, rS);
@@ -1265,15 +1328,32 @@ function RecorreFechas(desde, hasta, rS) {
  *
  */
 function RegistrarER() {
+    monto = parseFloat($("#montoer").val());
+    if ( monto < 0){
+        monto = parseFloat($("#montoer").val()) *- 1;
+    }
+    grupo = 0;
+    agencia = 0;
+    sel = parseInt($("#txtSeleccion").val());
+    codigo = parseInt($("#coder").html());
+    if(sel == 0 ){
+      grupo = codigo;
+    }else if(sel == 2){
+      agencia = codigo;
+    }
     var EntregadoRecibido = JSON.stringify({
-        agencia: $("#coder").html(),
+        oid : agencia,
+        subgrupo : 0,
+        colector : 0,
+        grupo: grupo,
         estatus: 1,
         fecha: $("#fechadere").val(),
-        fechaaprobado: $("#fechadere").val(),
+        fechaaprobado: $("#lblFechade").html(),
+        fechaoperacion: $("#fecha").val(),
         deposito: $("#fechadepositore").val(),
         forma: parseInt($("#tipoer option:selected").val()), //0 Entregado: DEBE 1 Recibido:HABER
         banco: parseInt($("#cuentaer option:selected").val()),
-        monto: parseFloat($("#montoer").val()),
+        monto: monto,
         voucher: $("#voucer").val(),
         observacion: $("#descripcioner").val()
     });
@@ -1282,8 +1362,9 @@ function RegistrarER() {
     $.post(url, EntregadoRecibido)
         .done(function (data) {
             $('#mdlER').modal('hide');
-            $.notify("El registro ha sido exitoso, si desea verlo en pantalla presione F5.", "success");
+            $.notify("El registro ha sido exitoso, si desea verlo en pantalla presione F5.", "success");ss
             $("#voucer").val('');
+            GC(0);
         });
 
 }
@@ -1365,9 +1446,55 @@ function RPago() {
 }
 
 /**
+ * Registrar Movimiento Individual
+ */
+function RPagoMI() {
+    dep = $("#fechade").val();
+    mon = $("#monto").val();
+    vouc = $("#numoperacion").val();
+    if (dep == "") {
+        $.notify("Debe introducir una fecha ", "warn");
+        return false;
+    }
+    if (mon == "") {
+        $.notify("Debe introducir un monto ", "warn");
+        return false;
+    }
+
+    var Pago = JSON.stringify({
+        comercializadora: 0,
+        grupo: parseInt($("#cod").html()),
+        subgrupo: 0,
+        colector: 0,
+        agenciacod: 0,
+        voucher: vouc,
+        fecha: dep,
+        cuentadebe: parseInt($("#cuentadebe").val()),
+        tipodebe: parseInt($("#tipodebe").val()),
+        cuentahaber: parseInt($("#cuentahaber").val()),
+        tipohaber: parseInt($("#tipohaber").val()),
+        monto: parseFloat(mon),
+        observacion: $("#descripcion").val()
+    });
+
+    $.post("api/movimiento/registrar", Pago)
+        .done(function (data) {
+            $("#cuentadebe option:selected").val('--');
+            $("#cuentahaber option:selected").val('--');
+            $("#tipodebe option:selected").val('--');
+            $("#tipohaber option:selected").val('--');
+            $("#monto").val('');
+            $("#descripcion").val('');
+            $("#numoperacion").val('');
+            $.notify("Se ha registrado el movimiento", "success");
+            LPago();
+        });
+
+}
+
+/**
  * Listar Recibos de Pagos Movimiento (Entregado y Recibidos)
  */
-
 function LPago() {
     dep = $("#fechade").val();
     var Pago = JSON.stringify({
@@ -1479,6 +1606,9 @@ function ValidarRegistro() {
     return true
 }
 
+/**
+ * Registrar Grupos
+ */
 function RegistrarGrupo() {
     if (ValidarRegistro() == false) return;
 
@@ -1528,11 +1658,18 @@ function RegistrarGrupo() {
         });
 }
 
+/**
+ * Validar participacion
+ */
 function ValidarPar() {
     if (parseFloat($("#participacion").val()) > 0) {
         $("#queda").val('0');
     }
 }
+
+/**
+ * Validar Queda
+ */
 function ValidarQueda() {
     if (parseFloat($("#queda").val()) > 0) {
         $("#participacion").val('0');
@@ -1552,6 +1689,9 @@ function agregarCajas() {
 
 }
 
+/**
+ * Listar Grupos
+ */
 function ListarGrupos(grupo){
     var s = '<div class="col-md-4">\
     <div class="box box-widget widget-user-2">\
@@ -1573,4 +1713,31 @@ function ListarGrupos(grupo){
           </div>\
         </div>';
     return s;
+}
+
+
+
+/**
+ * Seleccionar Grupo
+ */
+function SeSubGrupo(){
+    $("#txtSeleccion").val("0");
+    $("#btnSeleccion").html('Grupo&nbsp;&nbsp;<span class="fa fa-caret-down"></span>');
+}
+
+/**
+ * Seleccionar el Colector
+ */
+function SeColector(){
+    $("#txtSeleccion").val("1");
+    $("#btnSeleccion").html('Colector&nbsp;&nbsp;<span class="fa fa-caret-down"></span>');
+}
+
+
+/**
+ * Seleccionar la Agencia
+ */
+function SeAgencia(){
+    $("#txtSeleccion").val("2");
+    $("#btnSeleccion").html('Agencia&nbsp;&nbsp;<span class="fa fa-caret-down"></span>');
 }

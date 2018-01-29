@@ -107,7 +107,6 @@ func WAPI() {
 	//PERFIL DE LA Comercializadora
 	Enrutador.HandleFunc(url+"perfil/comercializadora", Comercializadora.Consultar).Methods("POST")
 
-
 	//TRANSFERENCIAS REGISTRO Y SOLICITUD
 	Enrutador.HandleFunc(url+"transferencia/registrar", Transferencia.Registrar).Methods("POST")
 	Enrutador.HandleFunc(url+"transferencia/listaagencia", Transferencia.ListarAgencia).Methods("POST")

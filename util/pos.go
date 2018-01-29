@@ -12,12 +12,13 @@ import (
 )
 
 //LeerPos Archivos de Loteria
-func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
-	a.iniciarVariable("loteria")
+func (a *Archivo) LeerPos(ch chan []byte, tipo string) (bool, string) {
+	posicionarchivo, fig := TipoArchivo(tipo)
+	a.iniciarVariable(fig)
 	insertar := a.Cabecera
 	var coma string
 
-	oid, b := a.CrearTraza(tipo, Loteria)
+	oid, b := a.CrearTraza(posicionarchivo, Loteria)
 	if b != nil {
 		m.Msj = "E# : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
@@ -55,7 +56,7 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
 					premio, comision := strings.Trim(linea[l-1], " "), strings.Trim(linea[l-2], " ")
 					insertar += "('" + agencia + "'," + venta + "," + premio + ","
 					insertar += comision + ",1,'" + a.Fecha + "',Now(),"
-					insertar += strconv.Itoa(tipo) + "," + strconv.Itoa(oid) + ")"
+					insertar += strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 					a.Salvar = true
 				}
 				a.CantidadLineas++
@@ -63,12 +64,12 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
 		}
 	}
 	m.Tipo = 33
-	m.Msj = "#" + a.NombreDelArchivo + " (" + strconv.Itoa(tipo) + ") Sin Registros"
+	m.Msj = "#" + a.NombreDelArchivo + " (" + strconv.Itoa(posicionarchivo) + ") Sin Registros"
 	if a.Salvar {
 		r, err := a.PostgreSQL.Exec(insertar)
 		if err != nil {
 			m.Tipo = 33
-			m.Msj = "E#" + a.NombreDelArchivo + " (" + strconv.Itoa(tipo) + ") " + err.Error()
+			m.Msj = "E#" + a.NombreDelArchivo + " (" + strconv.Itoa(posicionarchivo) + ") " + err.Error()
 			fmt.Println(m.Msj)
 		} else {
 			m.Tipo = 1
@@ -86,4 +87,37 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo int) (bool, string) {
 	ch <- j
 	a.Canal <- j
 	return true, insertar
+}
+
+func TipoArchivo(tipo string) (posicionarchivo int, fig string) {
+
+	switch tipo {
+	case "1t":
+		posicionarchivo = 2
+		fig = "loteria"
+		break
+	case "2t":
+		posicionarchivo = 3
+		fig = "loteria"
+		break
+	case "3t":
+		posicionarchivo = 4
+		fig = "loteria"
+		break
+	case "1f":
+		posicionarchivo = 15
+		fig = "loteria"
+		break
+	case "2f":
+		posicionarchivo = 16
+		fig = "loteria"
+		break
+	case "3f":
+		posicionarchivo = 17
+		fig = "loteria"
+		break
+	default:
+	}
+
+	return
 }

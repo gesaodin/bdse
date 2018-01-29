@@ -223,13 +223,15 @@ func (G *GPanel) SubirArchivoLoteria(w http.ResponseWriter, r *http.Request) {
 			fmt.Fprintln(w, err)
 			return
 		}
-		fmt.Fprintf(w, "Archivo "+files[i].Filename+" enviado..."+"\n")
 
+		fmt.Fprintf(w, "Archivo "+files[i].Filename+" enviado..."+"\n")
 		usuario := session.Values["usuario"].(string)
 		cadena := strings.Split(files[i].Filename, "-")
 		codigo := strings.Trim(cadena[0], " ")
-		valor := strings.Split(strings.Split(strings.Trim(cadena[1], " "), ".")[0], " ")
-		fecha = valor[2] + "-" + valor[1] + "-" + valor[0]
+		valor := strings.Split(cadena[3], ".")
+
+		fecha = valor[0] + "-" + cadena[2] + "-" + cadena[1]
+		fmt.Println(fecha)
 		tipoArchivo(fecha, files[i].Filename, usuario, codigo)
 
 	}
@@ -253,6 +255,7 @@ func (G *GPanel) Logout(w http.ResponseWriter, r *http.Request) {
 
 //Identificar el archivo que se está cargado
 func tipoArchivo(f string, s string, usuario string, codigo string) {
+	fmt.Println("Controlando los datos")
 	var archivo = util.Archivo{}
 	archivo.Ruta = "public/temp/loteria/"
 	// archivo.NombreDelArchivo = f + s
@@ -261,12 +264,14 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	archivo.PostgreSQL = sys.PostgreSQL
 	archivo.Canal = Mensajeria.Usuario["gpanel"].ch
 	archivo.Fecha = f
-	switch strings.ToLower(codigo) {
-	case "mat":
-		go archivo.LeerMaticlo(Mensajeria.Usuario[usuario].ch)
+	tipo := strings.ToLower(codigo[2:3])
+
+	switch strings.ToLower(codigo[:2]) {
+	case "ma":
+		go archivo.LeerMaticlo(Mensajeria.Usuario[usuario].ch, tipo)
 		return
-	case "mot":
-		go archivo.LeerMorpheus(Mensajeria.Usuario[usuario].ch)
+	case "mo":
+		go archivo.LeerMorpheus(Mensajeria.Usuario[usuario].ch, tipo)
 		return
 	case "p1t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 2)

@@ -10,11 +10,18 @@ import (
 )
 
 //LeerMorpheus Archivo de loteria, ch chan []byte
-func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
-	a.iniciarVariable("loteria")
+func (a *Archivo) LeerMorpheus(ch chan []byte, tipo string) (bool, string) {
+	fig := "loteria"
+	posicionarchivo := 1
+	if tipo == "f" {
+		fig = "figura"
+		posicionarchivo = 14
+	}
+	a.iniciarVariable(fig)
 	insertar := a.Cabecera
 	var coma string
-	oid, b := a.CrearTraza(1, Loteria)
+
+	oid, b := a.CrearTraza(posicionarchivo, Loteria)
 	if b != nil {
 		m.Msj = "E# Morpheus: " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
@@ -45,7 +52,7 @@ func (a *Archivo) LeerMorpheus(ch chan []byte) (bool, string) {
 				agencia, venta := strings.Trim(linea[1], " "), strings.Trim(linea[3], " ")
 				premio, comision := strings.Trim(linea[5], " "), strings.Trim(linea[7], " ")
 				insertar += "('" + agencia + "'," + venta + "," + premio + ","
-				insertar += comision + ",1,'" + a.Fecha + "',Now(),1," + strconv.Itoa(oid) + ")"
+				insertar += comision + ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 				a.Salvar = true
 			}
 			a.CantidadLineas++

@@ -12,13 +12,20 @@ import (
 )
 
 //LeerMaticlo Archivo en formato XLS 97-2003
-func (a *Archivo) LeerMaticlo(ch chan []byte) (bool, string) {
-	a.iniciarVariable("loteria")
+func (a *Archivo) LeerMaticlo(ch chan []byte, tipo string) (bool, string) {
+
+	fig := "loteria"
+	posicionarchivo := 5
+	if tipo == "f" {
+		fig = "figura"
+		posicionarchivo = 13
+	}
+	a.iniciarVariable(fig)
+
 	insertar := a.Cabecera
 	var coma string
 	contar := 0
-
-	oid, b := a.CrearTraza(5, Loteria)
+	oid, b := a.CrearTraza(posicionarchivo, Loteria)
 	if b != nil {
 		m.Msj = "E# Maticlot : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
@@ -55,13 +62,13 @@ func (a *Archivo) LeerMaticlo(ch chan []byte) (bool, string) {
 					} else {
 						coma = ""
 					}
-					insertar += coma
 					re := regexp.MustCompile(`[-()]`)
 					agen := re.Split(cel[2], -1)
 					agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[4], " ")
 					premio, comision := strings.Trim(cel[6], " "), strings.Trim(cel[5], " ")
+					insertar += coma
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
-					insertar += ",1,'" + a.Fecha + "',Now(),5," + strconv.Itoa(oid) + ")"
+					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 					a.Salvar = true
 				}
 

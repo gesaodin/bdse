@@ -262,40 +262,40 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	archivo.Canal = Mensajeria.Usuario["gpanel"].ch
 	archivo.Fecha = f
 	switch strings.ToLower(codigo) {
-	case "ma":
+	case "mat":
 		go archivo.LeerMaticlo(Mensajeria.Usuario[usuario].ch)
 		return
-	case "mo":
+	case "mot":
 		go archivo.LeerMorpheus(Mensajeria.Usuario[usuario].ch)
 		return
-	case "p1":
+	case "p1t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 2)
 		return
-	case "p2":
+	case "p2t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 3)
 		return
-	case "p3":
+	case "p3t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 4)
 		return
-	case "sp":
+	case "spp":
 		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
 		return
-	case "il":
+	case "ilp":
 		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch)
 		return
-	case "cy":
+	case "cyp":
 		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)
 		return
-	case "a1":
+	case "a1t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 9)
 		return
-	case "a2":
+	case "a2t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 10)
 		return
-	case "a3":
+	case "a3t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 11)
 		return
-	case "t1":
+	case "t1t":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 12)
 		return
 	default:

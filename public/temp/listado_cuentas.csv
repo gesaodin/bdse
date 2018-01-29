@@ -1,0 +1,72 @@
+Código;Nombre;Número;Permite;estatus
+100;Banco Provincial;9045;1;1
+101;Banco Provincial;9993;1;1
+102;Banco Provincial;8578;1;1
+103;Banco Provincial;1107;1;1
+104;Banco Provincial;1176;1;1
+105;Banco Mercantil;1829;1;1
+106;Banco Mercantil;4383;1;1
+107;Banco Mercantil;1810;1;1
+108;Banco Mercantil;2069;1;1
+109;Banco Banesco;6548;1;1
+110;Banco Banesco;6549;1;1
+111;Banco Banesco;5488;1;1
+112;Banco Banesco;2336;1;1
+113;Banco Sofitasa;3536;1;1
+114;Banco Sofitasa;3531;1;1
+115;Banco Sofitasa;8301;1;1
+116;Banco Del Sur;5887;1;1
+117;Banco Activo;9600;1;1
+118;Banco Occidental de Descuento;0532;1;1
+119;Banco Fondo Común;0499;1;1
+120;Banco del Caribe;7740;1;1
+121;Banco Nacional de Crédito;;1;1
+122;Banco de Venezuela;;1;1
+123;Banco Bicentenario;;1;1
+200;Venta de Cpu;;0;0
+201;Venta de Monitor;;0;0
+202;Venta de Teclado;;0;0
+203;Venta de Modems;;0;0
+204;Venta de Regulador;;0;0
+205;Venta de Impresora;;0;0
+206;Venta de Rollos;;0;0
+207;Venta de Cables de Red;;0;0
+208;Venta de Cables de Poder;;0;0
+209;Venta de Routers;;0;0
+210;Venta de Swicths;;0;0
+300;Compras Generales;;0;0
+301;Compras de Laptos;;0;0
+400;Gastos Por Conexiones Mobiles;;0;0
+401;Conexiones Cable Inter Cantv;;0;0
+402;Gastos General Oficina Mérida;;0;0
+403;Gastos Viáticos Oficina Mérida;;0;0
+404;Gastos Viáticos Oficina Valencia;;0;0
+405;Alquiler Locales A.P.;;0;0
+406;Servicios Públicos Luz;;0;0
+407;Servicios Públicos Agua;;0;0
+408;Servicios Públicos Aseo;;0;0
+409;Alquiler de Sistemas;;0;0
+410;Pago de Estacionamientos;;0;0
+411;Pago de Condominios;;0;0
+412;Alquiler Locales Oficina;;0;0
+413;Débitos Cuotas Préstamo Banco;;0;0
+414;Gastos Apto. Blanca;;0;0
+415;Gastos Mnto. Propiedades;;0;0
+416;Gastos Casa Valencia;;0;0
+417;Gastos General Oficina Valencia;;0;0
+418;Gastos Personal Alex Mérida;;0;0
+419;Gastos Personal Alex Valencia;;0;0
+420;Reversos Pendiente;;0;0
+421;Repuestos Vehículos Alex;;0;0
+422;Repuestos Vehículos Pierina;;0;0
+423;Viáticos A.P.;;0;0
+500;Pago de Nomina A.P.M.;;0;0
+501;Pago de Nomina A.P.V.;;0;0
+502;Pago de Nomina O.M.;;0;0
+503;Pago de Nomina O.V.;;0;0
+504;Pago de Liquidación;;0;0
+505;Pago de Vacaciones;;0;0
+506;Pago de Utilidades;;0;0
+507;Pago Horas Extras;;0;0
+508;Pago de Bonos;;0;0
+600;Cuentas Intermediario Caracas Global;;0;0

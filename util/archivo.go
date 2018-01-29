@@ -183,12 +183,11 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 		saldo := linea[1]
 		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
 		sql = `INSERT INTO cobrosypagos (oida, fech, vien) VALUES (` + dondeagencia + `,'2016-12-31'::TIMESTAMP,` + saldo + `);`
+
 		_, err = a.PostgreSQL.Exec(sql)
 		if err != nil {
 			fmt.Println(err.Error())
 		}
-
-		//fmt.Println(sql)
 
 	}
 	sql = `INSERT INTO cobrosypagos_grupo (oidg,fech,vien,sald,movi,van,erec)
@@ -203,6 +202,7 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 	return true
 }
 
+//LeerEntregados Saldos del sistema
 func (a *Archivo) LeerEntregados() bool {
 	var sql string
 
@@ -252,6 +252,7 @@ func (a *Archivo) LeerEntregados() bool {
 	return true
 }
 
+//LeerEntregadosGrupo Saldos del sistema
 func (a *Archivo) LeerEntregadosGrupo() bool {
 	var sql string
 
@@ -300,6 +301,7 @@ func (a *Archivo) LeerEntregadosGrupo() bool {
 	return true
 }
 
+//LeerEntregadosOficina Saldos del sistema
 func (a *Archivo) LeerEntregadosOficina() bool {
 
 	archivo, err := os.Open("public/temp/EOAD012017.csv")

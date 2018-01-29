@@ -70,7 +70,11 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	estatus := strconv.Itoa(data.Estatus)
 	aprobado := ""
 	campo := ""
+<<<<<<< HEAD
 	campofechaperacopm := ""
+=======
+	campo_oper := ""
+>>>>>>> 92de871c88dfc11fea1ab0a5d68428a6f7ebd2e2
 	operacion := ""
 	if data.FechaAprobado != "" {
 		campo = "fapr,"
@@ -78,7 +82,7 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	}
 
 	if data.FechaOperacion != "" {
-		campofechaperacopm = "fope,"
+		campo_oper = "fope,"
 		operacion = "'" + data.FechaOperacion + "',"
 	}
 
@@ -86,7 +90,7 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 		agencia = "(SELECT obse FROM agencia WHERE oid=" + strconv.Itoa(data.Oid) + ")"
 	}
 
-	s := "INSERT INTO " + tabla + " (comer,grupo,subgr,colec,oida,agen,mont,vouc,fdep,freg," + campofechaperacopm + campo + "tipo,banc,esta,obse) VALUES "
+	s := "INSERT INTO " + tabla + " (comer,grupo,subgr,colec,oida,agen,mont,vouc,fdep,freg," + campo_oper + campo + "tipo,banc,esta,obse) VALUES "
 	s += "(" + strconv.Itoa(data.Banca) + "," + strconv.Itoa(data.Grupo) + "," + strconv.Itoa(data.SubGrupo)
 	s += "," + strconv.Itoa(data.Colector) + "," + strconv.Itoa(data.Oid)
 	s += "," + agencia + "," + monto + ",'" + data.Voucher + "',"

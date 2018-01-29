@@ -70,7 +70,11 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	estatus := strconv.Itoa(data.Estatus)
 	aprobado := ""
 	campo := ""
+<<<<<<< HEAD
+	campofechaperacopm := ""
+=======
 	campo_oper := ""
+>>>>>>> 92de871c88dfc11fea1ab0a5d68428a6f7ebd2e2
 	operacion := ""
 	if data.FechaAprobado != "" {
 		campo = "fapr,"

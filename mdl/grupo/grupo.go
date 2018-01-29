@@ -77,7 +77,7 @@ func (g *Grupo) Registrar() (jSon []byte, err error) {
 	frecuencia := strconv.Itoa(g.Frecuencia)
 	negociacion := strconv.Itoa(g.Negociacion)
 	parroquia := strconv.Itoa(g.Localizacion.IDParroquia)
-	s := ` INSERT INTO grupo (comer,obse,resp,fneg,trip,term,qued,part,calc,freq,tipo) VALUES  `
+	s := `INSERT INTO grupo (comer,obse,resp,fneg,trip,term,qued,part,calc,freq,tipo) VALUES  `
 	s += ` (1,'` + g.Nombre + `',1,'` + g.FechaNegociacion + `',` + triple + `,`
 	s += terminal + `,` + queda + `,` + participacion + `,` + negociacion + `,` + frecuencia + `,0) RETURNING oid`
 

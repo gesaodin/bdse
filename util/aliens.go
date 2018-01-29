@@ -12,8 +12,8 @@ import (
 )
 
 //LeerPos Archivos de Loteria
-func (a *Archivo) LeerPos(ch chan []byte, tipo string) (bool, string) {
-	posicionarchivo, fig := TipoArchivo(tipo)
+func (a *Archivo) LeerAliens(ch chan []byte, tipo string) (bool, string) {
+	posicionarchivo, fig := TipoArchivoAliens(tipo)
 	a.iniciarVariable(fig)
 	insertar := a.Cabecera
 	var coma string
@@ -89,19 +89,19 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo string) (bool, string) {
 	return true, insertar
 }
 
-func TipoArchivo(tipo string) (posicionarchivo int, fig string) {
+func TipoArchivoAliens(tipo string) (posicionarchivo int, fig string) {
 
 	switch tipo {
 	case "1t":
-		posicionarchivo = 2
+		posicionarchivo = 9
 		fig = "loteria"
 		break
 	case "2t":
-		posicionarchivo = 3
+		posicionarchivo = 10
 		fig = "loteria"
 		break
 	case "3t":
-		posicionarchivo = 4
+		posicionarchivo = 11
 		fig = "loteria"
 		break
 	case "1f":

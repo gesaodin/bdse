@@ -292,14 +292,14 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	case "cyp":
 		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)
 		break
-	case "a1t":
-		// go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 9)
+	case "a1":
+		go archivo.LeerAliens(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
-	case "a2t":
-		// go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 10)
+	case "a2":
+		go archivo.LeerAliens(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
-	case "a3t":
-		// go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 11)
+	case "a3":
+		go archivo.LeerAliens(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
 	case "t1t":
 		// go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 12)

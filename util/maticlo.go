@@ -49,7 +49,7 @@ func (a *Archivo) LeerMaticlo(ch chan []byte, tipo string) (bool, string) {
 			if a.CantidadLineas > 7 {
 				contar++
 				for _, cell := range row.Cells {
-					fmt.Println("Test")
+					fmt.Println("Testing")
 					text := cell.String()
 					if strings.Trim(text, " ") != "" {
 						cel = append(cel, text)

@@ -283,15 +283,6 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	case "p3":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
-	case "spp":
-		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
-		break
-	case "ilp":
-		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch)
-		break
-	case "cyp":
-		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)
-		break
 	case "a1":
 		go archivo.LeerAliens(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
@@ -300,6 +291,15 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 		break
 	case "a3":
 		go archivo.LeerAliens(Mensajeria.Usuario[usuario].ch, tipopos)
+		break
+	case "spp":
+		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
+		break
+	case "ilp":
+		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch)
+		break
+	case "cyp":
+		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)
 		break
 	case "t1t":
 		// go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 12)

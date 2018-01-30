@@ -11,12 +11,14 @@ import (
 )
 
 //LeerCyberParley Cyber Parley
-func (a *Archivo) LeerCyberParley(ch chan []byte) (bool, string) {
-	a.iniciarVariable("parley")
+func (a *Archivo) LeerCyberParley(ch chan []byte, tipo string) (bool, string) {
+	posicionarchivo, fig := tipoCyberParley(tipo)
+	a.iniciarVariable(fig)
+
 	insertar := a.Cabecera
 	var coma string
 
-	oid, b := a.CrearTraza(7, Parley)
+	oid, b := a.CrearTraza(posicionarchivo, Parley)
 	if b != nil {
 		m.Msj = "E# CyberParley: " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
@@ -55,7 +57,7 @@ func (a *Archivo) LeerCyberParley(ch chan []byte) (bool, string) {
 				agencia, venta := strings.Trim(agen[0], " "), strings.Trim(linea[3], " ")
 				premio, comision := p, c
 				insertar += "('" + agencia + "'," + venta + "," + premio + ","
-				insertar += comision + ",1,'" + a.Fecha + "',Now(),7," + strconv.Itoa(oid) + ")"
+				insertar += comision + ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 				a.Salvar = true
 			}
 			a.CantidadLineas++
@@ -85,4 +87,20 @@ func (a *Archivo) LeerCyberParley(ch chan []byte) (bool, string) {
 	ch <- j
 	a.Canal <- j
 	return true, insertar
+}
+
+func tipoCyberParley(tipo string) (posicionarchivo int, fig string){
+	switch tipo {
+	case "p":
+		posicionarchivo = 6
+		fig = "parley"
+		break
+	case "f":
+		posicionarchivo = 25
+		fig = "figura"
+		break
+	default:
+		break
+	}
+	return
 }

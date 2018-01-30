@@ -54,6 +54,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
 					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 					a.Salvar = true
+					fmt.Println(insertar)
 				}
 				a.CantidadLineas++
 			}

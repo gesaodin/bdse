@@ -11,12 +11,13 @@ import (
 )
 
 //LeerIlbanquero Consultar en ilbanquero con el proveedor
-func (a *Archivo) LeerIlbanquero(ch chan []byte) (bool, string) {
-	a.iniciarVariable("parley")
+func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
+	posicionarchivo, fig := tipoIlbanquero(tipo)
+	a.iniciarVariable(fig)
+
 	insertar := a.Cabecera
 	var coma string
-
-	oid, b := a.CrearTraza(6, Parley)
+	oid, b := a.CrearTraza(posicionarchivo, Parley)
 	if b != nil {
 		m.Msj = "E# Ilbanquero: " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
@@ -51,7 +52,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte) (bool, string) {
 					agencia, venta := strings.Trim(agenc[0], " "), strings.Trim(linea[1], " ")
 					premio, comision := strings.Trim(linea[4], " "), strings.Trim(linea[6], " ")
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
-					insertar += ",1,'" + a.Fecha + "',Now(),6," + strconv.Itoa(oid) + ")"
+					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 					a.Salvar = true
 				}
 				a.CantidadLineas++
@@ -81,4 +82,25 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte) (bool, string) {
 	ch <- j
 	a.Canal <- j
 	return true, insertar
+}
+
+
+func tipoIlbanquero(tipo string) (posicionarchivo int, fig string){
+	switch tipo {
+	case "t":
+		posicionarchivo = 23
+		fig = "loteria"
+		break
+	case "p":
+		posicionarchivo = 6
+		fig = "parley"
+		break
+	case "f":
+		posicionarchivo = 24
+		fig = "figura"
+		break
+	default:
+		break
+	}
+	return
 }

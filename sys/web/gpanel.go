@@ -301,14 +301,14 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	case "t3":
 		go archivo.LeerTurco(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
-	case "spp":
-		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
-		break
-	case "ilp":
-		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch)
+	case "il":
+		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
 	case "cyp":
 		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)
+		break
+	case "spp":
+		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
 		break
 	default:
 

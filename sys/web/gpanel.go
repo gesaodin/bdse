@@ -302,7 +302,7 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 		go archivo.LeerTurco(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
 	case "il":
-		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch, tipopos)
+		go archivo.LeerIlbanquero(Mensajeria.Usuario[usuario].ch, tipo)
 		break
 	case "cyp":
 		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)

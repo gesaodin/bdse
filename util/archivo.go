@@ -1,4 +1,5 @@
 //utilidades generales para cadenas y números
+//Los archivos de Pos, Aliens y Turco son el mismo formato
 package util
 
 import (

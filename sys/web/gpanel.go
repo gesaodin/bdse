@@ -268,13 +268,13 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	tipopos := strings.ToLower(codigo[1:3])
 
 	switch strings.ToLower(codigo[:2]) {
-	case "ma":
+	case "ma": //Maticlot
 		go archivo.LeerMaticlo(Mensajeria.Usuario[usuario].ch, tipo)
 		break
-	case "mo":
+	case "mo": //Morpheus
 		go archivo.LeerMorpheus(Mensajeria.Usuario[usuario].ch, tipo)
 		break
-	case "p1":
+	case "p1": //POS
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
 	case "p2":
@@ -283,7 +283,7 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	case "p3":
 		go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
-	case "a1":
+	case "a1": //Aliens
 		go archivo.LeerAliens(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
 	case "a2":
@@ -291,6 +291,15 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 		break
 	case "a3":
 		go archivo.LeerAliens(Mensajeria.Usuario[usuario].ch, tipopos)
+		break
+	case "t1": //Turco
+		go archivo.LeerTurco(Mensajeria.Usuario[usuario].ch, tipopos)
+		break
+	case "t2":
+		go archivo.LeerTurco(Mensajeria.Usuario[usuario].ch, tipopos)
+		break
+	case "t3":
+		go archivo.LeerTurco(Mensajeria.Usuario[usuario].ch, tipopos)
 		break
 	case "spp":
 		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
@@ -300,9 +309,6 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 		break
 	case "cyp":
 		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch)
-		break
-	case "t1t":
-		// go archivo.LeerPos(Mensajeria.Usuario[usuario].ch, 12)
 		break
 	default:
 

@@ -572,6 +572,7 @@ function LstSaldo() {
  */
 function LSistema() {
     var tipo = 0;
+    console.log($("#tipo option:selected").val());
     switch ($("#tipo option:selected").val()) {
         case "loteria":
             tipo = 0
@@ -579,8 +580,18 @@ function LSistema() {
         case "parley":
             tipo = 1;
             break;
-        case "todos":
+        case "figura":
             tipo = 2;
+            break;
+        case "truco":
+            tipo = 3;
+            break;
+        case "pescalo":
+            tipo = 4;
+            break;
+
+        case "todos":
+            tipo = 5;
             break;
         default:
             $("#sistema").html("<option value='--'>------------</option>");

@@ -11,8 +11,8 @@ import (
 	"github.com/tealeg/xlsx"
 )
 
-//LeerMaticlo Archivo en formato XLS 97-2003
-func (a *Archivo) LeerMaticlo(ch chan []byte, tipo string) (bool, string) {
+//LeerMatchPoint Archivo en formato XLS 97-2003
+func (a *Archivo) LeerMatchPoint(ch chan []byte, tipo string) (bool, string) {
 
 	fig := SLoteria
 	posicionarchivo := 5

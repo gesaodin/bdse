@@ -153,7 +153,6 @@ func (l *Listar) Sistemas(data JsonDataReporte) (j []byte, e error) {
 		donde = " WHERE arch =" + strconv.Itoa(data.Id)
 	}
 	s := "SELECT oid, obse, arch FROM sistema " + donde + " ORDER BY arch, oid"
-
 	row, e := sys.PostgreSQL.Query(s)
 	if e != nil {
 		fmt.Println(e.Error())

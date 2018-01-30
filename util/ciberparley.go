@@ -89,15 +89,15 @@ func (a *Archivo) LeerCyberParley(ch chan []byte, tipo string) (bool, string) {
 	return true, insertar
 }
 
-func tipoCyberParley(tipo string) (posicionarchivo int, fig string){
+func tipoCyberParley(tipo string) (posicionarchivo int, fig string) {
 	switch tipo {
 	case "p":
 		posicionarchivo = 6
-		fig = "parley"
+		fig = SParley
 		break
 	case "f":
 		posicionarchivo = 25
-		fig = "figura"
+		fig = SFigura
 		break
 	default:
 		break

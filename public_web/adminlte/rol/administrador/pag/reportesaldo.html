@@ -18,10 +18,10 @@
           <h3 class="box-title">Saldos</h3>
         </div>
         <div class="box-body">
-        
-        
-          <div class="row">        
-           <div class="col-md-4"> 
+
+
+          <div class="row">
+           <div class="col-md-4">
 
             <div class="input-group">
               <button type="button" class="btn btn-default " id="daterange-btn">
@@ -32,17 +32,20 @@
           </div>
           <div class="col-md-3">
             <select id="tipo"
-              onchange="LSistema()" 
-              class="form-control select2 select2-hidden-accessible" 
+              onchange="LSistema()"
+              class="form-control select2 select2-hidden-accessible"
               style="width:100%">
               <option value="0" >Seleccionar</option>
               <option value="loteria">Loteria</option>
               <option value="parley">Parley</option>
+              <option value="figura">Figura</option>
+              <option value="truco">Truco</option>
+              <option value="pescalo">Pescalo</option>
             </select>
           </div>
           <div class="col-md-3">
             <select id="sistema" class="form-control select2 select2-hidden-accessible" style="width:100%">
-              
+
             </select>
           </div>
           <div class="col-md-2 ">
@@ -50,8 +53,8 @@
                <span><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Listar&nbsp;</span>
              </button>
           </div>
-        </div>  
-   
+        </div>
+
           <br>
             <table class="table table-bordered" id="reporteSaldos" width="100%">
               <thead>
@@ -77,7 +80,7 @@
                 </tr>
               </tfoot>
             </table>
-          
+
         </div>
         <div class="overlay" id="cargando">
               <i class="fa fa-refresh fa-spin"></i>

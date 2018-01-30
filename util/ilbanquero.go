@@ -1,9 +1,9 @@
 package util
 
 import (
-	"fmt"
 	"bufio"
 	"encoding/json"
+	"fmt"
 	"os"
 	"regexp"
 	"strconv"
@@ -33,6 +33,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
 	scan := bufio.NewScanner(archivo)
 	for scan.Scan() {
 		linea := strings.Split(ConvertirMonedaANumero(scan.Text()), ";")
+		fmt.Println(linea)
 		l := len(linea)
 		if l > 11 && strings.Trim(linea[1], " ") != "0.00" {
 			if "Taquillas" == strings.Trim(linea[0], " ") {
@@ -87,20 +88,19 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
 	return true, insertar
 }
 
-
-func tipoIlbanquero(tipo string) (posicionarchivo int, fig string){
+func tipoIlbanquero(tipo string) (posicionarchivo int, fig string) {
 	switch tipo {
 	case "t":
 		posicionarchivo = 23
-		fig = "loteria"
+		fig = SLoteria
 		break
 	case "p":
 		posicionarchivo = 6
-		fig = "parley"
+		fig = SParley
 		break
 	case "f":
 		posicionarchivo = 24
-		fig = "figura"
+		fig = SFigura
 		break
 	default:
 		break

@@ -11,23 +11,19 @@ import (
 	"github.com/tealeg/xlsx"
 )
 
-//LeerMaticlo Archivo en formato XLS 97-2003
-func (a *Archivo) LeerMaticlo(ch chan []byte, tipo string) (bool, string) {
+//LeerMatrix Archivo en formato XLS 97-2003
+func (a *Archivo) LeerMatrix(ch chan []byte, tipo string) (bool, string) {
 
-	fig := SLoteria
-	posicionarchivo := 5
-	if tipo == "f" {
-		fig = SFigura
-		posicionarchivo = 13
-	}
+	fig := SFigura
+	posicionarchivo := 26
 	a.iniciarVariable(fig)
 
 	insertar := a.Cabecera
 	var coma string
 	contar := 0
-	oid, b := a.CrearTraza(posicionarchivo, Loteria)
+	oid, b := a.CrearTraza(posicionarchivo, "2")
 	if b != nil {
-		m.Msj = "E# Maticlot : " + a.NombreDelArchivo + " " + b.Error()
+		m.Msj = "E# Matrix : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
@@ -46,7 +42,7 @@ func (a *Archivo) LeerMaticlo(ch chan []byte, tipo string) (bool, string) {
 
 			var cel []string
 			a.CantidadLineas++
-			if a.CantidadLineas > 7 {
+			if a.CantidadLineas > 3 {
 				contar++
 				for _, cell := range row.Cells {
 					text := cell.String()
@@ -54,18 +50,19 @@ func (a *Archivo) LeerMaticlo(ch chan []byte, tipo string) (bool, string) {
 						cel = append(cel, text)
 					}
 				} //FIN DE LA CELDA
-
 				l := len(cel)
-				if l > 7 {
-					if contar > 1 && strings.Trim(cel[0], " ") != "Totales Bs.:" {
+
+				if l == 8 {
+					if contar > 1 {
 						coma = ","
 					} else {
 						coma = ""
 					}
 					re := regexp.MustCompile(`[-()]`)
-					agen := re.Split(cel[2], -1)
-					agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[4], " ")
-					premio, comision := strings.Trim(cel[6], " "), strings.Trim(cel[5], " ")
+					agen := re.Split(cel[1], -1)
+
+					agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[2], " ")
+					premio, comision := strings.Trim(cel[4], " "), strings.Trim(cel[3], " ")
 					insertar += coma
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
 					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

@@ -20,14 +20,24 @@ const (
 	Loteria string = "0"
 	//Parley apuestas generales deporte
 	Parley string = "1"
-	//Animalitos apuestas generales animales
-	Animalitos string = "2"
-	//Figuras apuestas generales animales
-	Figuras string = "3"
-	//Caballos apuestas generales animales
-	Caballos string = "4"
+	//Figura apuestas generales animales
+	Figura string = "2"
+	//Animalito apuestas generales animales
+	Animalito string = "3"
+	//Caballo apuestas generales animales
+	Caballo string = "4"
 	//Totales
 	_Totales = "TOTALES"
+	//SLoteria terminales y triples
+	SLoteria string = "loteria"
+	//SParley apuestas generales deporte
+	SParley string = "parley"
+	//SFigura apuestas generales animales
+	SFigura string = "figura"
+	//SAnimalito apuestas generales animales
+	SAnimalito string = "animalito"
+	//SCaballo apuestas generales animales
+	SCaballo string = "caballo"
 )
 
 //webMSJ Mensajes del sistema

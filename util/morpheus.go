@@ -11,10 +11,10 @@ import (
 
 //LeerMorpheus Archivo de loteria, ch chan []byte
 func (a *Archivo) LeerMorpheus(ch chan []byte, tipo string) (bool, string) {
-	fig := "loteria"
+	fig := SLoteria
 	posicionarchivo := 1
 	if tipo == "f" {
-		fig = "figura"
+		fig = SFigura
 		posicionarchivo = 14
 	}
 	a.iniciarVariable(fig)

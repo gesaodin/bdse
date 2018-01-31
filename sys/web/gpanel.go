@@ -312,6 +312,9 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	case "sp":
 		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch, tipo)
 		break
+	case "mp": //Morpheus
+		go archivo.LeerMatchPoint(Mensajeria.Usuario[usuario].ch, tipo)
+		break
 	default:
 
 		break

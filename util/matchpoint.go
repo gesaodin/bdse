@@ -3,7 +3,6 @@ package util
 import (
 	"encoding/json"
 	"fmt"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -14,11 +13,11 @@ import (
 //LeerMatchPoint Archivo en formato XLS 97-2003
 func (a *Archivo) LeerMatchPoint(ch chan []byte, tipo string) (bool, string) {
 
-	fig := SLoteria
-	posicionarchivo := 5
+	fig := SParley
+	posicionarchivo := 27
 	if tipo == "f" {
 		fig = SFigura
-		posicionarchivo = 13
+		posicionarchivo = 29
 	}
 	a.iniciarVariable(fig)
 
@@ -46,7 +45,7 @@ func (a *Archivo) LeerMatchPoint(ch chan []byte, tipo string) (bool, string) {
 
 			var cel []string
 			a.CantidadLineas++
-			if a.CantidadLineas > 7 {
+			if a.CantidadLineas > 8 {
 				contar++
 				for _, cell := range row.Cells {
 					text := cell.String()
@@ -56,16 +55,14 @@ func (a *Archivo) LeerMatchPoint(ch chan []byte, tipo string) (bool, string) {
 				} //FIN DE LA CELDA
 
 				l := len(cel)
-				if l > 7 {
-					if contar > 1 && strings.Trim(cel[0], " ") != "Totales Bs.:" {
+				if l > 6 {
+					if contar > 1 && strings.Trim(cel[0], " ") != "Total" {
 						coma = ","
 					} else {
 						coma = ""
 					}
-					re := regexp.MustCompile(`[-()]`)
-					agen := re.Split(cel[2], -1)
-					agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[4], " ")
-					premio, comision := strings.Trim(cel[6], " "), strings.Trim(cel[5], " ")
+					agencia, venta := strings.ToUpper(cel[2]), strings.Trim(cel[3], " ")
+					premio, comision := strings.Trim(cel[4], " "), strings.Trim(cel[5], " ")
 					insertar += coma
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
 					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

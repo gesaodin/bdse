@@ -11,11 +11,18 @@ import (
 )
 
 //LeerSport Sport
-func (a *Archivo) LeerSport(ch chan []byte) (bool, string) {
-	a.iniciarVariable("parley")
+func (a *Archivo) LeerSport(ch chan []byte, tipo string) (bool, string) {
+	fig := SParley
+	posicionarchivo := 8
+	if tipo == "f" {
+		fig = SFigura
+		posicionarchivo = 28
+	}
+	a.iniciarVariable(fig)
+
 	insertar := a.Cabecera
 	var coma string
-	oid, b := a.CrearTraza(8, Parley)
+	oid, b := a.CrearTraza(posicionarchivo, Parley)
 	if b != nil {
 		m.Msj = "E# Sport17 : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33

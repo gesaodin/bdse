@@ -231,7 +231,6 @@ func (G *GPanel) SubirArchivoLoteria(w http.ResponseWriter, r *http.Request) {
 		valor := strings.Split(cadena[3], ".")
 
 		fecha = valor[0] + "-" + cadena[2] + "-" + cadena[1]
-		fmt.Println(fecha)
 		tipoArchivo(fecha, files[i].Filename, usuario, codigo)
 
 	}
@@ -244,7 +243,7 @@ func (G *GPanel) Error(w http.ResponseWriter) {
 
 }
 
-//Salir del Panel o finalizar sesión
+//Logout del Panel o finalizar sesión
 func (G *GPanel) Logout(w http.ResponseWriter, r *http.Request) {
 	session, _ := seguridad.Stores.Get(r, "session-bdse")
 	session.Values["acceso"] = false
@@ -255,7 +254,7 @@ func (G *GPanel) Logout(w http.ResponseWriter, r *http.Request) {
 
 //Identificar el archivo que se está cargado
 func tipoArchivo(f string, s string, usuario string, codigo string) {
-	fmt.Println("Controlando los datos")
+
 	var archivo = util.Archivo{}
 	archivo.Ruta = "public/temp/loteria/"
 	// archivo.NombreDelArchivo = f + s
@@ -310,8 +309,8 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 	case "cy":
 		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch, tipo)
 		break
-	case "spp":
-		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch)
+	case "sp":
+		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch, tipo)
 		break
 	default:
 

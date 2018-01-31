@@ -35,26 +35,26 @@ func (a *Archivo) LeerCyberParley(ch chan []byte, tipo string) (bool, string) {
 		linea := strings.Split(ConvertirMonedaANumero(scan.Text()), ";")
 		//l := len(linea)
 
-		if strings.Trim(linea[0], " ") == "Tipo Entidad" {
+		if strings.Trim(linea[0], " ") == "Fecha" {
 			a.Leer = true
 			a.CantidadLineas++
 		}
 		if a.Leer {
-			if a.CantidadLineas > 2 && strings.Trim(linea[0], " ") == "Agencia" {
+			if a.CantidadLineas > 2 && strings.Trim(linea[1], " ") == "Agencia" {
 				coma = ","
 			} else {
 				coma = ""
 			}
 			insertar += coma
-			if a.CantidadLineas > 1 && strings.Trim(linea[0], " ") == "Agencia" {
+			if a.CantidadLineas > 1 && strings.Trim(linea[1], " ") == "Agencia" {
 
 				re := regexp.MustCompile(`[(-)]`)
-				agen := re.Split(linea[1], -1)
+				agen := re.Split(linea[2], -1)
 				// fmt.Println(agen[2])
 
-				c := strings.Replace(strings.Trim(linea[4], " "), "-", "", -1)
-				p := strings.Replace(strings.Trim(linea[5], " "), "-", "", -1)
-				agencia, venta := strings.Trim(agen[0], " "), strings.Trim(linea[3], " ")
+				c := strings.Replace(strings.Trim(linea[5], " "), "-", "", -1)
+				p := strings.Replace(strings.Trim(linea[6], " "), "-", "", -1)
+				agencia, venta := strings.Trim(agen[0], " "), strings.Trim(linea[4], " ")
 				premio, comision := p, c
 				insertar += "('" + agencia + "'," + venta + "," + premio + ","
 				insertar += comision + ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

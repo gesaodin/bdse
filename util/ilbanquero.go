@@ -5,7 +5,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
-	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -36,7 +35,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
 		fmt.Println(linea)
 		l := len(linea)
 		if l > 11 && strings.Trim(linea[1], " ") != "0.00" {
-			if "Taquillas" == strings.Trim(linea[0], " ") {
+			if "Agentes" == strings.Trim(linea[0], " ") {
 				a.Leer = true
 				a.CantidadLineas++
 			}
@@ -48,16 +47,11 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
 				}
 				insertar += coma
 				if a.CantidadLineas > 1 && "Total" != strings.Trim(linea[0], " ") && strings.Trim(linea[0], " ") != "" {
-					re := regexp.MustCompile(`[:]`)
-					agen := re.Split(linea[0], -1)
-					agenc := strings.Split(strings.Trim(agen[2], " "), " ")
-					agencia, venta := strings.Trim(agenc[0], " "), strings.Trim(linea[1], " ")
-					premio, comision := strings.Trim(linea[4], " "), strings.Trim(linea[6], " ")
+					agencia, venta := strings.Trim(linea[0], " "), strings.Trim(linea[1], " ")
+					premio, comision := strings.Trim(linea[5], " "), strings.Trim(linea[7], " ")
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
 					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 					a.Salvar = true
-					fmt.Println(insertar)
-
 				}
 				a.CantidadLineas++
 			}

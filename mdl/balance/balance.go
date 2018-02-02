@@ -6,6 +6,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"strconv"
+	"strings"
 	"time"
 
 	"github.com/gesaodin/bdse/sys"
@@ -222,6 +223,20 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 
 	var s, tabla string
 	var r Respuesta
+
+	fechapicada := strings.Split(data.Fecha, "-")
+	idia, _ := strconv.Atoi(fechapicada[2])
+	imes, _ := strconv.Atoi(fechapicada[1])
+	dia := fechapicada[2]
+	mes := fechapicada[1]
+	if idia < 10 {
+		dia = "0" + fechapicada[2]
+	}
+	if imes < 10 {
+		mes = "0" + fechapicada[1]
+	}
+
+	data.Fecha = fechapicada[0] + "-" + mes + "-" + dia
 
 	s = generarCobrosYPagosGeneralCierre(data.Fecha)
 	fmt.Println(s)

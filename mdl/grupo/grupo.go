@@ -94,8 +94,8 @@ func (g *Grupo) Registrar() (jSon []byte, err error) {
 		sq.Scan(&grupo)
 	}
 
-	s = `INSERT INTO zr_gsca_localizacion (grupo,parro,casa,dire,cuen,tele,celu,obse,tipo,fech) VALUES `
-	s += `(` + strconv.Itoa(grupo) + `,` + parroquia + `,'` + g.Localizacion.Casa + `','`
+	s = `INSERT INTO zr_gsca_localizacion (comer,grupo,subgr,colec,oida,parro,casa,dire,cuen,tele,celu,obse,tipo,fech) VALUES `
+	s += `(1,` + strconv.Itoa(grupo) + `,0,0,0,` + parroquia + `,'` + g.Localizacion.Casa + `','`
 	s += g.Localizacion.Direccion + `','` + g.NumeroCuenta + `','` + g.Localizacion.Telefono + `','` + g.Localizacion.Celular
 	s += `','` + g.Observacion + `',` + strconv.Itoa(g.Localizacion.Tipo) + `,now());`
 	_, err = sys.PostgreSQL.Exec(s)
@@ -135,7 +135,6 @@ uno de los grupo así como sus reglas de negocio seguido de la seguridad
 de acceso, correo y preguntas del sistema
 */
 func (g *Grupo) Consultar() (LGrupo []Grupo, err error) {
-
 	s := `
 	-- Relación completa
 SELECT g.obse, g.fneg, g.trip, g.term, g.qued, g.part,
@@ -274,5 +273,37 @@ func (g *Grupo) Gastos() (jSon []byte, err error) {
 	m.Tipo = 1
 	m.Mensaje = strconv.FormatFloat(gastos, 'f', 6, 64)
 	jSon, err = json.Marshal(m)
+	return
+}
+
+//LGrupo Grupo
+type LGrupo struct {
+	Oid  int    `json:"oid,omitempty"`
+	Obse string `json:"obse,omitempty"`
+}
+
+//Listar Visualizar todos los grupos del sistema con codigos
+func (g *Grupo) Listar() (jSon []byte, err error) {
+
+	s := `SELECT oid, obse FROM grupo`
+	sq, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		//fmt.Println(err.Error())
+		return
+	}
+	var lgrupo []interface{}
+	for sq.Next() {
+		var Lgrupo LGrupo
+		var oid int
+		var obse string
+
+		sq.Scan(&oid, &obse)
+		Lgrupo.Oid = oid
+		Lgrupo.Obse = obse
+		lgrupo = append(lgrupo, Lgrupo)
+
+	}
+
+	jSon, err = json.Marshal(lgrupo)
 	return
 }

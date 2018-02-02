@@ -4,6 +4,7 @@ import (
 	"bufio"
 	"encoding/json"
 	"os"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -49,7 +50,9 @@ func (a *Archivo) LeerMorpheus(ch chan []byte, tipo string) (bool, string) {
 			}
 			insertar += coma
 			if a.CantidadLineas > 1 && len(linea) == 8 && _Totales != strings.Trim(linea[0], " ") {
-				agencia, venta := strings.Trim(linea[1], " "), strings.Trim(linea[3], " ")
+				re := regexp.MustCompile(`[-()]`)
+				agen := re.Split(linea[1], -1)
+				agencia, venta := strings.Trim(agen[0], " "), strings.Trim(linea[3], " ")
 				premio, comision := strings.Trim(linea[5], " "), strings.Trim(linea[7], " ")
 				insertar += "('" + agencia + "'," + venta + "," + premio + ","
 				insertar += comision + ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

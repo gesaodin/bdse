@@ -1607,58 +1607,6 @@ function ValidarRegistro() {
 }
 
 /**
- * Registrar Grupos
- */
-function RegistrarGrupo() {
-    if (ValidarRegistro() == false) return;
-
-    var Localizacion = {
-        idp: parseInt($("#parroquia").val()),
-        casa: $("#casa").val(),
-        direccion: $("#direccion").val(),
-        telefono: $("#telefono").val(),
-        celular: $("#celular").val(),
-        tipo: parseInt($("#tipo").val())
-    };
-    var Seguridad = {
-        usuario: $("#usuario").val(),
-        correo: $("#correo").val(),
-        clave: $("#clave").val(),
-        rclave: $("#rclave").val(),
-        pregunta: parseInt($("#pregunta").val()),
-        respuesta: $("#respuesta").val()
-    };
-
-    var Grupo = JSON.stringify({
-        nombre: $("#nombregrupo").val(),
-        fecha: $("#fecha").val(),
-        cuenta: $("#cuenta").val(),
-        terminal: parseFloat($("#terminal").val()),
-        triple: parseFloat($("#triple").val()),
-        queda: parseFloat($("#queda").val()),
-        participacion: parseFloat($("#participacion").val()),
-        frecuencia: parseInt($("#frecuencia").val()),
-        negociacion: parseInt($("#negociacion").val()),
-        observacion: $("#observacion").val(),
-        localizacion: Localizacion,
-        seguridad: Seguridad
-    });
-
-    $("#cargando").show();
-    $.post("api/registro/grupo", Grupo)
-        .done(function (data) {
-            if (data.tipo != 2) {
-                $.notify("Envio de archivos exitosos...", "success");
-            } else {
-                $.notify(data.msj, "error");
-            }
-            LimpiarGrupo();
-            $('#tabgrupo a:first').tab('show') // Select first tab
-            $("#cargando").hide();
-        });
-}
-
-/**
  * Validar participacion
  */
 function ValidarPar() {

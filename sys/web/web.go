@@ -103,6 +103,7 @@ func WAPI() {
 	Enrutador.HandleFunc(url+"registro/subgrupo", Registro.SalvarSubGrupo).Methods("POST")
 	Enrutador.HandleFunc(url+"registro/colector", Registro.SalvarColector).Methods("POST")
 	Enrutador.HandleFunc(url+"registro/agencia", Registro.SalvarAgencia).Methods("POST")
+	Enrutador.HandleFunc(url+"listar/grupo", Listar.Grupo).Methods("GET")
 
 	//PERFIL DE LA Comercializadora
 	Enrutador.HandleFunc(url+"perfil/comercializadora", Comercializadora.Consultar).Methods("POST")

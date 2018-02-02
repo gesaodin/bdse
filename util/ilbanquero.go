@@ -3,7 +3,6 @@ package util
 import (
 	"bufio"
 	"encoding/json"
-	"fmt"
 	"os"
 	"strconv"
 	"strings"
@@ -32,7 +31,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
 	scan := bufio.NewScanner(archivo)
 	for scan.Scan() {
 		linea := strings.Split(ConvertirMonedaANumero(scan.Text()), ";")
-		fmt.Println(linea)
+
 		l := len(linea)
 		if l > 11 && strings.Trim(linea[1], " ") != "0.00" {
 			if "Agentes" == strings.Trim(linea[0], " ") {

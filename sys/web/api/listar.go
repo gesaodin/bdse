@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"net/http"
 
+	"github.com/gesaodin/bdse/mdl/grupo"
 	"github.com/gesaodin/bdse/mdl/loteria"
 	"github.com/gesaodin/bdse/sys/seguridad"
 )
@@ -41,6 +42,7 @@ func (l *Listar) Sistemas(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
+//SaldosGeneral Listando Saldos
 func (l *Listar) SaldosGeneral(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON loteria.JsonDataReporte
@@ -60,6 +62,27 @@ func (l *Listar) SaldosGeneral(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	j, e := Lst.SaldosGenerales(dataJSON)
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error al consultar los datos"))
+		return
+	}
+	w.WriteHeader(http.StatusOK)
+	w.Write(j)
+}
+
+//Grupo Listando Grupo
+func (l *Listar) Grupo(w http.ResponseWriter, r *http.Request) {
+	var LGrupo grupo.Grupo
+	Cabecera(w, r.Header.Get("Origin"))
+
+	_, e := seguridad.Stores.Get(r, "session-bdse")
+	if e != nil {
+		w.WriteHeader(http.StatusForbidden)
+		w.Write([]byte("Error en la Cookies"))
+		return
+	}
+	j, e := LGrupo.Listar()
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
 		w.Write([]byte("Error al consultar los datos"))

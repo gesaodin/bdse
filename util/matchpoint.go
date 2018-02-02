@@ -3,6 +3,7 @@ package util
 import (
 	"encoding/json"
 	"fmt"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -61,7 +62,9 @@ func (a *Archivo) LeerMatchPoint(ch chan []byte, tipo string) (bool, string) {
 					} else {
 						coma = ""
 					}
-					agencia, venta := strings.ToUpper(cel[2]), strings.Trim(cel[3], " ")
+					re := regexp.MustCompile(`[-()]`)
+					agen := re.Split(cel[2], -1)
+					agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[3], " ")
 					premio, comision := strings.Trim(cel[4], " "), strings.Trim(cel[5], " ")
 					insertar += coma
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision

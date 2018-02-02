@@ -310,7 +310,7 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 		go archivo.LeerCyberParley(Mensajeria.Usuario[usuario].ch, tipo)
 		break
 	case "sp":
-		go archivo.LeerSport(Mensajeria.Usuario[usuario].ch, tipo)
+		go archivo.LeerSportXLSX(Mensajeria.Usuario[usuario].ch, tipo)
 		break
 	case "mp": //Morpheus
 		go archivo.LeerMatchPoint(Mensajeria.Usuario[usuario].ch, tipo)

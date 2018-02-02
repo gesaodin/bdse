@@ -161,7 +161,18 @@ function LCiudad() {
             })
         });
 }
-
+//Funcion para lsitar grupos (prueba)
+function LisGrupo() {
+    //var id = $('#estado option:selected').val();
+    var data = JSON.stringify({ ide: parseInt(id) });
+    $('#grupo').html('<option value="--" >Seleccionar...</option>');
+    $.post("api/listar/grupo", data)
+        .done(function (data) {
+            $.each(data, function (c, v) {
+                $('#grupo').append('<option value="' + v.id + '">' + v.nombre + '</option>');
+            })
+        });
+}
 /**
  * Listar Parroquia
  */

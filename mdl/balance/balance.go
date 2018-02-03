@@ -85,6 +85,23 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 
 	if data.Oid != 0 {
 		agencia = "(SELECT obse FROM agencia WHERE oid=" + strconv.Itoa(data.Oid) + ")"
+	} else {
+		q := `SELECT oid, comer, grupo, subgr, colec FROM agencia WHERE obse='` + data.Agencia + `';`
+		rs, e := sys.PostgreSQL.Query(q)
+		if e != nil {
+			fmt.Println(e.Error())
+		}
+		for rs.Next() {
+			var oid, comer, grupo, subgr, colec int
+			rs.Scan(&oid, &comer, &grupo, &subgr, &colec)
+			data.Oid = oid
+			data.Grupo = grupo
+			data.Banca = comer
+			data.SubGrupo = subgr
+			data.Colector = colec
+		}
+		agencia = "'" + data.Agencia + "'"
+		tabla = "debe"
 	}
 
 	s := "INSERT INTO " + tabla + " (comer,grupo,subgr,colec,oida,agen,mont,vouc,fdep,freg," + campofechaoper + campo + "tipo,banc,esta,obse) VALUES "
@@ -113,12 +130,12 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 //ListarPagos Generales del sistema
 func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 	var s string
-	s = `
-			SELECT fdep,vouc,fapr,esta,debe.mont,debe.resp, banco.nomb FROM agencia
+	s = `SELECT fdep,vouc,fapr,debe.esta,debe.mont,debe.resp, cuenta.nomb FROM agencia
 			INNER JOIN debe ON debe.agen=agencia.obse
-			INNER JOIN banco ON debe.banc=banco.oid
+			INNER JOIN cuenta ON debe.banc=cuenta.cod
 			WHERE agencia.obse='` + data.Agencia + `'
 			ORDER BY debe.fdep`
+
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
@@ -138,8 +155,7 @@ func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 		}
 		var dep = util.ValidarNullString(fdep)
 		var apr = util.ValidarNullString(fapr)
-
-		if apr != "null" {
+		if apr != "" && apr != "null" {
 			apr = apr[0:10]
 		}
 
@@ -159,8 +175,8 @@ func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 
 //GenerarCobrosYPagos Generacion de Cobros y Pagos del sistema
 func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
-	var fecha string = time.Now().String()[0:10]
 	var s string
+	fecha := time.Now().String()[0:10]
 
 	if data.Agencia != "" {
 		s = generarCobrosYPagosAgencia(data)

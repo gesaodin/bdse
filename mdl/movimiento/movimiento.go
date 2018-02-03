@@ -164,8 +164,8 @@ func (m *Movimiento) Listar() (jSon []byte, err error) {
 //ListarDepositos Depositos Pendientes
 func (m *Movimiento) ListarDepositos() (jSon []byte, err error) {
 	var lst []interface{}
-	s := `SELECT banco.nomb, debe.oid,agen,debe.mont,vouc,fdep,tipo,banc,resp FROM debe
-	LEFT JOIN banco ON debe.banc=banco.oid	WHERE esta=0` //` +  AND fapr != ''; m.FDeposito + `
+	s := `SELECT cuenta.nomb, debe.oid,agen,debe.mont,vouc,fdep,debe.tipo,banc,resp FROM debe
+	LEFT JOIN cuenta ON debe.banc=cuenta.cod WHERE debe.esta=0` //` +  AND fapr != ''; m.FDeposito + `
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
 		fmt.Println(err.Error())

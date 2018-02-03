@@ -79,11 +79,13 @@ $(function(){
  */
 function LCuentaM(id) {
     $('#cuentadebe').html('<option value="--" >Seleccionar...</option>');
-    var data = JSON.stringify({operacion:0});
+    var data = JSON.stringify({operacion:1});
     $.post("api/movimiento/listarcuentas", data)
+
         .done(function (data) {
+
             $.each(data, function (c, v) {
-                $('#cuentadebe').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.nombre + '</option>');
+                $('#bancrp').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.nombre + '</option>');
             })
         });
 }
@@ -113,13 +115,18 @@ function LPago(){
         agencia: $("#agencia").html()
     });
     rS.clear().draw();
+    console.log("HOLA MUNDO");
     $.post("api/balance/listarpagos", Pago)
     .done(function (data){
         var i = 1;
         $.each(data, function(c, v) {
 
             estatus = v.estatus == null?0:v.estatus;
-            fechaaprobado = v.fechaaprobado == "null"?'':v.fechaaprobado;
+            if (v.fechaaprobado != undefined){
+              fechaaprobado = v.fechaaprobado == "null"?'':v.fechaaprobado;
+            }else{
+              fechaaprobado = "";
+            }
             observacion = v.estatus == null?0:v.estatus;
             switch (estatus) {
                     case 0:
@@ -167,14 +174,16 @@ function RPago(){
     }
 
     var Pago = JSON.stringify({
+        fechaoperacion: $("#fechade").val(),
         agencia: $("#agencia").html(),
         voucher: vouc,
         deposito: dep,
-        banco : parseInt($("#banc").val()),
+        banco : parseInt($("#bancrp").val()),
         formadepago: parseInt($("#form").val()),
         monto: parseFloat(mon),
         observacion: $("#obse").val()
     });
+    // console.log(Pago);
     $.post("api/balance/registrarpago", Pago)
     .done(function (data){
         $.notify("Proceso exitoso ", "success");
@@ -575,6 +584,6 @@ function btnAccion(id){
 /**
  * Listar Cuentas para Movimientos
  */
-function LCuentaM(id){
-
-}
+// function LCuentaM(id){
+//
+// }

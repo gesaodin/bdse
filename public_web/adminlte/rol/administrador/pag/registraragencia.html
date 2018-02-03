@@ -57,7 +57,7 @@
                             <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Cajas</a></li>
                             <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Programas</a></li>
                             <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Seguridad</a></li>
-                            <!--  
+                            <!--
               <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
               -->
                         </ul>
@@ -65,12 +65,23 @@
                             <div class="tab-pane active" id="tab_1">
 
                                 <div class="row">
+                                  <div class="col-xs-12 col-md-12">
+                                      <div class="form-group">
+                                          <label>Nombre / código del grupo</label>
+                                          <div class="input-group">
+                                              <span class="input-group-addon"><span class="fa fa-book"  ></span></span>
+                                              <select class="form-control" id="cmbGrupo">
+                                                  <option value=0></option>
+                                              </select>
+                                          </div>
+                                      </div>
+                                  </div>
                                     <div class="col-xs-12 col-md-12">
                                         <div class="form-group">
                                             <label>Nombre / código de la agencia</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-book"></span></span>
-                                                <input type="text" class="form-control" id="nombregrupo" placeholder="Nombre completo del grupo" />
+                                                <input type="text" class="form-control" id="nombregrupo" placeholder="Nombre / código de la agencia" />
                                             </div>
                                         </div>
                                     </div>
@@ -182,7 +193,7 @@
                                         <div class="form-group">
                                             <label>Estado</label>
                                             <select class="form-control" id="estado" onchange="LCiudad()">
-                                                <option value=0></option>                            
+                                                <option value=0></option>
                                             </select>
                                         </div>
                                     </div>
@@ -190,7 +201,7 @@
                                     <div class="col-xs-12 col-md-6">
                                         <div class="form-group">
                                             <label>Ciudad</label>
-                                            <select class="form-control" id="ciudad">                             
+                                            <select class="form-control" id="ciudad">
                                             </select>
                                         </div>
                                     </div>
@@ -208,7 +219,7 @@
                                         <div class="form-group">
                                             <label>Parroquia</label>
                                             <select class="form-control" id="parroquia">
-                                                <option value='--'>Seleccionar...</option> 
+                                                <option value='--'>Seleccionar...</option>
                                             </select>
                                         </div>
                                     </div>
@@ -314,10 +325,10 @@
                                                 <th>Triple %</th>
                                                 <th>Terminal %</th>
                                                 <th>Queda %</th>
-                                                <th>Participacion %</th>                                                
+                                                <th>Participacion %</th>
                                             </tr>
                                         </thead>
-                                        
+
                                     </table>
                                 </div>
 
@@ -423,3 +434,6 @@
             <i class="fa fa-refresh fa-spin"></i>
         </div>
 </section>
+<script type="text/javascript">
+  LisGrupo();
+</script>

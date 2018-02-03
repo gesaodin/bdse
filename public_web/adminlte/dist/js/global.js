@@ -27,6 +27,7 @@ $(function () {
     if ($('#estado').val() != undefined) LEstado();
     if ($('#taquilla').val() != undefined) LProgramas();
     if($('#mdlER').html() != undefined) LCuentaB();
+    if($('#cmbGrupo').html() != undefined) LisGrupo();
     CargarPerfil();
     CargarCalendario();
 
@@ -161,7 +162,15 @@ function LCiudad() {
             })
         });
 }
-
+//Funcion para lsitar grupos (prueba)
+function LisGrupo() {
+  $('#cmbGrupo').html('<option value="--" >Seleccionar...</option>');
+  $.getJSON( "api/listar/grupo", function( data ) {
+    $.each(data, function (c, v) {
+          $('#cmbGrupo').append('<option value="' + v.oid + '">' + v.oid + ' | ' + v.obse + '</option>');
+        })
+  });
+}
 /**
  * Listar Parroquia
  */

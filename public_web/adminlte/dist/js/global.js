@@ -205,6 +205,7 @@ function LProgramas() {
         "info": false,
         "searching": false,
         "pageLength": 6
+
     });
     $.post("api/listasistema", data)
         .done(function (data) {
@@ -1670,18 +1671,83 @@ function RegistrarGrupo() {
             $("#cargando").hide();
         });
 }
+// Registar Agencias ...
+function RegistrarAgencia() {
+    if (ValidarRegistro() == false) return;
+    var Localizacion = {
+        estado: parseInt($("#estado").val()),
+        ciudad: parseInt($("#ciudad").val()),
+        municipio: parseInt($("#municipio").val()),
+        idp: parseInt($("#parroquia").val()),
+        casa: $("#casaAgen").val(),
+        direccion: $("#direccionAgen").val(),
+        telefono: $("#telefonoAgen").val(),
+        celular: $("#celularAgen").val()
+    };
+    var caja = new Array();
 
-function ValidarPar() {
-    if (parseFloat($("#participacion").val()) > 0) {
-        $("#queda").val('0');
-    }
-}
-function ValidarQueda() {
-    if (parseFloat($("#queda").val()) > 0) {
-        $("#participacion").val('0');
-    }
+    if ($("#tbltaquilla tr").length > 0) {
+        $("#tbltaquilla tr").each(function() {
+            caja.push(CargarCaja(this));
+            console.log(this);
+        });
+};
+  var programas = new Array();
+  if ($("#tblprograma tr").length > 0) {
+      $("#tblprograma tr").each(function() {
+          programas.push(cargarprogramas(this));
+          console.log(this);
+    });
+};
+    var Seguridad = {
+        usuario: $("#usuarioAgen").val(),
+        correo: $("#correoAgen").val(),
+        clave: $("#claveAgen").val(),
+        rclave: $("#rclaveAgen").val(),
+        pregunta: parseInt($("#preguntaAgen").val()),
+        respuesta: $("#respuestaAgen").val()
+    };
+
+    var Agencia = JSON.stringify({
+        nombre: $("#nombreagencia").val(),
+        fecha: $("#fecha").val(),
+        cuenta: $("#cuentaAgen").val(),
+        terminal: parseFloat($("#terminalAgen").val()),
+        triple: parseFloat($("#tripleAgen").val()),
+        queda: parseFloat($("#quedaAgen").val()),
+        participacion: parseFloat($("#participacionAgen").val()),
+        frecuencia: parseInt($("#frecuenciaAgen").val()),
+        negociacion: parseInt($("#negociacionAgen").val()),
+        observacion: $("#observacionAgen").val(),
+        localizacion: Localizacion,
+        seguridad: Seguridad,
+        caja: caja,
+        programas: programas
+    });
+ console.log (Agencia);
+  /**  $("#cargando").show();
+    $.post("api/registro/agencia", Agencia)
+        .done(function (data) {
+            if (data.tipo != 2) {
+                $.notify("Envio de archivos exitosos...", "success");
+            } else {
+                $.notify(data.msj, "error");
+            }
+            LimpiarAgencia();
+            $('#tabgrupo a:first').tab('show') // Select first tab
+            $("#cargando").hide();
+        });**/
 }
 
+
+function CargarCaja(Fila){
+    var taquilla= $(Fila).find("td").eq(0).html();
+    var vendedor= $(Fila).find("td").eq(1).html();
+    return {
+      "taquilla": taquilla,
+      "vendedor": vendedor
+    };
+}
 /**
  * Agregar codigos de cajas
  */
@@ -1694,6 +1760,61 @@ function agregarCajas() {
     $("#vendedor").val("");
 
 }
+// tomar los % de la negociacion de la agencia por programas
+function cargarprogramas(Fila){
+    var programa= $(Fila).find("td").eq(0).html();
+    var triple= $("#triple"+programa).val();
+    var terminal= $("#terminal"+programa).val();
+    var queda= $("#queda"+programa).val();
+    var participacion= $("#participacion"+programa).val();
+
+    return {
+      "programa": programa,
+      "triple": triple,
+      "terminal": terminal,
+      "queda": queda,
+      "participacion": participacion
+    };
+}
+
+//limpiar los datos en la pantalla de agencia
+function LimpiarAgencia() {
+    $("#nombreagencia").val('');
+    $("#fechaAgen").val('');
+    $("#cuentaAgen").val('');
+    $("#terminalAgen").val('');
+    $("#tripleAgen").val('');
+    $("#quedaAgen").val('');
+    $("#participacionAgen").val('');
+    $("#observacionAgen").val('');
+    $("#frecuenciaAgen").val('');
+    $("#negociacionAgen").val('');
+
+    $("#casaAgen").val('');
+    $("#direccionAgen").val('');
+    $("#telefonoAgen").val('');
+    $("#celularAgen").val('');
+
+    $("#usuarioAgen").val('');
+    $("#correoAgen").val('');
+    $("#claveAgen").val('');
+    $("#rclaveAgen").val('');
+    $("#respuestaAgen").val('');
+    LEstado();
+
+}
+function ValidarPar() {
+    if (parseFloat($("#participacion").val()) > 0) {
+        $("#queda").val('0');
+    }
+}
+function ValidarQueda() {
+    if (parseFloat($("#queda").val()) > 0) {
+        $("#participacion").val('0');
+    }
+}
+
+
 
 function ListarGrupos(grupo){
     var s = '<div class="col-md-4">\

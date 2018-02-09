@@ -1694,6 +1694,7 @@ function RegistrarAgencia() {
 };
   var programas = new Array();
   if ($("#tblprograma tr").length > 0) {
+      $("tblprograma").pageLength().draw();
       $("#tblprograma tr").each(function() {
           programas.push(cargarprogramas(this));
           console.log(this);

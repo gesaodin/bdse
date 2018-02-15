@@ -56,7 +56,8 @@
                             <li class=""><a href="#tab_2" data-toggle="tab" aria-expanded="false">Localización</a></li>
                             <li class=""><a href="#tab_3" data-toggle="tab" aria-expanded="false">Cajas</a></li>
                             <li class=""><a href="#tab_4" data-toggle="tab" aria-expanded="false">Programas</a></li>
-                            <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Seguridad</a></li>
+                              <li class=""><a href="#tab_5" data-toggle="tab" aria-expanded="false">Figuras</a></li>
+                            <li class=""><a href="#tab_6" data-toggle="tab" aria-expanded="false">Seguridad</a></li>
                             <!--
               <li class="pull-right"><a href="#" class="text-muted"><i class="fa fa-gear"></i></a></li>
               -->
@@ -76,16 +77,75 @@
                                           </div>
                                       </div>
                                   </div>
-                                    <div class="col-xs-12 col-md-12">
+                                      <div class="col-xs-12 col-md-6">
                                         <div class="form-group">
                                             <label>Nombre / código de la agencia</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-book"></span></span>
-                                                <input type="text" class="form-control" id="nombregrupo" placeholder="Nombre / código de la agencia" />
+                                                <input type="text" class="form-control" id="nombreagencia" placeholder="Nombre / código de la agencia" />
                                             </div>
                                         </div>
                                     </div>
+                                    <div class="col-xs-12 col-md-6">
+                                        <div class="form-group">
+                                            <label>Rif</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-book"></span></span>
+                                                <input type="text" class="form-control" id="rif" placeholder="Rif" data-inputmask='"mask":"9-99999999-9"'/>
+
+                                        </div>
+                                    </div>
                                 </div>
+                              </div>
+                              <div class="row">
+                                <div class="col-xs-3 col-md-3">
+                                    <div class="form-group">
+                                        <label>Proveedor de Internet</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><span class="fa fa-book"  ></span></span>
+                                            <select class="form-control" id="proveedor">
+                                                <option value=1>Intercable</option>
+                                                <option value=2>otro...</option>
+                                            </select>
+                                        </div>
+                                      </div>
+                                      </div>
+                                      <div class="col-xs-3 col-md-3">
+                                        <div class="form-group">
+                                        <label>El internet es Propio</label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><span class="fa fa-book"  ></span></span>
+                                            <select class="form-control" id="propia">
+                                                <option value=1>si</option>
+                                                <option value=2>No</option>
+                                            </select>
+                                        </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-xs-3 col-md-3">
+                                      <div class="form-group">
+                                          <label>Tipo</label>
+                                          <div class="input-group">
+                                              <span class="input-group-addon"><span class="fa fa-book"></span></span>
+                                              <select class="form-control" id="tipo">
+                                                  <option value=1>Modem Intercable</option>
+                                                  <option value=2>Otros...</option>
+                                              </select>
+                                          </div>
+                                      </div>
+                                    </div>
+                                    <div class="col-xs-3 col-md-3">
+                                      <div class="form-group">
+                                          <label>Monto</label>
+                                          <div class="input-group">
+                                              <span class="input-group-addon"><span class="fa fa-book"></span></span>
+                                              <input type="text" class="form-control" id="monto" placeholder="Monto Bs." />
+
+                                      </div>
+                                  </div>
+
+                              </div>
+                              </div>
 
                                 <div class="row">
                                     <div class="col-xs-12 col-md-6">
@@ -105,19 +165,56 @@
                                             <label>Numero de Cuenta</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-bank"></span></span>
-                                                <input type="text" class="form-control" id="cuenta" placeholder="Numero de Cuenta:" data-inputmask='"mask": "9999-9999-99-9999999999"'
+                                                <input type="text" class="form-control" id="cuentaAgen" placeholder="Numero de Cuenta:" data-inputmask='"mask": "9999-9999-99-9999999999"'
                                                     data-mask maxlength="24" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
+                                  <div class="row">
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label>Permuta: </label>
+                                        <div class="input-group">
+                                            <span class="input-group-addon"><span class="fa fa-calculator"></span></span>
+                                            <input type="text" class="form-control" id="taquilla" placeholder="Permuta Digitos:" required/>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                        <label>Sorteos: </label>
+                                        <select class="form-control" id="sorteos">
+                                            <option value=1>Todos</option>
+                                            <option value=2>otros...</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+
+                                            <label>
+                                              <input type="checkbox" id="reserva">
+                                              Usa Reserva
+                                            </label>
+                                    </div>
+                                </div>
+                                <div class="col-xs-6">
+                                    <div class="form-group">
+                                            <label>
+                                              <input type="checkbox" id="cupos">
+                                              Valida Cupos
+                                            </label>
+                                    </div>
+                                </div>
+                                  </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
                                         <div class="form-group">
                                             <label>Triple</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-pagelines"></span></span>
-                                                <input type="text" class="form-control" id="triple" placeholder="Triple %" maxlength="2" />
+                                                <input type="text" class="form-control" id="tripleAgen" placeholder="Triple %" maxlength="2" />
                                             </div>
                                         </div>
                                     </div>
@@ -126,28 +223,28 @@
                                             <label>Terminal</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-pagelines"></span></span>
-                                                <input type="text" class="form-control" id="terminal" placeholder="Terminal %" maxlength="2" />
+                                                <input type="text" class="form-control" id="terminalAgen" placeholder="Terminal %" maxlength="2" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-4">
                                         <div class="form-group">
                                             <label>Negociación</label>
-                                            <select class="form-control" id="negociacion">
+                                            <select class="form-control" id="negociacionAgen">
                                                 <option value=1>Global</option>
                                                 <option value=2>Individual</option>
                                             </select>
                                         </div>
                                     </div>
+                                  </div>
 
-                                </div>
                                 <div class="row">
                                     <div class="col-xs-12 col-md-4">
                                         <div class="form-group">
                                             <label>Participacion</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-pagelines"></span></span>
-                                                <input type="text" class="form-control" id="participacion" placeholder="Participacion %" maxlength="2" onblur="ValidarPar()"
+                                                <input type="text" class="form-control" id="participacionAgen" placeholder="Participacion %" maxlength="2" onblur="ValidarPar()"
                                                 />
                                             </div>
                                         </div>
@@ -157,14 +254,14 @@
                                             <label>Queda</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-pagelines"></span></span>
-                                                <input type="text" class="form-control" id="queda" placeholder="Queda %" maxlength="2" onblur="ValidarQueda()" />
+                                                <input type="text" class="form-control" id="quedaAgen" placeholder="Queda %" maxlength="2" onblur="ValidarQueda()" />
                                             </div>
                                         </div>
                                     </div>
                                     <div class="col-xs-12 col-md-4">
                                         <div class="form-group">
                                             <label>Frecuencia</label>
-                                            <select class="form-control" id="frecuencia">
+                                            <select class="form-control" id="frecuenciaAgen">
                                                 <option value=1>Diario</option>
                                                 <option value=2>Semanal</option>
                                                 <option value=3>Quincenal</option>
@@ -175,17 +272,47 @@
                                     </div>
                                 </div>
                                 <div class="row">
+                                    <div class="col-xs-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Triple Con Signo</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-pagelines"></span></span>
+                                                <input type="text" class="form-control" id="triplesigno" placeholder="Triple %" maxlength="2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Terminal con Signo</label>
+                                            <div class="input-group">
+                                                <span class="input-group-addon"><span class="fa fa-pagelines"></span></span>
+                                                <input type="text" class="form-control" id="terminalsigno" placeholder="Terminal %" maxlength="2" />
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-xs-12 col-md-4">
+                                        <div class="form-group">
+                                            <label>Status de la Agencia</label>
+                                            <select class="form-control" id="negociacionAgen">
+                                                <option value=1>Activo</option>
+                                                <option value=2>Inactivo</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                  </div>
+                                <div class="row">
                                     <div class="col-xs-12 col-md-12">
                                         <div class="form-group">
                                             <label>Observaciones</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-book"></span></span>
-                                                <input type="text" class="form-control" id="observacion" placeholder="Observaciones" />
+                                                <input type="text" class="form-control" id="observacionAgen" placeholder="Observaciones" />
                                             </div>
                                         </div>
                                     </div>
                                 </div>
-                            </div>
+                              </div>
+
                             <!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_2">
                                 <div class="row">
@@ -230,7 +357,7 @@
                                             <label> Local </label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-home"></span></span>
-                                                <input type="text" class="form-control" id="casa" placeholder="Local" />
+                                                <input type="text" class="form-control" id="casaAgen" placeholder="Local" />
                                             </div>
                                         </div>
                                     </div>
@@ -239,7 +366,7 @@
                                             <label>Dirección / Referencia</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-home"></span></span>
-                                                <input type="text" class="form-control" id="direccion" placeholder="Dirección / Referencia" />
+                                                <input type="text" class="form-control" id="direccionAgen" placeholder="Dirección / Referencia" />
                                             </div>
                                         </div>
                                     </div>
@@ -250,7 +377,7 @@
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-phone"></i>
                                                 </div>
-                                                <input class="form-control" id="telefono" data-inputmask='"mask": "(9999) 999-9999"' data-mask type="text" placeholder="Telefono:">
+                                                <input class="form-control" id="telefonoAgen" data-inputmask='"mask": "(9999) 999-9999"' data-mask type="text" placeholder="Telefono:">
 
 
                                             </div>
@@ -264,7 +391,7 @@
                                                 <div class="input-group-addon">
                                                     <i class="fa fa-phone"></i>
                                                 </div>
-                                                <input class="form-control" id="celular" data-inputmask='"mask": "(9999) 999-9999"' data-mask type="text" placeholder="Celular:">
+                                                <input class="form-control" id="celularAgen" data-inputmask='"mask": "(9999) 999-9999"' data-mask type="text" placeholder="Celular:">
                                             </div>
                                         </div>
 
@@ -285,6 +412,7 @@
                                             </div>
                                         </div>
                                     </div>
+
 
                                     <div class="col-xs-6">
                                         <div class="form-group">
@@ -308,6 +436,7 @@
                                                 <tr>
                                                     <th>Código</th>
                                                     <th>Responsable</th>
+
                                                 </tr>
                                             </thead>
                                         </table>
@@ -334,15 +463,34 @@
 
 
                             </div>
-                            <!-- /.tab-pane -->
                             <div class="tab-pane" id="tab_5">
+                                <div>
+                                    <table id="tblfiguras" class="table table-striped table-bordered" cellspacing="0" width="100%">
+                                        <thead>
+                                            <tr>
+                                                <th>#</th>
+                                                <th>Figura</th>
+                                                <th>Triple %</th>
+                                                <th>Terminal %</th>
+                                                <th>Queda %</th>
+                                                <th>Participacion %</th>
+                                            </tr>
+                                        </thead>
+
+                                    </table>
+                                </div>
+
+
+                            </div>
+                            <!-- /.tab-pane -->
+                            <div class="tab-pane" id="tab_6">
                                 <div class="row">
                                     <div class="col-xs-12 col-md-6">
                                         <div class="form-group">
                                             <label>Nombre de Usuario:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-user"></span></span>
-                                                <input type="text" class="form-control" id="usuario" placeholder="Usuario:" />
+                                                <input type="text" class="form-control" id="usuarioAgen" placeholder="Usuario:" />
                                             </div>
                                         </div>
                                     </div>
@@ -351,7 +499,7 @@
                                             <label>Correo Electrónicoo:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-envelope"></span></span>
-                                                <input type="email" class="form-control" id="correo" placeholder="Correo Electrónico" />
+                                                <input type="email" class="form-control" id="correoAgen" placeholder="Correo Electrónico" />
                                             </div>
                                         </div>
                                     </div>
@@ -363,7 +511,7 @@
                                             <label>Contraseña:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa   fa-lock"></span></span>
-                                                <input type="password" class="form-control" id="clave" placeholder="Contraseña" />
+                                                <input type="password" class="form-control" id="claveAgen" placeholder="Contraseña" />
                                             </div>
                                         </div>
                                     </div>
@@ -372,7 +520,7 @@
                                             <label>Repetir Contraseña:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-lock"></span></span>
-                                                <input type="password" class="form-control" id="rclave" placeholder="Repetir Contraseña" />
+                                                <input type="password" class="form-control" id="rclaveAgen" placeholder="Repetir Contraseña" />
                                             </div>
                                         </div>
                                     </div>
@@ -383,7 +531,7 @@
                                             <label>Preguntas de Seguridad:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-user-secret"></span></span>
-                                                <select class="form-control" id="pregunta">
+                                                <select class="form-control" id="preguntaAgen">
                                                     <option value=0>Pregunta de seguridad:</option>
                                                     <option value=1>¿Nombre de tu artista favorito?</option>
                                                     <option value=2>¿Segundo nombre de tu abuela?</option>
@@ -401,7 +549,7 @@
                                             <label>Respuesta:</label>
                                             <div class="input-group">
                                                 <span class="input-group-addon"><span class="fa fa-user-secret"></span></span>
-                                                <input type="text" class="form-control" id="respuesta" placeholder="Respuesta de la pregunta de seguridad" />
+                                                <input type="text" class="form-control" id="respuestaAgen" placeholder="Respuesta de la pregunta de seguridad" />
                                                 <input type="hidden" id="tipo" value="0" />
                                             </div>
                                         </div>
@@ -422,7 +570,7 @@
 
             <!-- /.box-body -->
             <div class="box-footer">
-                <button type="button" class="btn btn-success" onclick="RegistrarGrupo()">
+                <button type="button" class="btn btn-success" onclick="RegistrarAgencia()">
           <i class="fa fa-save"></i>&nbsp;&nbsp;&nbsp; Registrar
         </button>
             </div>

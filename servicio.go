@@ -49,7 +49,8 @@ func init() {
 
 func main() {
 	// var archivo = util.Archivo{}
-
+	// archivo.PostgreSQL = sys.PostgreSQL
+	// archivo.LeerCodigosYCrearSaldos()
 	//MORPHEUS LOTERIA
 	// archivo.Ruta = "public/test/loteria/"
 	// archivo.NombreDelArchivo = "Mo.Txt"

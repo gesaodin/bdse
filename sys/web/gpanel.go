@@ -268,7 +268,8 @@ func tipoArchivo(f string, s string, usuario string, codigo string) {
 
 	switch strings.ToLower(codigo[:2]) {
 	case "ma": //Maticlot
-		go archivo.LeerMaticlo(Mensajeria.Usuario[usuario].ch, tipo)
+		fmt.Println("Maticlo")
+		go archivo.LeerMaticloXLSX(Mensajeria.Usuario[usuario].ch, tipo)
 		break
 	case "mo": //Morpheus
 		go archivo.LeerMorpheus(Mensajeria.Usuario[usuario].ch, tipo)

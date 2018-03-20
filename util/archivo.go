@@ -189,12 +189,13 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 	scan := bufio.NewScanner(archivo)
 	for scan.Scan() {
 		linea := strings.Split(scan.Text(), ";")
-
-		cap := linea[0]
-		saldo := linea[1]
+		// cap := linea[0]
+		cap := linea[0][:len(linea[0])-2]
+		saldo := strings.Replace(strings.Trim(linea[1], " "), ",", ".", -1)
 		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
+		// dondeagencia := `(SELECT oida FROM zr_agencia WHERE codi='` + cap + `' LIMIT 1)`
 		sql = `INSERT INTO cobrosypagos (oida, fech, vien) VALUES (` + dondeagencia + `,'2017-11-29'::TIMESTAMP,` + saldo + `);`
-
+		fmt.Println(sql)
 		_, err = a.PostgreSQL.Exec(sql)
 		if err != nil {
 			fmt.Println(err.Error())
@@ -206,6 +207,7 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 	JOIN agencia ag ON ag.grupo=gr.oid
 	JOIN cobrosypagos cyp ON ag.oid=cyp.oida
 	GROUP BY gr.oid`
+	fmt.Println(sql)
 	_, err = a.PostgreSQL.Exec(sql)
 	if err != nil {
 		fmt.Println(err.Error())

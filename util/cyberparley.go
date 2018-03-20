@@ -92,7 +92,7 @@ func (a *Archivo) LeerCyberParley(ch chan []byte, tipo string) (bool, string) {
 func tipoCyberParley(tipo string) (posicionarchivo int, fig string) {
 	switch tipo {
 	case "p":
-		posicionarchivo = 6
+		posicionarchivo = 7
 		fig = SParley
 		break
 	case "f":

@@ -193,7 +193,7 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 		cap := linea[0]
 		saldo := linea[1]
 		dondeagencia := `(SELECT oid FROM agencia WHERE obse='` + cap + `')`
-		sql = `INSERT INTO cobrosypagos (oida, fech, vien) VALUES (` + dondeagencia + `,'2016-12-31'::TIMESTAMP,` + saldo + `);`
+		sql = `INSERT INTO cobrosypagos (oida, fech, vien) VALUES (` + dondeagencia + `,'2017-11-29'::TIMESTAMP,` + saldo + `);`
 
 		_, err = a.PostgreSQL.Exec(sql)
 		if err != nil {
@@ -202,7 +202,7 @@ func (a *Archivo) LeerCodigosYCrearSaldos() bool {
 
 	}
 	sql = `INSERT INTO cobrosypagos_grupo (oidg,fech,vien,sald,movi,van,erec)
-	select gr.oid, '2016-12-31'::TIMESTAMP, sum(cyp.vien),0,0,sum(cyp.vien),0 from grupo gr
+	select gr.oid, '2017-11-29'::TIMESTAMP, sum(cyp.vien),0,0,sum(cyp.vien),0 from grupo gr
 	JOIN agencia ag ON ag.grupo=gr.oid
 	JOIN cobrosypagos cyp ON ag.oid=cyp.oida
 	GROUP BY gr.oid`

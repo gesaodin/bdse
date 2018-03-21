@@ -111,10 +111,10 @@ func (p *Pago) Registrar(data Pago) (jSon []byte, err error) {
 	s += "'" + data.Deposito + "',now()," + operacion + aprobado + forma
 	s += "," + banco + "," + estatus + ",'" + data.Observacion + "');"
 
-	fmt.Println(s)
+	//fmt.Println(s)
 	rs, err := sys.PostgreSQL.Exec(s)
 	if err != nil {
-		fmt.Println(s)
+		//fmt.Println(s)
 		fmt.Println(err.Error())
 		return
 	}
@@ -193,7 +193,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
-		fmt.Println(s)
+		//fmt.Println(s)
 		fmt.Println(err.Error())
 		return
 	}
@@ -255,7 +255,7 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	data.Fecha = fechapicada[0] + "-" + mes + "-" + dia
 
 	s = generarCobrosYPagosGeneralCierre(data.Fecha)
-	fmt.Println(s)
+	//fmt.Println(s)
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
@@ -284,7 +284,7 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		r.Msj += ", no se encontrarón participaciones diarias."
-		fmt.Println(s)
+		//fmt.Println(s)
 		fmt.Println(err.Error())
 		//return
 	}
@@ -322,9 +322,11 @@ func generarCobrosYPagosGeneral(fecha string) (s string) {
 			FROM agencia
 			LEFT JOIN zr_agencia ON agencia.oid=zr_agencia.oida
 			LEFT JOIN (
-			SELECT agen, fech, vent-prem-comi as saldo from loteria
-			UNION
-			SELECT agen, fech, vent-prem-comi as saldo from parley
+				SELECT agen, fech, vent-prem-comi as saldo from loteria
+				UNION
+				SELECT agen, fech, vent-prem-comi as saldo from parley
+				UNION
+				SELECT agen, fech, vent-prem-comi as saldo from figura
 			) AS lotepar ON zr_agencia.codi=lotepar.agen
 
 			WHERE ` + fecha + `
@@ -405,9 +407,11 @@ func generarCobrosYPagosGeneralCierre(fecha string) (s string) {
 			FROM agencia
 			LEFT JOIN zr_agencia ON agencia.oid=zr_agencia.oida
 			LEFT JOIN (
-			SELECT agen, fech, vent-prem-comi as saldo from loteria
-			UNION
-			SELECT agen, fech, vent-prem-comi as saldo from parley
+				SELECT agen, fech, vent-prem-comi as saldo from loteria
+				UNION
+				SELECT agen, fech, vent-prem-comi as saldo from parley
+				UNION
+				SELECT agen, fech, vent-prem-comi as saldo from figura
 			) AS lotepar ON zr_agencia.codi=lotepar.agen
 
 			WHERE ` + fecha + `
@@ -543,6 +547,8 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 						SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria
 						UNION
 						SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+						UNION
+						SELECT arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from figura
 					) AS lotepar ON zr_agencia.codi=lotepar.agen
 
 					WHERE agencia.obse='` + data.Agencia + `'  ` + fecha + `
@@ -608,6 +614,9 @@ func generarCobrosYPagosSistemas(data Pago) (s string) {
 		UNION
 		SELECT
 			arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+		UNION
+		SELECT
+			arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from figura
 		) AS lotepar ON zr_agencia.codi=lotepar.agen
 		JOIN sistema ON lotepar.sist=sistema.oid
 		WHERE agencia.obse='` + data.Agencia + `'` + fecha + `
@@ -670,10 +679,12 @@ func generarCobrosYPagosDetallados(data Pago) (s string) {
 		JOIN (
 			SELECT
 				arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from loteria
-
 			UNION
 			SELECT
 				arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from parley
+			UNION
+			SELECT
+				arch, agen, fech, vent-prem-comi as saldo, vent, prem, comi, sist from figura
 
 			) AS lotepar ON zr_agencia.codi=lotepar.agen
 		JOIN sistema ON lotepar.sist=sistema.oid
@@ -761,7 +772,7 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 				WHERE oidg=` + idgrupo + ` AND fech='` + pago.Fecha + `'`
 				_, err := sys.PostgreSQL.Exec(s)
 				if err != nil {
-					fmt.Println(s)
+					//fmt.Println(s)
 					fmt.Println(err.Error())
 				}
 
@@ -786,7 +797,7 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 		pago.Estatus = esta
 		pago.Observacion = util.ValidarNullString(nomb)
 		auxiliarFecha := util.ValidarNullString(fvien)
-		fmt.Println(auxiliarFecha)
+		//fmt.Println(auxiliarFecha)
 		if auxiliarFecha != "" {
 
 			auxiliarFecha = auxiliarFecha[0:10]
@@ -907,6 +918,8 @@ func gCPGrupoDiario(fecha string) (s string) {
 					SELECT agen, fech, vent,prem,comi, sist from loteria
 					UNION
 					SELECT agen, fech, vent,prem,comi, sist from parley
+					UNION
+					SELECT agen, fech, vent,prem,comi, sist from figura
 				) AS A
 				JOIN zr_agencia zr ON A.agen=zr.codi
 				JOIN agencia ON agencia.oid = zr.oida
@@ -1025,6 +1038,8 @@ func gCPGrupoParticipacionDiaria(fecha string) (s string) {
 						SELECT agen, fech, vent,prem,comi, sist from loteria
 						UNION
 						SELECT agen, fech, vent,prem,comi, sist from parley
+						UNION
+						SELECT agen, fech, vent,prem,comi, sist from figura
 					) AS A
 					JOIN zr_agencia zr ON A.agen=zr.codi
 					JOIN agencia ON agencia.oid = zr.oida
@@ -1180,6 +1195,8 @@ func gCPGrupoMensual(fecha string) (s string) {
 				SELECT agen, fech, vent,prem,comi, sist from loteria
 				UNION
 				SELECT agen, fech, vent,prem,comi, sist from parley
+				UNION
+				SELECT agen, fech, vent,prem,comi, sist from figura
 			) AS A
 			JOIN zr_agencia zr ON A.agen=zr.codi
 			JOIN agencia ON agencia.oid = zr.oida
@@ -1212,6 +1229,8 @@ func gCPGrupoMensualQueda(fecha string) (lst map[string][]CobrosYPagos) {
 				SELECT agen, fech, vent,prem,comi, sist from loteria
 				UNION
 				SELECT agen, fech, vent,prem,comi, sist from parley
+				UNION
+				SELECT agen, fech, vent,prem,comi, sist from figura
 			) AS A
 			JOIN zr_agencia zr ON A.agen=zr.codi
 			JOIN agencia ON agencia.oid = zr.oida

@@ -52,9 +52,9 @@ func (a *Archivo) LeerCyberParley(ch chan []byte, tipo string) (bool, string) {
 				agen := re.Split(linea[2], -1)
 				// fmt.Println(agen[2])
 
-				c := strings.Replace(strings.Trim(linea[5], " "), "-", "", -1)
-				p := strings.Replace(strings.Trim(linea[6], " "), "-", "", -1)
-				agencia, venta := strings.Trim(agen[0], " "), strings.Trim(linea[4], " ")
+				c := strings.Replace(RComaXPunto(linea[5]), "-", "", -1)
+				p := strings.Replace(RComaXPunto(linea[6]), "-", "", -1)
+				agencia, venta := strings.Trim(agen[0], " "), RComaXPunto(linea[4])
 				premio, comision := p, c
 				insertar += "('" + agencia + "'," + venta + "," + premio + ","
 				insertar += comision + ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

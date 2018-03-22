@@ -61,8 +61,8 @@ func (a *Archivo) LeerMatrix(ch chan []byte, tipo string) (bool, string) {
 					re := regexp.MustCompile(`[-()]`)
 					agen := re.Split(cel[1], -1)
 
-					agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[2], " ")
-					premio, comision := strings.Trim(cel[4], " "), strings.Trim(cel[3], " ")
+					agencia, venta := strings.ToUpper(agen[0]), RComaXPunto(cel[2])
+					premio, comision := RComaXPunto(cel[4]), RComaXPunto(cel[3])
 					insertar += coma
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
 					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

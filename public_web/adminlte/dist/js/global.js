@@ -347,7 +347,6 @@ function LstRA() {
         $.post("api/reportearchivo", rfecha)
             .done(function (data) {
                 // Get the column API object
-                console.log(data);
                 t.column(1).visible(false);
                 t.column(2).visible(false);
 
@@ -384,9 +383,7 @@ function LstRA() {
         var table = $('#reporte').DataTable();
         $('#reporte tbody').on('click', 'tr', function () {
             var data = table.row(this).data();
-            console.log(data);
             VentanaEmergente(data[3], data[1], data[2]);
-
         });
     } else {
         $.notify("Debe seleccionar un rango", "error");
@@ -879,9 +876,13 @@ function GC(tipo) {
         .done(function (data) {
             t.clear().draw();
             var i = 0;
-
+            var tsaldoant = 0;
+            var tsaldodia = 0;
+            var tmovimiento = 0;
+            var ter = 0;
+            var tsaldototal = 0;
             $.each(data, function (c, v) {
-
+                console.log(v);
                 vienen = v.vienen == null ? 0 : v.vienen;
                 saldo = v.saldo == null ? 0 : v.saldo;
                 ingreso = v.ingreso == null ? 0 : v.ingreso;
@@ -896,7 +897,16 @@ function GC(tipo) {
                 //console.log("SALDO: " + v.saldo + " X: " + x + " MOVIMIENTO : " + movimiento);
                 total = vienen + parseFloat(saldo) + movimiento + x;
 
+                 
+                
+                tsaldoant += vienen;
+                tsaldoant += saldo;
+                tmovimiento += movimiento;
+                ter += x;
+                tsaldototal += total;
+
                 if ($("#txtSeleccion").val() == "0"){
+                    console.log(c, v.observacion, total);
                     accion = btnAccion(c, v.observacion, total);
                     nombre =  v.observacion;
                 }else{
@@ -962,6 +972,11 @@ function GC(tipo) {
 
 
             });
+            $("#tsaldoant").html(tsaldoant.toFixed(2));
+            $("#tsaldodia").html(tsaldodia.toFixed(2));
+            $("#tmovimiento").html(tmovimiento.toFixed(2));
+            $("#ter").html(ter.toFixed(2));
+            $("#tsaldototal").html(tsaldototal.toFixed(2));
             $("#cargando").hide();
 
         })
@@ -1003,6 +1018,17 @@ function tableGC() {
                 <th>Total</th>\
               </tr>\
             </thead>\
+            <tfoot>\
+              <tr>\
+                <th style="width: 60px"></th>\
+                <th></th>\
+                <th id="tsaldoant"></th>\
+                <th id="tsaldodia"></th>\
+                <th id="tmovimiento"></th>\
+                <th id="ter"></th>\
+                <th id="tsaldototal"></th>\
+              </tr>\
+            </tfoot>\
           </table>';
     return s;
 

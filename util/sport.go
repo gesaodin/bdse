@@ -60,9 +60,9 @@ func (a *Archivo) LeerSport(ch chan []byte, tipo string) (bool, string) {
 
 					re := regexp.MustCompile(`[(-)]`)
 					agen := re.Split(linea[0], -1)
-					p := strings.Replace(strings.Trim(linea[5], " "), "-", "", -1)
-					c := strings.Replace(strings.Trim(linea[2], " "), "-", "", -1)
-					agencia, venta := strings.Trim(agen[0], " "), strings.Trim(linea[1], " ")
+					p := strings.Replace(RComaXPunto(linea[5]), "-", "", -1)
+					c := strings.Replace(RComaXPunto(linea[2]), "-", "", -1)
+					agencia, venta := strings.Trim(agen[0], " "), RComaXPunto(linea[1])
 					premio, comision := p, c
 					insertar += "('" + agencia + "'," + venta + "," + premio + ","
 					insertar += comision + ",1,'" + a.Fecha + "',Now(),8," + strconv.Itoa(oid) + ")"

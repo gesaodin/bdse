@@ -7,6 +7,7 @@
 package seguridad
 
 import (
+	"fmt"
 	"net"
 	"net/http"
 	"os"
@@ -25,13 +26,13 @@ type Session struct {
 var Stores = sessions.NewCookieStore([]byte("#za63qj2p-6pt33pSUz#"))
 
 func init() {
+	ip := ObtnerIP()
 	Stores.Options = &sessions.Options{
-		Domain:   "localhost",
+		Domain:   ip,
 		Path:     "/",
 		MaxAge:   1800, //Media Hora en segundos
 		HttpOnly: true,
 	}
-	ObtnerIP()
 }
 
 //Crear conexion y variables
@@ -40,7 +41,8 @@ func (S *Session) Crear(w http.ResponseWriter, r *http.Request) {
 }
 
 //ObtnerIP Direccion Fisica de la maquina
-func ObtnerIP() {
+func ObtnerIP() string {
+	var ip string
 	addrs, err := net.InterfaceAddrs()
 	if err != nil {
 		os.Stderr.WriteString("Oops: " + err.Error() + "\n")
@@ -51,8 +53,11 @@ func ObtnerIP() {
 		//fmt.Println(a)
 		if ipnet, ok := a.(*net.IPNet); ok && !ipnet.IP.IsLoopback() {
 			if ipnet.IP.To4() != nil {
-				os.Stdout.WriteString(ipnet.IP.String() + "\n")
+				// os.Stdout.WriteString(ipnet.IP.String() + "\n")
+				fmt.Println("Conectando... IP : ", ipnet.IP.String())
+				ip = ipnet.IP.String()
 			}
 		}
 	}
+	return ip
 }

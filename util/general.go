@@ -78,3 +78,8 @@ func Error(e error) {
 		fmt.Println("BDSE@Error: $ ", e)
 	}
 }
+
+//RComaXPunto Reemplazando coma por puntos
+func RComaXPunto(cadena string) string {
+	return strings.Replace(strings.Trim(cadena, " "), ",", ".", -1)
+}

@@ -52,8 +52,8 @@ func (a *Archivo) LeerMorpheus(ch chan []byte, tipo string) (bool, string) {
 			if a.CantidadLineas > 1 && len(linea) == 8 && _Totales != strings.Trim(linea[0], " ") {
 				re := regexp.MustCompile(`[-()]`)
 				agen := re.Split(linea[1], -1)
-				agencia, venta := strings.Trim(agen[0], " "), strings.Trim(linea[3], " ")
-				premio, comision := strings.Trim(linea[5], " "), strings.Trim(linea[7], " ")
+				agencia, venta := strings.Trim(agen[0], " "), RComaXPunto(linea[3])
+				premio, comision := RComaXPunto(linea[5]), RComaXPunto(linea[7])
 				insertar += "('" + agencia + "'," + venta + "," + premio + ","
 				insertar += comision + ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 				a.Salvar = true

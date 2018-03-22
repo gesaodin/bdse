@@ -52,8 +52,8 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo string) (bool, string) {
 
 					re := regexp.MustCompile(`[-()]`)
 					agen := re.Split(linea[0], -1)
-					agencia, venta := agen[1], strings.Trim(linea[l-3], " ")
-					premio, comision := strings.Trim(linea[l-1], " "), strings.Trim(linea[l-2], " ")
+					agencia, venta := agen[1], RComaXPunto(linea[l-3])
+					premio, comision := RComaXPunto(linea[l-1]), RComaXPunto(linea[l-2])
 					insertar += "('" + agencia + "'," + venta + "," + premio + ","
 					insertar += comision + ",1,'" + a.Fecha + "',Now(),"
 					insertar += strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

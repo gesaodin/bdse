@@ -408,6 +408,16 @@ function VentanaEmergente(titulo, id, tbl) {
                   <th >Saldo</th>\
                 </tr>\
               </thead>\
+              <tfoot>\
+                <tr>\
+                  <th style="width: 5px">#</th>\
+                  <th></th>\
+                  <th id="tventa"></th>\
+                  <th id="tpremio"></th>\
+                  <th id="tcomision"></th>\
+                  <th id="tsaldo"></th>\
+                </tr>\
+              </tfoot>\
             </table>';
     $('#ventanaEmergenteTitulo').html(titulo);
     $('#ventanaEmergenteContenido').html(cont);
@@ -434,11 +444,20 @@ function Reporte(t, oid, tbl) {
     table.clear().draw();
     $.post("api/reportesaldo", clave)
         .done(function (data) {
+            var tventa = 0;
+            var tpremio = 0;
+            var tcomision = 0;
+            var tsaldo = 0;
             $.each(data, function (c, v) {
                 venta = v.ven == null ? 0 : v.ven;
                 premio = v.pre == null ? 0 : v.pre;
                 comision = v.com == null ? 0 : v.com;
                 saldo = v.sal == null ? 0 : v.sal;
+                
+                tventa += venta;
+                tpremio += premio;
+                tcomision += comision;
+                tsaldo += saldo;
 
                 table.row.add([
                     parseInt(c) + 1,
@@ -451,6 +470,10 @@ function Reporte(t, oid, tbl) {
                 ]).draw(false);
 
             });
+            $("#tventa").html(tventa.toFixed(2));
+            $("#tpremio").html(tpremio.toFixed(2));
+            $("#tcomision").html(tcomision.toFixed(2));
+            $("#tsaldo").html(tsaldo.toFixed(2));
         });
 
 }

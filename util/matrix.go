@@ -21,7 +21,7 @@ func (a *Archivo) LeerMatrix(ch chan []byte, tipo string) (bool, string) {
 	insertar := a.Cabecera
 	var coma string
 	contar := 0
-	oid, b := a.CrearTraza(posicionarchivo, "2")
+	oid, b := a.CrearTraza(posicionarchivo, a.ConvertirTablaNumero(fig))
 	if b != nil {
 		m.Msj = "E# Matrix : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33

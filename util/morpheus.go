@@ -22,7 +22,7 @@ func (a *Archivo) LeerMorpheus(ch chan []byte, tipo string) (bool, string) {
 	insertar := a.Cabecera
 	var coma string
 
-	oid, b := a.CrearTraza(posicionarchivo, Loteria)
+	oid, b := a.CrearTraza(posicionarchivo, a.ConvertirTablaNumero(fig))
 	if b != nil {
 		m.Msj = "E# Morpheus: " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33

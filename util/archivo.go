@@ -36,6 +36,8 @@ const (
 	SFigura string = "figura"
 	//SAnimalito apuestas generales animales
 	SAnimalito string = "animalito"
+	//STruco apuestas generales Truco
+	STruco string = "truco"
 	//SCaballo apuestas generales animales
 	SCaballo string = "caballo"
 )
@@ -351,4 +353,25 @@ func (a *Archivo) LeerEntregadosOficina() bool {
 	}
 
 	return true
+}
+
+//ConvertirTabla devuelve loteria / parley
+func (a *Archivo) ConvertirTablaNumero(tabla string) string {
+	fmt.Println(tabla)
+	var intTabla string
+	switch tabla {
+	case SLoteria:
+		intTabla = "0"
+		break
+	case SParley:
+		intTabla = "1"
+		break
+	case SFigura:
+		intTabla = "2"
+		break
+	default:
+		intTabla = "0"
+		break
+	}
+	return intTabla
 }

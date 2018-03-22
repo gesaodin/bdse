@@ -347,6 +347,7 @@ function LstRA() {
         $.post("api/reportearchivo", rfecha)
             .done(function (data) {
                 // Get the column API object
+                console.log(data);
                 t.column(1).visible(false);
                 t.column(2).visible(false);
 
@@ -383,7 +384,7 @@ function LstRA() {
         var table = $('#reporte').DataTable();
         $('#reporte tbody').on('click', 'tr', function () {
             var data = table.row(this).data();
-            //console.log(data);
+            console.log(data);
             VentanaEmergente(data[3], data[1], data[2]);
 
         });

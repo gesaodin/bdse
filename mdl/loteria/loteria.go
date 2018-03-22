@@ -105,6 +105,7 @@ func (r *Reporte) Saldos(data JsonDataReporte) (j []byte, e error) {
 	if data.Tabla != "" {
 		tbl = data.Tabla
 	}
+	fmt.Println(data.Tabla)
 	if data.Sistema > 0 && data.Sistema != 99 {
 		donde = " AND sist = " + strconv.Itoa(data.Sistema)
 	}
@@ -140,7 +141,7 @@ func (r *Reporte) Saldos(data JsonDataReporte) (j []byte, e error) {
 
 		lst = append(lst, rp)
 	}
-	println(lst)
+	// println(lst)
 	j, _ = json.Marshal(lst)
 	return
 }
@@ -483,10 +484,18 @@ func (r *Reporte) BalanceGeneral(data JsonDataReporte) (jSon []byte, err error) 
 
 //ConvertirTabla devuelve loteria / parley
 func (a *Archivo) ConvertirTabla() {
-
-	if a.idTabla == 0 {
+	switch a.idTabla {
+	case 0:
 		a.Tabla = "loteria"
-	} else {
+		break
+	case 1:
 		a.Tabla = "parley"
+		break
+	case 2:
+		a.Tabla = "figura"
+		break
+	default:
+		a.Tabla = "loteria"
+		break
 	}
 }

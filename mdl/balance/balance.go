@@ -255,7 +255,7 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	data.Fecha = fechapicada[0] + "-" + mes + "-" + dia
 
 	s = generarCobrosYPagosGeneralCierre(data.Fecha)
-	//fmt.Println(s)
+	fmt.Println("Cierre Diario: ", s)
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
@@ -460,6 +460,7 @@ func generarCobrosYPagosGeneralCierre(fecha string) (s string) {
 			ORDER BY z.obse
 			) AS A
 	`
+
 	return
 }
 

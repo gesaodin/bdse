@@ -18,7 +18,7 @@ func (a *Archivo) LeerPos(ch chan []byte, tipo string) (bool, string) {
 	insertar := a.Cabecera
 	var coma string
 
-	oid, b := a.CrearTraza(posicionarchivo, Loteria)
+	oid, b := a.CrearTraza(posicionarchivo, a.ConvertirTablaNumero(fig))
 	if b != nil {
 		m.Msj = "E# : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
@@ -94,27 +94,27 @@ func TipoArchivo(tipo string) (posicionarchivo int, fig string) {
 	switch tipo {
 	case "1t":
 		posicionarchivo = 2
-		fig = "loteria"
+		fig = SLoteria
 		break
 	case "2t":
 		posicionarchivo = 3
-		fig = "loteria"
+		fig = SLoteria
 		break
 	case "3t":
 		posicionarchivo = 4
-		fig = "loteria"
+		fig = SLoteria
 		break
 	case "1f":
 		posicionarchivo = 15
-		fig = "figura"
+		fig = SFigura
 		break
 	case "2f":
 		posicionarchivo = 16
-		fig = "figura"
+		fig = SFigura
 		break
 	case "3f":
 		posicionarchivo = 17
-		fig = "figura"
+		fig = SFigura
 		break
 	case "1c":
 		posicionarchivo = 15

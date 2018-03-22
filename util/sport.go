@@ -25,7 +25,7 @@ func (a *Archivo) LeerSport(ch chan []byte, tipo string) (bool, string) {
 
 	insertar := a.Cabecera
 	var coma string
-	oid, b := a.CrearTraza(posicionarchivo, Parley)
+	oid, b := a.CrearTraza(posicionarchivo, a.ConvertirTablaNumero(fig))
 	if b != nil {
 		m.Msj = "E# Sport17 : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33
@@ -115,7 +115,7 @@ func (a *Archivo) LeerSportXLSX(ch chan []byte, tipo string) (bool, string) {
 	insertar := a.Cabecera
 	var coma string
 	contar := 0
-	oid, b := a.CrearTraza(posicionarchivo, Loteria)
+	oid, b := a.CrearTraza(posicionarchivo, a.ConvertirTablaNumero(fig))
 	if b != nil {
 		m.Msj = "E# Sport17 : " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33

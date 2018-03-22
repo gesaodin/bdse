@@ -18,7 +18,7 @@ func (a *Archivo) LeerCyberParley(ch chan []byte, tipo string) (bool, string) {
 	insertar := a.Cabecera
 	var coma string
 
-	oid, b := a.CrearTraza(posicionarchivo, Parley)
+	oid, b := a.CrearTraza(posicionarchivo, a.ConvertirTablaNumero(fig))
 	if b != nil {
 		m.Msj = "E# CyberParley: " + a.NombreDelArchivo + " " + b.Error()
 		m.Tipo = 33

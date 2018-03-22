@@ -26,4 +26,4 @@ _testmain.go
 public/temp/loteria/*.*
 sys/config.json
 sys/seguridad/session.go
-
+public_web/adminlte/dist/web-fonts-with-css/

@@ -721,7 +721,7 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 	//fmt.Println(p.Cierre)
 	s := gCPGrupoDiario(p.Fecha)
 	row, err := sys.PostgreSQL.Query(s)
-	//fmt.Println(s)
+	// fmt.Println(s)
 	if err != nil {
 		return
 	}
@@ -802,10 +802,10 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 		if auxiliarFecha != "" {
 
 			auxiliarFecha = auxiliarFecha[0:10]
-		} else {
-
-			pago.Estatus = 1
 		}
+		//  else {
+		// 	pago.Estatus = 1
+		// }
 		pago.Fecha = auxiliarFecha
 		pago.Entregado = entr
 		pago.Recibido = reci

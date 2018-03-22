@@ -882,7 +882,6 @@ function GC(tipo) {
             var ter = 0;
             var tsaldototal = 0;
             $.each(data, function (c, v) {
-                console.log(v);
                 vienen = v.vienen == null ? 0 : v.vienen;
                 saldo = v.saldo == null ? 0 : v.saldo;
                 ingreso = v.ingreso == null ? 0 : v.ingreso;
@@ -906,7 +905,6 @@ function GC(tipo) {
                 tsaldototal += total;
 
                 if ($("#txtSeleccion").val() == "0"){
-                    console.log(c, v.observacion, total);
                     accion = btnAccion(c, v.observacion, total);
                     nombre =  v.observacion;
                 }else{
@@ -990,7 +988,7 @@ function evalTipo(){
             url = "api/balance/cobrosypagosgrupo";
             break;
         case "1":
-            url =  "api/balance/cobrosypagoscolector";
+            url =  "api/balance/cobrosypagosgrupo";
             break;
         case "2":
             url =  "api/balance/cobrosypagos";

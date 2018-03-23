@@ -298,18 +298,20 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 		return
 	}
 	r.Msj = "Proceso exitoso"
-	fmt.Println("Tercer tramo")
+	fmt.Println("Cargando participaciones por agencia...")
 	//Calcular Participacion
-	s = gCPGrupoParticipacionDiaria(data.Fecha)
-	fmt.Println("Participacion: ", s)
+	var Ag Agencia
+	Ag.CalcularParticipacion(data.Fecha)
 
-	_, err = sys.PostgreSQL.Query(s)
-	if err != nil {
-		r.Msj += ", no se encontrarón participaciones diarias."
-		//fmt.Println(s)
-		fmt.Println(err.Error())
-		//return
-	}
+	fmt.Println("Cargando participaciones por grupo...")
+	// s = gCPGrupoParticipacionDiaria(data.Fecha)
+	// _, err = sys.PostgreSQL.Query(s)
+	// if err != nil {
+	// 	r.Msj += ", no se encontrarón participaciones diarias."
+	// 	//fmt.Println(s)
+	// 	fmt.Println(err.Error())
+	// 	//return
+	// }
 
 	r.Msj = "Felicitaciones: Se han generado todos los eventos del día siguiente..."
 	jSon, _ = json.Marshal(r)

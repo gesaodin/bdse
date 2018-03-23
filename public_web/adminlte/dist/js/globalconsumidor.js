@@ -472,25 +472,20 @@ function VerDetallesTaquillas(id){
         });
         rs.clear().draw();
         $.each(data, function(c, v){
-            console.log(v);
+            arch = v.archivo == null?0:v.archivo;
             venta = v.venta == null?0:v.venta;
             premio = v.premio == null?0:v.premio;
             comision = v.comision == null?0:v.comision;
             saldo = v.saldo == null?0:v.saldo;
-            //tabla += '<tr><td>' + v.taquilla + '</td><td>' + venta + '</td><td>' + premio + '</td>\
-            //<td>' + comision + '</td><td>' + saldo + '</td><td>' + v.observacion + '</td></tr>'
             rs.row.add([
                 v.taquilla,
                 venta,
                 premio,
                 comision,
                 saldo,
-                v.observacion
+                v.observacion + ' - ' + selecionarTipoArchivo(arch)
             ]).draw(false);
         });
-
-
-
     });
 
     $('#ventanaEmergente').modal({ keyboard: false });   // initialized with no keyboard

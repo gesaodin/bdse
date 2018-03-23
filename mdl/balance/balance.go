@@ -630,7 +630,7 @@ func generarCobrosYPagosSistemas(data Pago) (s string) {
 
 //GenerarCobrosYPagosDetallados Generar Cobros y Pagos detallados de las ventas
 func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error) {
-	//fech, saldo,sist,agen,arch
+
 	var s string
 	s = generarCobrosYPagosDetallados(data)
 	row, err := sys.PostgreSQL.Query(s)
@@ -642,7 +642,8 @@ func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error)
 	for row.Next() {
 		var taquilla, observacion sql.NullString
 		var venta, premio, comision, saldo sql.NullFloat64
-		e := row.Scan(&taquilla, &venta, &premio, &comision, &saldo, &observacion)
+		var arch int
+		e := row.Scan(&taquilla, &venta, &premio, &comision, &saldo, &observacion, &arch)
 		if e != nil {
 			fmt.Println(e.Error())
 			return
@@ -654,6 +655,7 @@ func (p *Pago) GenerarCobrosYPagosDetallados(data Pago) (jSon []byte, err error)
 		pago.Comision = util.ValidarNullFloat64(comision)
 		pago.Saldo = util.ValidarNullFloat64(saldo)
 		pago.Observacion = util.ValidarNullString(observacion)
+		pago.Archivo = arch
 		lst = append(lst, pago)
 	}
 	jSon, _ = json.Marshal(lst)
@@ -674,7 +676,7 @@ func generarCobrosYPagosDetallados(data Pago) (s string) {
 		SELECT
 			lotepar.agen,  lotepar.vent AS venta,
 			lotepar.prem AS premio, lotepar.comi AS comision,
-			lotepar.saldo AS saldo, sistema.obse
+			lotepar.saldo AS saldo, sistema.obse, sistema.arch
 		FROM agencia
 		JOIN zr_agencia ON agencia.oid=zr_agencia.oida
 

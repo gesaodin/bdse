@@ -233,12 +233,31 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 
 	return
 }
+func (p *Pago) ValidarCierreDiario(fecha string) bool {
+	status := false
+	s := `SELECT * FROM cobrosypagoscierre WHERE fech = '` + fecha + ` 00:00:00'::TIMESTAMP + '1 day';`
+
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return false
+	}
+	for row.Next() {
+		status = true
+	}
+	return status
+}
 
 //GenerarCierreDiario Generar Cierre Diario de las operaciones contables
 func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 
 	var s, tabla string
 	var r Respuesta
+
+	if p.ValidarCierreDiario(data.Fecha) {
+		r.Msj = "El cierre de día ya existe"
+		jSon, _ = json.Marshal(r)
+		return
+	}
 
 	fechapicada := strings.Split(data.Fecha, "-")
 	idia, _ := strconv.Atoi(fechapicada[2])
@@ -262,7 +281,7 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	}
 	data.Cierre = 1
 	data.GenerarCobrosYPagosGrupo() //Crear el cierre
-
+	fmt.Println("Segundo tramo")
 	tabla = "cobrosypagoscierre"
 	fecha := `'` + data.Fecha + ` 00:00:00'::TIMESTAMP + '1 day'`
 	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 0);
@@ -279,8 +298,11 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 		return
 	}
 	r.Msj = "Proceso exitoso"
+	fmt.Println("Tercer tramo")
 	//Calcular Participacion
 	s = gCPGrupoParticipacionDiaria(data.Fecha)
+	fmt.Println("Participacion: ", s)
+
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		r.Msj += ", no se encontrarón participaciones diarias."
@@ -289,7 +311,7 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 		//return
 	}
 
-	r.Msj = "Proceso exitoso"
+	r.Msj = "Felicitaciones: Se han generado todos los eventos del día siguiente..."
 	jSon, _ = json.Marshal(r)
 
 	return

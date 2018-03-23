@@ -1087,11 +1087,10 @@ function GCD() {
         fecha: fecha,
         cierre: 1
     });
-    console.log(data);
 
     $.post("api/balance/cierrediario", data)
-        .done(function (data) {
-            $.notify("Proceso exitos: Se han generado todos los eventos del día siguiente...", "success");
+        .done(function (data) {            
+            $.notify(data.msj, "success");
     });
 
 }

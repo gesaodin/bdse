@@ -227,13 +227,12 @@ function LstSaldoGPS(){
             hasta: hastaA.replace(/\//g, "-")
         });
         url = "api/balance/cobrosypagos";
+        
 
 
         $.post(url,rfecha)
         .done(function(data){
-
             PTotales(desdeA, hastaA, data);
-
         });
 
 
@@ -271,7 +270,7 @@ function PTotales(desde, hasta, data){
         return
     }
     $.each(data, function(c, v){
-        console.log(v);
+        // console.log(v);
         sAnt = v.vienen == null?0:v.vienen;
         sTotal = v.van == null?0:v.van;
         ingreso = v.ingreso == null?0:v.ingreso;
@@ -353,7 +352,7 @@ function VentanaEmergente(id, fechaAux){
     $('#lbldiaA').text(fechaAux);
     $('#ventanaReporteTitulo').html('Saldos por programas para el día (' + fechaAux + ')');
     CargarDatosSistemas(id, $("#agencia").html());
-    CargarDatosSistemasParley(id, $("#agencia").html());
+    // CargarDatosSistemasParley(id, $("#agencia").html());
     $('#ventanaReporte').modal({ keyboard: false });   // initialized with no keyboard
     $('#ventanaReporte').modal('show');                // initializes and invokes show
 }
@@ -366,49 +365,42 @@ function CargarDatosSistemas(fecha, agencia){
     });
     url = "api/balance/cobrosypagossistemas";
     $.post(url,data)
-    .done(function(data){
+    .done(function(data){        
         var rs = $('#reporteSaldosSistemas').DataTable();
         rs.clear().draw(false);
-        rs.row.add([0,0,0,0,0,0,0,0,0]).draw(false);
-        suma = 0;
+        var suma = 0;
+        var i = 0;
         $.each(data, function(c, v){
-            if (v.archivo == null){
-                suma += v.saldo;
-                var id = SeleccionarSistemas(v.sistema);
-                rs.cell(0,id).data(v.saldo.toFixed(2)).draw();
-            }
+            if (v.saldo == null)v.saldo=0;
+            if (v.archivo == null)v.archivo=0;
+            suma += v.saldo;
+            i++;            
+            rs.row.add([
+                i,
+                v.observacion + ' - ' + selecionarTipoArchivo(v.archivo),
+                v.saldo.toFixed(2)
+            ]).draw(false);
         });
         $('#saldoloteria').html('Total Saldo Por Loteria (' + suma.toFixed(2) + ')');
     });
 }
-
-function CargarDatosSistemasParley(fecha, agencia){
-    var data = JSON.stringify({
-        agencia: agencia,
-        desde:fecha,
-        hasta:fecha
-    });
-
-    url = "api/balance/cobrosypagossistemas";
-    $.post(url,data)
-    .done(function(data){
-        var rs = $('#reporteSaldosSistemasParley').DataTable();
-        rs.clear().draw(false);
-
-        rs.row.add([0,0,0]).draw(false);
-        suma = 0;
-        $.each(data, function(c, v){
-            if (v.archivo != null){
-                suma += v.saldo;
-                var id = SeleccionarSistemas(v.sistema);
-                rs.cell(0,id).data(v.saldo.toFixed(2)).draw();
-
-            }
-        });
-        $('#saldoparley').html('Total Saldo Por Parley (' + suma.toFixed(2) + ')');
-    });
+function selecionarTipoArchivo(tipo){
+    var s = '';
+    switch (tipo) {
+        case 0:
+            s = 'Loteria';
+            break;
+        case 1:
+            s = 'Parley';
+            break;
+        case 2:
+            s = 'Figura';
+            break;
+        default:
+            break;
+    }
+    return s;
 }
-
 
 function SeleccionarSistemas(id){
     switch (id) {
@@ -480,6 +472,7 @@ function VerDetallesTaquillas(id){
         });
         rs.clear().draw();
         $.each(data, function(c, v){
+            console.log(v);
             venta = v.venta == null?0:v.venta;
             premio = v.premio == null?0:v.premio;
             comision = v.comision == null?0:v.comision;

@@ -111,10 +111,12 @@ func (r *Reporte) Saldos(data JsonDataReporte) (j []byte, e error) {
 	}
 	s = "SELECT agen, fech, vent-prem-comi as saldo, vent, prem, comi "
 	s += "FROM " + tbl + " WHERE arch = " + strconv.Itoa(data.Id) + donde
+	fmt.Println(s)
 	if data.Id == 0 {
 		s = "SELECT agen, fech, vent-prem-comi as saldo, vent, prem, comi FROM " + tbl + " WHERE fech BETWEEN "
 		s += "'" + data.Desde + " 00:00:00'::TIMESTAMP AND '" + data.Hasta + " 23:59:59'::TIMESTAMP"
 		s += donde
+		fmt.Println(s)
 	}
 
 	row, e := sys.PostgreSQL.Query(s)

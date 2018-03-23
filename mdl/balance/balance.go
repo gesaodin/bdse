@@ -189,7 +189,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		}
 
 	}
-	//fmt.Println(s)
+	// fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
@@ -566,6 +566,7 @@ func generarCobrosYPagosAgencia(data Pago) (s string) {
 func (p *Pago) GenerarCobrosYPagosSistemas(data Pago) (jSon []byte, err error) {
 	var s string
 	s = generarCobrosYPagosSistemas(data)
+	// fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {

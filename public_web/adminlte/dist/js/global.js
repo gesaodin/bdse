@@ -671,7 +671,7 @@ function LstSaldoGPS() {
         });
         url = "api/reportesaldogeneral";
         if (parseInt($("#tipo option:selected").val()) == 2) url = "api/balancegeneral";
-
+        
         $.post(url, rfecha)
             .done(function (data) {
                 switch (parseInt($("#tipo option:selected").val())) {

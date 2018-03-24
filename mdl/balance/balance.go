@@ -189,7 +189,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		}
 
 	}
-	// fmt.Println(s)
+	fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
@@ -399,7 +399,7 @@ func generarCobrosYPagosGeneral(fecha string) (s string) {
 
 			-- CIERRE
 			LEFT JOIN cobrosypagoscierre ON cobrosypagoscierre.fech=` + fechaAux + `
-			WHERE  g.obse='AGE. DIRECTAS'
+			-- WHERE  g.obse='AGE. DIRECTAS'
 			ORDER BY z.obse
 			) AS A
 	`
@@ -1134,8 +1134,7 @@ func gCPGrupoParticipacionDiaria(fecha string) (s string) {
 //GenerarCobrosYPagosGMQ Consultando por grupos
 func (p *Pago) GenerarCobrosYPagosGMQ(data Pago) (jSon []byte, err error) {
 	//fecha control
-	var fecha string = time.Now().String()[0:10]
-
+	fecha := time.Now().String()[0:10]
 	row, err := sys.PostgreSQL.Query(gCPGrupoMensual(fecha))
 
 	if err != nil {

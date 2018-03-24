@@ -884,6 +884,7 @@ function GC(tipo) {
         return
     }
     $("#cargando").show();
+    $("#divBotones").hide();
     $("#divReporte").html(tableGC());
     $("#reporte").DataTable(opciones);
     var t = $("#reporte").DataTable();
@@ -999,7 +1000,8 @@ function GC(tipo) {
             $("#ter").html(ter.toFixed(2));
             $("#tsaldototal").html(tsaldototal.toFixed(2));
             $("#cargando").hide();
-
+            $("#divBotones").show();
+            
         })
 }
 
@@ -1091,6 +1093,7 @@ function GCD() {
     $.post("api/balance/cierrediario", data)
         .done(function (data) {            
             $.notify(data.msj, "success");
+            GC(0);
     });
 
 }

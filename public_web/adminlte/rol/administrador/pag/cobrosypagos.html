@@ -36,34 +36,49 @@
                       <!-- /btn-group -->
                       <input type="hidden" id="txtSeleccion" value="0"/>
                       <input type="text" class="form-control" placeholder="Fecha"  id="fecha">
-                      <div class="input-group-addon"><span class="fa fa-calendar"></span></div>
+                      <!-- <div class="input-group-addon"><span class="fa fa-calendar"></span></div> -->
+                      <span class="input-group-btn">
+                          <button type="button" class="btn btn-info btn-flat" onclick="GC(0)">
+                              <span><i class="fa fa-list"></i>&nbsp;&nbsp;Listar&nbsp;</span>
+                          </button>
+                      </span>
                     </div>
 
                 </div>
             </div>
-            <div class="col-xs-2 col-lg-2">
-
-             <button type="button" onclick="GC(0)" class="btn btn-info " id="consultar" style="width:100%">
-               <span><i class="fa fa-list"></i>&nbsp;&nbsp;Listar&nbsp;</span>
-             </button>
-          </div>
-           <div class="col-xs-2 col-lg-2">
-
-             <button type="button" onclick="GC(1)" class="btn btn-success " id="consultar" style="width:100%">
-               <span><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Cobros&nbsp;</span>
-             </button>
-          </div>
+            
+           
+        </div><br>
+        <div class="row" id="divBotones" style="display:none">
           <div class="col-xs-2 col-lg-2">
-             <button type="button" onclick="GC(2)" class="btn btn-danger " id="consultar" style="width:100%">
-               <span><i class="fa fa-minus-square"></i>&nbsp;&nbsp;Pagos&nbsp;</span>
-             </button>
+
+            <button type="button" onclick="GCalc()" class="btn btn-block bg-purple " id="btncomision" style="width:100%">
+              <span><i class="fa fa-superscript"></i>&nbsp;&nbsp;Comisiones&nbsp;</span>
+            </button>
           </div>
           <div class="col-xs-2 col-lg-2">
 
-             <button type="button" onclick="DP()" class="btn btn-warning " id="consultar" style="width:100%">
-               <span><i class="fa fa-gavel"></i>&nbsp;&nbsp;Pendientes&nbsp;</span>
-             </button>
-          </div>
+            <button type="button" onclick="GC(1)" class="btn btn-block bg-olive" id="btncobros" style="width:100%">
+              <span><i class="fa fa-plus-square"></i>&nbsp;&nbsp;Cobros&nbsp;</span>
+            </button>
+         </div>
+         <div class="col-xs-2 col-lg-2">
+            <button type="button" onclick="GC(2)" class="btn btn-block btn-danger " id="btnpagos" style="width:100%">
+              <span><i class="fa fa-minus-square"></i>&nbsp;&nbsp;Pagos&nbsp;</span>
+            </button>
+         </div>
+         <div class="col-xs-2 col-lg-2">
+
+            <button type="button" onclick="DP()" class="btn btn-block btn-warning " id="btnpendiente" style="width:100%">
+              <span><i class="fa fa-gavel"></i>&nbsp;&nbsp;Pendientes&nbsp;</span>
+            </button>
+         </div>
+         <div class="col-xs-2 col-lg-2">
+
+            <button type="button" onclick="GCD()" class="btn btn-block btn-success " id="btncierre" style="width:100%">
+              <span><i class="fa fa-balance-scale"></i>&nbsp;&nbsp;Cierre Diario&nbsp;</span>
+            </button>
+         </div>
         </div>
         <br>
           <div id="divReporte">

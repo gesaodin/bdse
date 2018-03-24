@@ -1443,12 +1443,12 @@ function RegistrarER() {
         voucher: $("#voucer").val(),
         observacion: $("#descripcioner").val()
     });
-    console.log(EntregadoRecibido);
+    // console.log(EntregadoRecibido);
     url = "api/balance/registrarpago";
     $.post(url, EntregadoRecibido)
         .done(function (data) {
             $('#mdlER').modal('hide');
-            $.notify("El registro ha sido exitoso, si desea verlo en pantalla presione F5.", "success");ss
+            $.notify("El registro ha sido exitoso, si desea verlo en pantalla presione F5.", "success");
             $("#voucer").val('');
             GC(0);
         });

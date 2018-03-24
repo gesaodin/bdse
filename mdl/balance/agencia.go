@@ -2,14 +2,14 @@ package balance
 
 import (
 	"database/sql"
-	"fmt"
 	"strconv"
 
 	"github.com/gesaodin/bdse/sys"
 	"github.com/gesaodin/bdse/util"
 )
 
-type Agencia struct{}
+type Agencia struct {
+}
 
 //Participacion Consultando datos de participacion mayores a cero
 func (a *Agencia) Participacion(fecha string) string {
@@ -38,7 +38,7 @@ func (a *Agencia) Participacion(fecha string) string {
 //CalcularParticipacion Función para ejecutar calculos de participaciones por agencia
 func (a *Agencia) CalcularParticipacion(fecha string) bool {
 
-	fmt.Println("Entrando en calculo")
+	// fmt.Println("Entrando en calculo")
 	s := a.Participacion(fecha)
 	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
@@ -83,4 +83,22 @@ func insertMovimiento(grupo int, agencia int, desc string, fecha string, monto s
 			'` + fecha + ` 00:00:00'::TIMESTAMP + '1 day',now(), 
 			1, 0, '', 'PAGO POR PARTICIPACION - ` + fecha + `', ` + monto + `
 		) `
+}
+
+func ValidarCajasSQL() string {
+	return `SELECT agen, vent, arch FROM zr_agencia AS T RIGHT JOIN (
+		SELECT A.agen, SUM(vent) AS vent, A.arch  FROM (
+		select * from loteria
+		union
+		select * from parley
+		union
+		select * from figura
+		) AS A
+		GROUP BY A.agen, A.arch ) AS B ON T.codi=B.agen
+		WHERE B.vent > 0 AND  T.codi IS NULL`
+}
+
+func ValidarCajas() bool {
+
+	return true
 }

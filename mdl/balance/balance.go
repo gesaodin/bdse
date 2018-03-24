@@ -327,14 +327,14 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 	data.Fecha = fechapicada[0] + "-" + mes + "-" + dia
 
 	s = generarCobrosYPagosGeneralCierre(data.Fecha)
-	fmt.Println("Cierre Diario: ", s)
+	// fmt.Println("Cierre Diario: ", s)
 	_, err = sys.PostgreSQL.Query(s)
 	if err != nil {
 		return
 	}
 	data.Cierre = 1
 	data.GenerarCobrosYPagosGrupo() //Crear el cierre
-	fmt.Println("Segundo tramo")
+	// fmt.Println("Segundo tramo")
 	tabla = "cobrosypagoscierre"
 	fecha := `'` + data.Fecha + ` 00:00:00'::TIMESTAMP + '1 day'`
 	s = `INSERT INTO ` + tabla + ` (fech,esta) VALUES (` + fecha + `, 0);

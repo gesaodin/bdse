@@ -78,6 +78,7 @@ func WAPI() {
 	Enrutador.HandleFunc(url+"balance/cobrosypagosdetallados", Pago.GenerarCobrosYPagosDetallados).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/listarpagos", Pago.ListarPagos).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cierrediario", Pago.CierreDiario).Methods("POST")
+	Enrutador.HandleFunc(url+"balance/cierrediariocalculos", Pago.CierreDiarioCalculo).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/estadocuentagrupo", Pago.EstadoDeCuentaGrupo).Methods("POST")
 
 	// API DE LISTADOS

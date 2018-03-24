@@ -247,6 +247,33 @@ func (p *Pago) ValidarCierreDiario(fecha string) bool {
 	return status
 }
 
+//GenerarCierreDiarioCalculo Generar Cierre Diario de las operaciones contables
+func (p *Pago) GenerarCierreDiarioCalculo(data Pago) (jSon []byte, err error) {
+
+	var r Respuesta
+	fechapicada := strings.Split(data.Fecha, "-")
+	idia, _ := strconv.Atoi(fechapicada[2])
+	imes, _ := strconv.Atoi(fechapicada[1])
+	dia := fechapicada[2]
+	mes := fechapicada[1]
+	if idia < 10 {
+		dia = "0" + fechapicada[2]
+	}
+	if imes < 10 {
+		mes = "0" + fechapicada[1]
+	}
+	data.Fecha = fechapicada[0] + "-" + mes + "-" + dia
+
+	//Calcular Participacion
+	var Ag Agencia
+	Ag.CalcularParticipacion(data.Fecha)
+
+	r.Msj = "Felicitaciones: Se han generado las participaciones..."
+	jSon, _ = json.Marshal(r)
+
+	return
+}
+
 //GenerarCierreDiario Generar Cierre Diario de las operaciones contables
 func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 
@@ -298,12 +325,12 @@ func (p *Pago) GenerarCierreDiario(data Pago) (jSon []byte, err error) {
 		return
 	}
 	r.Msj = "Proceso exitoso"
-	fmt.Println("Cargando participaciones por agencia...")
+	// fmt.Println("Cargando participaciones por agencia...")
 	//Calcular Participacion
-	var Ag Agencia
-	Ag.CalcularParticipacion(data.Fecha)
+	// var Ag Agencia
+	// Ag.CalcularParticipacion(data.Fecha)
 
-	fmt.Println("Cargando participaciones por grupo...")
+	// fmt.Println("Cargando participaciones por grupo...")
 	// s = gCPGrupoParticipacionDiaria(data.Fecha)
 	// _, err = sys.PostgreSQL.Query(s)
 	// if err != nil {

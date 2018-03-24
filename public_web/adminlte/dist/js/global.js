@@ -875,6 +875,26 @@ function CBTotales() {
     return rS;
 }
 
+
+function GCalc(){
+    if ($("#fecha").val() == "") {
+        $.notify("Debe seleccionar la fecha", "error");
+        return
+    }
+    fecha = $("#fecha").val();
+    fecha = fecha.replace(/-/g, "/");
+    fecha = OperarFecha(fecha, -1);
+    var data = JSON.stringify({
+        fecha: fecha,
+        cierre: 1
+    });
+
+    $.post("api/balance/cierrediariocalculos", data)
+        .done(function (data) {            
+            $.notify(data.msj, "success");
+            GC(0);
+    });
+}
 /**
  *
  */
@@ -923,7 +943,7 @@ function GC(tipo) {
                  
                 
                 tsaldoant += vienen;
-                tsaldoant += saldo;
+                tsaldodia += saldo;
                 tmovimiento += movimiento;
                 ter += x;
                 tsaldototal += total;

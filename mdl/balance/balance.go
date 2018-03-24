@@ -247,6 +247,20 @@ func (p *Pago) ValidarCierreDiario(fecha string) bool {
 	return status
 }
 
+func (p *Pago) ValidarCierreDiarioCalculo(fecha string) bool {
+	status := false
+	s := `SELECT * FROM participacion WHERE fech = '` + fecha + ` 00:00:00'::TIMESTAMP;`
+
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return false
+	}
+	for row.Next() {
+		status = true
+	}
+	return status
+}
+
 //GenerarCierreDiarioCalculo Generar Cierre Diario de las operaciones contables
 func (p *Pago) GenerarCierreDiarioCalculo(data Pago) (jSon []byte, err error) {
 
@@ -264,11 +278,23 @@ func (p *Pago) GenerarCierreDiarioCalculo(data Pago) (jSon []byte, err error) {
 	}
 	data.Fecha = fechapicada[0] + "-" + mes + "-" + dia
 
+	if p.ValidarCierreDiarioCalculo(data.Fecha) {
+		r.Msj = "Las participaciones han sido generadas ya..."
+		jSon, _ = json.Marshal(r)
+		return
+	}
 	//Calcular Participacion
 	var Ag Agencia
-	Ag.CalcularParticipacion(data.Fecha)
+	if Ag.CalcularParticipacion(data.Fecha) {
+		r.Msj = "Felicitaciones: Se han generado las participaciones..."
+		fecha := `'` + data.Fecha + ` 00:00:00'::TIMESTAMP`
+		s := `INSERT INTO participacion (fech) VALUES (` + fecha + `);`
+		_, err = sys.PostgreSQL.Query(s)
+		if err != nil {
+			return
+		}
+	}
 
-	r.Msj = "Felicitaciones: Se han generado las participaciones..."
 	jSon, _ = json.Marshal(r)
 
 	return

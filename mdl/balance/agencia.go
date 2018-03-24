@@ -36,13 +36,14 @@ func (a *Agencia) Participacion(fecha string) string {
 }
 
 //CalcularParticipacion Función para ejecutar calculos de participaciones por agencia
-func (a *Agencia) CalcularParticipacion(fecha string) {
+func (a *Agencia) CalcularParticipacion(fecha string) bool {
+
 	fmt.Println("Entrando en calculo")
 	s := a.Participacion(fecha)
 	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
-		return
+		return false
 	}
 	for row.Next() {
 		var grupo, oid, progr, arch int
@@ -64,10 +65,11 @@ func (a *Agencia) CalcularParticipacion(fecha string) {
 		s := insertMovimiento(grupo, oid, obse, fecha, smonto)
 		_, err = sys.PostgreSQL.Query(s)
 		if err != nil {
-			return
+			return false
 		}
 
 	}
+	return true
 }
 
 func insertMovimiento(grupo int, agencia int, desc string, fecha string, monto string) string {

@@ -252,7 +252,7 @@ func (p *Pago) CierreDiario(w http.ResponseWriter, r *http.Request) {
 	w.Write(j)
 }
 
-//CierreDiario Pos los saldos acumulados
+//CierreDiarioCalculo Pos los saldos acumulados
 func (p *Pago) CierreDiarioCalculo(w http.ResponseWriter, r *http.Request) {
 	Cabecera(w, r.Header.Get("Origin"))
 	var dataJSON balance.Pago
@@ -270,7 +270,7 @@ func (p *Pago) CierreDiarioCalculo(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error en la Cookies"))
 		return
 	}
-	j, e := pago.GenerarCierreDiario(dataJSON)
+	j, e := pago.GenerarCierreDiarioCalculo(dataJSON)
 
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)

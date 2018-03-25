@@ -52,7 +52,7 @@ func (a *Agencia) ParticipacionSQL(fecha string) string {
 }
 
 //CalcularParticipacion Función para ejecutar calculos de participaciones por agencia
-func (a *Agencia) CalcularParticipacionGlobal(fecha string) bool {
+func (a *Agencia) CalcularParticipacion(fecha string) bool {
 
 	// fmt.Println("Entrando en calculo")
 	s := a.ParticipacionSQL(fecha)

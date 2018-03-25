@@ -46,7 +46,7 @@ func (g *Grupo) ParticipacionSQL(fecha string) string {
 }
 
 //CalcularParticipacionIndividual Función para ejecutar calculos de participaciones por agencia
-func (g *Grupo) CalcularParticipacionIndividual(fecha string) bool {
+func (g *Grupo) CalcularParticipacionGlobal(fecha string) bool {
 
 	// fmt.Println("Entrando en calculo")
 	s := g.ParticipacionSQL(fecha)

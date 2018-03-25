@@ -180,7 +180,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 
 	if data.Agencia != "" {
 		s = generarCobrosYPagosAgencia(data)
-
+		// fmt.Println("Agencia")
 	} else {
 		s = generarCobrosYPagosGeneral(fecha)
 		if data.Fecha != "" {
@@ -189,7 +189,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		}
 
 	}
-	//fmt.Println(s)
+	// fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
@@ -204,29 +204,27 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		var agen string
 		var saldo, entregado, recibido, ingreso, egreso, prestamo, vienen, van, cuota sql.NullFloat64
 		e := row.Scan(&oid, &agen, &vienen, &saldo, &entregado, &recibido, &ingreso, &egreso, &prestamo, &cuota, &van, &esta)
-		if e != nil {
-			fmt.Println(e.Error())
-			return
-		}
-		var pago Pago
-		pago.Agencia = agen
-		if data.Agencia != "" {
-			pago.Agencia = ""
-			pago.Fecha = agen[0:10]
-		}
-		pago.Oid = oid
-		pago.Saldo = util.ValidarNullFloat64(saldo)
-		pago.Ingreso = util.ValidarNullFloat64(ingreso)
-		pago.Egreso = util.ValidarNullFloat64(egreso)
-		pago.Prestamo = util.ValidarNullFloat64(prestamo)
-		pago.Entregado = util.ValidarNullFloat64(entregado)
-		pago.Recibido = util.ValidarNullFloat64(recibido)
-		pago.Vienen = util.ValidarNullFloat64(vienen)
-		pago.Van = util.ValidarNullFloat64(van)
-		pago.Cuota = util.ValidarNullFloat64(cuota)
-		pago.Estatus = esta
+		if e == nil {
+			var pago Pago
+			pago.Agencia = agen
+			if data.Agencia != "" {
+				pago.Agencia = ""
+				pago.Fecha = agen[0:10]
+			}
+			pago.Oid = oid
+			pago.Saldo = util.ValidarNullFloat64(saldo)
+			pago.Ingreso = util.ValidarNullFloat64(ingreso)
+			pago.Egreso = util.ValidarNullFloat64(egreso)
+			pago.Prestamo = util.ValidarNullFloat64(prestamo)
+			pago.Entregado = util.ValidarNullFloat64(entregado)
+			pago.Recibido = util.ValidarNullFloat64(recibido)
+			pago.Vienen = util.ValidarNullFloat64(vienen)
+			pago.Van = util.ValidarNullFloat64(van)
+			pago.Cuota = util.ValidarNullFloat64(cuota)
+			pago.Estatus = esta
 
-		lst = append(lst, pago)
+			lst = append(lst, pago)
+		}
 	}
 
 	jSon, _ = json.Marshal(lst)
@@ -1026,23 +1024,25 @@ func gCPGrupoDiario(fecha string) (s string) {
 
 				-- HABER
 				LEFT JOIN (
-				SELECT grupo, fapr, SUM(mont) AS monto FROM haber
-				GROUP BY grupo,fapr
+					SELECT grupo, fapr, SUM(mont) AS monto FROM haber
+					GROUP BY grupo,fapr
 				) AS haber ON
 				haber.grupo=g.oid AND haber.fapr=` + fecha + `
 
 				--INGRESO
 				LEFT JOIN (
-				SELECT grupo, fech,fapr, SUM(mont) AS monto FROM movimiento_ingreso
-				GROUP BY grupo,fech,fapr
+					SELECT grupo, fech,fapr, SUM(mont) AS monto FROM movimiento_ingreso
+					WHERE agenc=0
+					GROUP BY grupo,fech,fapr
 				)
 				AS ingreso ON
 				ingreso.grupo=g.oid AND ingreso.fapr=` + fecha + `
 
 				-- EGRESO
 				LEFT JOIN (
-				SELECT grupo, fech,fapr, SUM(mont) AS monto FROM movimiento_egreso
-				GROUP BY grupo,fech,fapr
+					SELECT grupo, fech,fapr, SUM(mont) AS monto FROM movimiento_egreso
+					WHERE agenc=0
+					GROUP BY grupo,fech,fapr
 				)
 				AS egreso ON
 				egreso.grupo=g.oid AND egreso.fapr=` + fecha + `
@@ -1197,7 +1197,7 @@ func (p *Pago) GenerarCobrosYPagosGMQ(data Pago) (jSon []byte, err error) {
 	}
 	var oidAuxiliar int
 	lst := make(map[string]interface{})
-	CalculoData := gCPGrupoMensualQueda("")
+	//CalculoData := gCPGrupoMensualQueda("")
 	for row.Next() {
 		var oid, calculo, fecuencia, i int
 
@@ -1221,7 +1221,7 @@ func (p *Pago) GenerarCobrosYPagosGMQ(data Pago) (jSon []byte, err error) {
 		cobros.Nombre = aoid
 		cobros.Calculo = calculo
 		cobros.Frecuencia = fecuencia
-		cobros.Loteria, cobros.Parley, cobros.Queda = obtenerSaldoGMQ(CalculoData, strconv.Itoa(oid))
+		//cobros.Loteria, cobros.Parley, cobros.Queda = obtenerSaldoGMQ(CalculoData, strconv.Itoa(oid))
 		cobros.Saldo = cobros.Loteria + cobros.Parley
 		lst[strconv.Itoa(oid)] = cobros
 
@@ -1232,36 +1232,36 @@ func (p *Pago) GenerarCobrosYPagosGMQ(data Pago) (jSon []byte, err error) {
 	return
 }
 
-//obtenerSaldoGMQ obtiene el saldo total del grupo aplicando las reglas de negocio
-func obtenerSaldoGMQ(lst map[string][]CobrosYPagos, valorDeseao string) (saldol float64, saldop float64, queda float64) {
-	for c, v := range lst {
-		if c == valorDeseao {
-			for _, vl := range v {
-				var comision float64
-				var calc float64
-				if vl.Archivo == 0 {
-					comision = (vl.Venta * vl.Loteria) / 100
-					calc = vl.Venta - vl.Premio - comision
-					saldol += calc
-				} else {
-					comision = (vl.Venta * vl.Parley) / 100
-					calc = vl.Venta - vl.Premio - comision
-					saldop += calc
-				}
+// //obtenerSaldoGMQ obtiene el saldo total del grupo aplicando las reglas de negocio
+// func obtenerSaldoGMQ(lst map[string][]CobrosYPagos, valorDeseao string) (saldol float64, saldop float64, queda float64) {
+// 	for c, v := range lst {
+// 		if c == valorDeseao {
+// 			for _, vl := range v {
+// 				var comision float64
+// 				var calc float64
+// 				if vl.Archivo == 0 {
+// 					comision = (vl.Venta * vl.Loteria) / 100
+// 					calc = vl.Venta - vl.Premio - comision
+// 					saldol += calc
+// 				} else {
+// 					comision = (vl.Venta * vl.Parley) / 100
+// 					calc = vl.Venta - vl.Premio - comision
+// 					saldop += calc
+// 				}
 
-				if vl.Queda > 0 {
+// 				if vl.Queda > 0 {
 
-					if calc > 0 {
-						queda += (calc * vl.Queda) / 100
-					}
-				}
+// 					if calc > 0 {
+// 						queda += (calc * vl.Queda) / 100
+// 					}
+// 				}
 
-			}
+// 			}
 
-		}
-	}
-	return
-}
+// 		}
+// 	}
+// 	return
+// }
 
 //gCPGrupoMensual Diario
 func gCPGrupoMensual(fecha string) (s string) {
@@ -1298,87 +1298,86 @@ func gCPGrupoMensual(fecha string) (s string) {
 }
 
 //gCPGrupoMensualQueda Queda
-func gCPGrupoMensualQueda(fecha string) (lst map[string][]CobrosYPagos) {
-	/**
-	,zrg.parl,zrg.qued,zrg.part,zrg.calc,zrg.freq,
-	venta,premio,comision, b.sist,b.arch
-	**/
-	s := `
-		-- GLOBAL POR PROGRAMAS
-		SELECT goid,g.obse,
-			zrg.lote,zrg.parl,zrg.qued,zrg.part,venta,premio,comision, b.sist,b.arch FROM (
-			SELECT  g.oid As goid,  A.sist, s.arch, SUM(vent) AS venta, SUM(prem) AS premio, SUM(comi) AS comision FROM (
-				SELECT agen, fech, vent,prem,comi, sist from loteria
-				UNION
-				SELECT agen, fech, vent,prem,comi, sist from parley
-				UNION
-				SELECT agen, fech, vent,prem,comi, sist from figura
-			) AS A
-			JOIN zr_agencia zr ON A.agen=zr.codi
-			JOIN agencia ON agencia.oid = zr.oida
-			JOIN grupo g ON g.oid=zr.grupo
-			JOIN sistema s ON s.oid=A.sist
+// func gCPGrupoMensualQueda(fecha string) (lst map[string][]CobrosYPagos) {
+// 	/**
+// 	,zrg.parl,zrg.qued,zrg.part,zrg.calc,zrg.freq,
+// 	venta,premio,comision, b.sist,b.arch
+// 	**/
+// 	s := `
+// 		-- GLOBAL POR PROGRAMAS
+// 		SELECT goid,g.obse,
+// 			zrg.lote,zrg.parl,zrg.qued,zrg.part,venta,premio,comision, b.sist,b.arch FROM (
+// 			SELECT  g.oid As goid,  A.sist, s.arch, SUM(vent) AS venta, SUM(prem) AS premio, SUM(comi) AS comision FROM (
+// 				SELECT agen, fech, vent,prem,comi, sist from loteria
+// 				UNION
+// 				SELECT agen, fech, vent,prem,comi, sist from parley
+// 				UNION
+// 				SELECT agen, fech, vent,prem,comi, sist from figura
+// 			) AS A
+// 			JOIN zr_agencia zr ON A.agen=zr.codi
+// 			JOIN agencia ON agencia.oid = zr.oida
+// 			JOIN grupo g ON g.oid=zr.grupo
+// 			JOIN sistema s ON s.oid=A.sist
 
-			WHERE A.fech BETWEEN '2017-01-01 00:00:00'::TIMESTAMP AND '2017-01-31 23:59:59'::TIMESTAMP
-			AND g.freq=4
-			AND g.obse != 'AGE. DIRECTAS'
+// 			WHERE A.fech BETWEEN '2017-01-01 00:00:00'::TIMESTAMP AND '2017-01-31 23:59:59'::TIMESTAMP
+// 			AND g.freq=4
+// 			AND g.obse != 'AGE. DIRECTAS'
 
+// 			GROUP BY g.oid, A.sist, s.arch
+// 			ORDER BY g.oid
+// 		) AS b
+// 		JOIN grupo g ON g.oid=b.goid
+// 		LEFT JOIN zr_negociacion_grupo zrg ON zrg.oids=b.sist AND g.oid=zrg.oidg
+// 	`
+// 	row, err := sys.PostgreSQL.Query(s)
 
-			GROUP BY g.oid, A.sist, s.arch
-			ORDER BY g.oid
-		) AS b
-		JOIN grupo g ON g.oid=b.goid
-		LEFT JOIN zr_negociacion_grupo zrg ON zrg.oids=b.sist AND g.oid=zrg.oidg
-	`
-	row, err := sys.PostgreSQL.Query(s)
+// 	if err != nil {
+// 		return
+// 	}
+// 	var i int
+// 	var oidAuxiliar int
+// 	lst = make(map[string][]CobrosYPagos)
+// 	var cobros []CobrosYPagos
+// 	for row.Next() {
+// 		var oid, sist, arch int
+// 		var aoid string
+// 		var loteria, parley, queda, parti, venta, premi, comi float64
+// 		var cobro CobrosYPagos
+// 		e := row.Scan(&oid, &aoid, &loteria, &parley, &queda, &parti,
+// 			&venta, &premi, &comi, &sist, &arch)
+// 		if e != nil {
+// 			fmt.Println(e.Error())
+// 			return
+// 		}
+// 		i++
 
-	if err != nil {
-		return
-	}
-	var i int
-	var oidAuxiliar int
-	lst = make(map[string][]CobrosYPagos)
-	var cobros []CobrosYPagos
-	for row.Next() {
-		var oid, sist, arch int
-		var aoid string
-		var loteria, parley, queda, parti, venta, premi, comi float64
-		var cobro CobrosYPagos
-		e := row.Scan(&oid, &aoid, &loteria, &parley, &queda, &parti,
-			&venta, &premi, &comi, &sist, &arch)
-		if e != nil {
-			fmt.Println(e.Error())
-			return
-		}
-		i++
+// 		if i == 1 {
+// 			oidAuxiliar = oid
+// 		}
 
-		if i == 1 {
-			oidAuxiliar = oid
-		}
+// 		if oidAuxiliar != oid {
+// 			//fmt.Println(oidAuxiliar)
+// 			lst[strconv.Itoa(oidAuxiliar)] = cobros
 
-		if oidAuxiliar != oid {
-			//fmt.Println(oidAuxiliar)
-			lst[strconv.Itoa(oidAuxiliar)] = cobros
+// 			oidAuxiliar = oid
+// 			cobros = nil
+// 		}
 
-			oidAuxiliar = oid
-			cobros = nil
-		}
+// 		cobro.Loteria = loteria
+// 		cobro.Parley = parley
+// 		cobro.Queda = queda
+// 		cobro.Participacion = parti
+// 		cobro.Venta = venta
+// 		cobro.Premio = premi
+// 		cobro.Comision = comi
+// 		cobro.Sistema = sist
+// 		cobro.Archivo = arch
+// 		cobros = append(cobros, cobro)
 
-		cobro.Loteria = loteria
-		cobro.Parley = parley
-		cobro.Queda = queda
-		cobro.Participacion = parti
-		cobro.Venta = venta
-		cobro.Premio = premi
-		cobro.Comision = comi
-		cobro.Sistema = sist
-		cobro.Archivo = arch
-		cobros = append(cobros, cobro)
-
-	}
-	lst[strconv.Itoa(oidAuxiliar)] = cobros
-	return
-}
+// 	}
+// 	lst[strconv.Itoa(oidAuxiliar)] = cobros
+// 	return
+// }
 
 //EstadoDeCuenta Estructura
 type EstadoDeCuenta struct {

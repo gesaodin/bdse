@@ -10,8 +10,8 @@ import (
 
 type Grupo struct{}
 
-//ParticipacionSQL Consultando datos de participacion mayores a cero
-func (g *Grupo) ParticipacionSQL(fecha string) string {
+//ParticipacionSQLGlobal Consultando datos de participacion mayores a cero
+func (g *Grupo) ParticipacionSQLGlobal(fecha string) string {
 	return `	
 		SELECT  oidg, obse,part,calc,freq, oids,venta,premio,comision, 
 		((venta-premio-comision)*part)/100 AS calculo	
@@ -45,11 +45,11 @@ func (g *Grupo) ParticipacionSQL(fecha string) string {
 		ON A.oidg = rgr.grupo AND A.oids=rgr.programa`
 }
 
-//CalcularParticipacionIndividual Función para ejecutar calculos de participaciones por agencia
+//CalcularParticipacionGlobal Función para ejecutar calculos de participaciones por agencia
 func (g *Grupo) CalcularParticipacionGlobal(fecha string) bool {
 
 	// fmt.Println("Entrando en calculo")
-	s := g.ParticipacionSQL(fecha)
+	s := g.ParticipacionSQLGlobal(fecha)
 	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
@@ -95,4 +95,15 @@ func insertMovimientoG(grupo int, desc string, fecha string, monto string, tabla
 			'` + fecha + ` 00:00:00'::TIMESTAMP + '1 day',now(), 
 			1, 0, '', 'PAGO POR PARTICIPACION - ` + fecha + `', ` + monto + `
 		) `
+}
+
+//ParticipacionSQLIndividual Consultando datos de participacion mayores a cero
+func (g *Grupo) ParticipacionSQLIndividual(fecha string) string {
+	return ``
+}
+
+//CalcularParticipacionIndividual Función para ejecutar calculos de participaciones por agencia
+func (g *Grupo) CalcularParticipacionIndividual(fecha string) bool {
+
+	return true
 }

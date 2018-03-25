@@ -21,7 +21,7 @@ func (g *Grupo) ParticipacionSQL(fecha string) string {
 		WHERE zrg.part>0
 		ORDER BY zrg.oidg,zrg.oids
 		) AS A
-		LEFT JOIN (
+		JOIN (
 			SELECT grupo, SUM(venta) venta, SUM(premio) premio, SUM(comision) comision, programa, archivo FROM (
 					SELECT  zr.grupo, agencia.oid, agencia.obse, SUM(vent) AS venta, SUM(prem) AS premio, 
 						SUM(comi) AS comision, s.oid as programa, s.arch AS archivo FROM (

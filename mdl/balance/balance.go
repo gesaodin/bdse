@@ -293,6 +293,8 @@ func (p *Pago) GenerarCierreDiarioCalculo(data Pago) (jSon []byte, err error) {
 		if err != nil {
 			return
 		}
+		var G Grupo
+		G.CalcularParticipacionGlobal(data.Fecha)
 	}
 
 	jSon, _ = json.Marshal(r)

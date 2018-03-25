@@ -70,6 +70,7 @@ func (g *Grupo) CalcularParticipacionGlobal(fecha string) bool {
 		tabla := "movimiento_egreso"
 		if monto < 0 {
 			tabla = "movimiento_ingreso"
+			monto = monto * -1
 		}
 		smonto := strconv.FormatFloat(monto, 'f', 2, 64)
 

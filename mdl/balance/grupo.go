@@ -67,8 +67,13 @@ func (g *Grupo) CalcularParticipacionGlobal(fecha string) bool {
 		// comision := util.ValidarNullFloat64(comi)
 		// participacion := util.ValidarNullFloat64(part)
 		monto := util.ValidarNullFloat64(mont)
+		tabla := "movimiento_egreso"
+		if monto < 0 {
+			tabla = "movimiento_ingreso"
+		}
 		smonto := strconv.FormatFloat(monto, 'f', 2, 64)
-		s := insertMovimientoG(oidg, obse, fecha, smonto)
+
+		s := insertMovimientoG(oidg, obse, fecha, smonto, tabla)
 		_, err = sys.PostgreSQL.Query(s)
 		if err != nil {
 			return false
@@ -78,8 +83,8 @@ func (g *Grupo) CalcularParticipacionGlobal(fecha string) bool {
 	return true
 }
 
-func insertMovimientoG(grupo int, desc string, fecha string, monto string) string {
-	return `INSERT INTO movimiento_egreso 
+func insertMovimientoG(grupo int, desc string, fecha string, monto string, tabla string) string {
+	return `INSERT INTO  ` + tabla + `
 		(comer,grupo,subgr,colec,agenc,agen,fech,fapr,fope,freg,tipo,cuen, oper,obse,mont) 
 	VALUES 
 		(

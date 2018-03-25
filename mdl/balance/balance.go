@@ -189,7 +189,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		}
 
 	}
-	//fmt.Println(s)
+	fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {

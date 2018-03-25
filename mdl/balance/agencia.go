@@ -28,7 +28,9 @@ type Agencia struct {
 //ParticipacionSQL Consultando datos de participacion mayores a cero
 func (a *Agencia) ParticipacionSQL(fecha string) string {
 	return `SELECT VENTA.grupo, VENTA.oid, VENTA.obse, venta, premio, comision, 
-	COALESCE(part,0) AS participacion,COALESCE(qued,0) AS queda,VENTA.programa,VENTA.archivo, calc, freq
+	COALESCE(part,0) AS participacion,COALESCE(qued,0) AS queda,VENTA.programa,
+	VENTA.archivo, calc, freq,
+	((venta-premio-comision)*part)/100 AS calculo	
 	FROM zr_negociacion_agencia AS AGN
 	RIGHT JOIN (
 		SELECT  zr.grupo, agencia.oid, agencia.obse, SUM(vent) AS venta, SUM(prem) AS premio, SUM(comi) AS comision, s.oid as programa, s.arch AS archivo FROM (
@@ -61,20 +63,16 @@ func (a *Agencia) CalcularParticipacion(fecha string) bool {
 	}
 	for row.Next() {
 		var grupo, oid, progr, arch int
-		var vent, prem, comi, part, queda, calc, freq sql.NullFloat64
+		var vent, prem, comi, part, queda, calc, freq, mont sql.NullFloat64
 		var obse string
-		var monto float64
 
 		//Generar Movimientos de participación
-		row.Scan(&grupo, &oid, &obse, &vent, &prem, &comi, &part, &queda, &progr, &arch, &calc, &freq)
-		venta := util.ValidarNullFloat64(vent)
-		premio := util.ValidarNullFloat64(prem)
-		comision := util.ValidarNullFloat64(comi)
-		participacion := util.ValidarNullFloat64(part)
-
-		// fmt.Println(venta, premio, comision, participacion)
-
-		monto = ((venta - premio - comision) * participacion) / 100
+		row.Scan(&grupo, &oid, &obse, &vent, &prem, &comi, &part, &queda, &progr, &arch, &calc, &freq, &mont)
+		// venta := util.ValidarNullFloat64(vent)
+		// premio := util.ValidarNullFloat64(prem)
+		// comision := util.ValidarNullFloat64(comi)
+		// participacion := util.ValidarNullFloat64(part)
+		monto := util.ValidarNullFloat64(mont)
 		smonto := strconv.FormatFloat(monto, 'f', 2, 64)
 		s := insertMovimiento(grupo, oid, obse, fecha, smonto)
 		_, err = sys.PostgreSQL.Query(s)

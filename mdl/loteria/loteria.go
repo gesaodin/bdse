@@ -62,7 +62,7 @@ func (r *Reporte) ArchivosCargados(data JsonDataReporte) (j []byte, e error) {
 
 	s := "SELECT oid,esta,nomb,fech, fcre,fpro, tabl, cant FROM archivo WHERE fech BETWEEN "
 	s += "'" + data.Desde + " 00:00:00'::TIMESTAMP AND '" + data.Hasta + " 23:59:59'::TIMESTAMP"
-
+	fmt.Println(s)
 	row, e := sys.PostgreSQL.Query(s)
 	if e != nil {
 		fmt.Println(e.Error())

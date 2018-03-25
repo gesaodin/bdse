@@ -189,7 +189,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		}
 
 	}
-	fmt.Println(s)
+	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
@@ -1423,5 +1423,15 @@ func (p *Pago) EstadoDeCuentasGrupo() (jSon []byte, err error) {
 	}
 
 	jSon, _ = json.Marshal(lst)
+	return
+}
+
+//GenerarCierreDiarioCalculo Generar Cierre Diario de las operaciones contables
+func (p *Pago) ValidarAgencias(data Pago) (jSon []byte, err error) {
+
+	var Ag Agencia
+	// fmt.Println(data.Fecha)
+
+	jSon, err = Ag.ValidarCajas(data.Desde, data.Hasta)
 	return
 }

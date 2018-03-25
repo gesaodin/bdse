@@ -73,6 +73,7 @@ func WAPI() {
 
 	Enrutador.HandleFunc(url+"balance/registrarpago", Pago.Salvar).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cobrosypagos", Pago.GenerarCobrosYPagos).Methods("POST")
+	Enrutador.HandleFunc(url+"balance/validaragencias", Pago.ValidarAgencias).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cobrosypagosgrupo", Pago.GenerarCobrosYPagosGrupo).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cobrosypagossistemas", Pago.GenerarCobrosYPagosSistemas).Methods("POST")
 	Enrutador.HandleFunc(url+"balance/cobrosypagosdetallados", Pago.GenerarCobrosYPagosDetallados).Methods("POST")

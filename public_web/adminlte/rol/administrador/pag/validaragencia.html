@@ -30,7 +30,7 @@
                 </div>
                
                 <div class="col-md-3 ">
-                   <button type="button" onclick="LstRA()" class="btn btn-success " id="consultar" style="width:100%">
+                   <button type="button" onclick="LstVA()" class="btn btn-success " id="consultar" style="width:100%">
                      <span><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Listar Archivos&nbsp;</span>
                    </button>
                 </div>
@@ -42,9 +42,22 @@
                       <th style="width: 5px">#</th>
                       <th>Código</th>                      
                       <th>Monto</th>                   
-                      <th>Archivos</th>                     
+                      <th>Sistema</th>
+                      <th>Nombre Archivo</th>
+                      <th>Cantidad</th>
+                      <th>#ID</th>
+                      <th>Fecha</th>
                     </tr>
                   </thead>
+                  <tfoot>
+                    <tr>
+                      <th></th>
+                      <th></th>         
+                      <th id="idmonto"></th>
+                      <th></th>
+                      <th></th>
+                    </tr>
+                  </tfoot>
                 </table>
                 
               </div>

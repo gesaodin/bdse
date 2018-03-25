@@ -341,9 +341,19 @@ function LstRA() {
             hasta: f_a[1].replace(" ", "")
         });
 
-        var t = $('#reporte').DataTable();
+        var t = $('#reporte').DataTable({
+            "paging": false,
+            "ordering": true,
+            "info": true,
+            "searching": true,
+            "language": {
+                "decimal": ",",
+                "thousands": "."
+            }
+        });
         t.clear().draw();
         $("#cargando").show();
+        // console.log(rfecha);
         $.post("api/reportearchivo", rfecha)
             .done(function (data) {
                 // Get the column API object
@@ -1935,4 +1945,50 @@ function SeColector(){
 function SeAgencia(){
     $("#txtSeleccion").val("2");
     $("#btnSeleccion").html('Agencia&nbsp;&nbsp;<span class="fa fa-caret-down"></span>');
+}
+/**
+ * Seleccionar las cajas en agencias
+ */
+function LstVA() {
+
+    var f = $('#daterange-btn span').html();
+    var f_a = f.split("-");
+    if (f_a.length < 3) {
+        var rfecha = JSON.stringify({
+            desde: f_a[0].replace(" ", ""),
+            hasta: f_a[1].replace(" ", "")
+        });
+        console.log(rfecha);
+        var t = $('#reporte').DataTable();
+        t.clear().draw();
+        $("#cargando").show();
+        $.post("api/balance/validaragencias", rfecha)
+            .done(function (data) {
+                // console.log(data);
+                var i = 1;
+                var suma = 0;
+                $.each(data, function (c, v) {
+                    var venta = v.venta == null ? 0 : v.venta;
+                    suma += venta;
+                    t.row.add([
+                        i++,
+                        v.codigo,
+                        v.venta.toFixed(2),
+                        v.descripcion,
+                        v.nombrearchivo,
+                        v.cantidad,
+                        v.archivo,
+                        v.fecha
+                    ]).draw(false);
+                    
+                });
+                
+                $("#idmonto").html(suma.toFixed(2));
+                $("#cargando").hide();
+            });
+
+        
+    } else {
+        $.notify("Debe seleccionar un rango", "error");
+    }
 }

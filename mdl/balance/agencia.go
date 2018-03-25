@@ -2,6 +2,7 @@ package balance
 
 import (
 	"database/sql"
+	"encoding/json"
 	"strconv"
 
 	"github.com/gesaodin/bdse/sys"
@@ -9,10 +10,23 @@ import (
 )
 
 type Agencia struct {
+	Descripcion   string  `json:"descripcion"`
+	Codigo        string  `json:"codigo"`
+	Fecha         string  `json:"fecha"`
+	Venta         float64 `json:"venta"`
+	Premio        float64 `json:"premio"`
+	Comision      float64 `json:"comision"`
+	Participacion float64 `json:"participacion"`
+	Queda         float64 `json:"queda"`
+	Calculo       float64 `json:"calculo"`
+	NombreArchivo string  `json:"nombrearchivo"`
+	Archivo       int     `json:"archivo"`
+	Cantidad      int     `json:"cantidad"`
+	Numero        int     `json:"numero"`
 }
 
-//Participacion Consultando datos de participacion mayores a cero
-func (a *Agencia) Participacion(fecha string) string {
+//ParticipacionSQL Consultando datos de participacion mayores a cero
+func (a *Agencia) ParticipacionSQL(fecha string) string {
 	return `SELECT VENTA.grupo, VENTA.oid, VENTA.obse, venta, premio, comision, 
 	COALESCE(part,0) AS participacion,COALESCE(qued,0) AS queda,VENTA.programa,VENTA.archivo, calc, freq
 	FROM zr_negociacion_agencia AS AGN
@@ -39,7 +53,7 @@ func (a *Agencia) Participacion(fecha string) string {
 func (a *Agencia) CalcularParticipacion(fecha string) bool {
 
 	// fmt.Println("Entrando en calculo")
-	s := a.Participacion(fecha)
+	s := a.ParticipacionSQL(fecha)
 	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
@@ -85,20 +99,48 @@ func insertMovimiento(grupo int, agencia int, desc string, fecha string, monto s
 		) `
 }
 
-func ValidarCajasSQL() string {
-	return `SELECT agen, vent, arch FROM zr_agencia AS T RIGHT JOIN (
+//ValidarCajasSQL
+func (a *Agencia) ValidarCajasSQL(fDesde string, fHasta string) string {
+	return `SELECT agen, s.obse, vent, R.arch, ar.nomb,ar.fech,ar.cant,ar.tabl,ar.tipo  FROM (
+		SELECT agen, vent, arch FROM zr_agencia AS T RIGHT JOIN (
 		SELECT A.agen, SUM(vent) AS vent, A.arch  FROM (
-		select * from loteria
-		union
-		select * from parley
-		union
-		select * from figura
+			SELECT * FROM loteria
+				UNION
+			SELECT * FROM parley
+				UNION
+			SELECT * FROM figura
 		) AS A
 		GROUP BY A.agen, A.arch ) AS B ON T.codi=B.agen
-		WHERE B.vent > 0 AND  T.codi IS NULL`
+		WHERE B.vent > 0 AND  T.codi IS NULL ) AS R
+	JOIN archivo ar ON ar.oid=R.arch
+	JOIN sistema s ON s.oid=ar.tipo
+	WHERE ar.fech BETWEEN '` + fDesde + ` 00:00:00'::TIMESTAMP AND '` + fHasta + ` 23:59:59'::TIMESTAMP`
 }
 
-func ValidarCajas() bool {
-
-	return true
+//ValidarCajas Validando cajas
+func (a *Agencia) ValidarCajas(fDesde string, fHasta string) (jSon []byte, e error) {
+	s := a.ValidarCajasSQL(fDesde, fHasta)
+	// fmt.Println("SQL: ", s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	var lst []Agencia
+	for row.Next() {
+		var Agenc Agencia
+		var vent sql.NullFloat64
+		var agen, obse, nomb, fech string
+		var cant, tabl, tipo, arch int
+		row.Scan(&agen, &obse, &vent, &arch, &nomb, &fech, &cant, &tabl, &tipo)
+		Agenc.Descripcion = obse
+		Agenc.Codigo = agen
+		Agenc.NombreArchivo = nomb
+		Agenc.Venta = util.ValidarNullFloat64(vent)
+		Agenc.Archivo = arch
+		Agenc.Fecha = fech
+		Agenc.Cantidad = cant
+		lst = append(lst, Agenc)
+	}
+	jSon, e = json.Marshal(lst)
+	return
 }

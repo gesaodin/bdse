@@ -47,7 +47,7 @@ func (a *Archivo) LeerIlbanquero(ch chan []byte, tipo string) (bool, string) {
 				insertar += coma
 				if a.CantidadLineas > 1 && "Total" != strings.Trim(linea[0], " ") && strings.Trim(linea[0], " ") != "" {
 					agencia, venta := strings.Trim(linea[0], " "), RComaXPunto(linea[1])
-					premio, comision := RComaXPunto(linea[5]), RComaXPunto(linea[7])
+					premio, comision := RComaXPunto(linea[5]), RComaXPunto(linea[6])
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
 					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"
 					a.Salvar = true

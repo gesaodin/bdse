@@ -3,6 +3,7 @@ package agencia
 
 import (
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/gesaodin/bdse/sys"
@@ -11,6 +12,10 @@ import (
 //Agencia Generacion de Grupos
 type Agencia struct {
 	ID               int          `json:"id,omitempty"` //Identificador
+	Comercializadora int          `json:"comercializadora,omitempty"`
+	Grupo            int          `json:"grupo,omitempty"`
+	SubGrupo         int          `json:"subgrupo,omitempty"`
+	Colector         int          `json:"colector,omitempty"`
 	Nombre           string       `json:"nombre,omitempty"`
 	FechaNegociacion string       `json:"fecha,omitempty"`
 	NumeroCuenta     string       `json:"cuenta,omitempty"`
@@ -22,8 +27,9 @@ type Agencia struct {
 	Tipo             int          `json:"tipo,omitempty"`
 	Frecuencia       int          `json:"frecuencia,omitempty"`  //1: Global 2:Individual
 	Negociacion      int          `json:"negociacion,omitempty"` //1: Global 2:Individual
-	Localizacion     Localizacion `json:"localizacion,omitempty"`
-	Seguridad        Seguridad    `json:"seguridad,omitempty"`
+	Localizacion     Localizacion `json:"Localizacion,omitempty"`
+	Seguridad        Seguridad    `json:"Seguridad,omitempty"`
+	Caja             []Caja       `json:"Caja,omitempty"`
 }
 
 //Localizacion Ubicacion Geografica
@@ -49,9 +55,13 @@ type Seguridad struct {
 //Caja La taquilla es el sitio donde se venden las entradas para acceder a
 //un evento público, por ejemplo, al cine, al teatro o al estadio
 type Caja struct {
-	Oid    int    `json:"oid,omitempty"`
-	Nombre string `json:"nombre,omitempty"`
-	Fecha  string `json:"fecha,omitempty"`
+	OidA             int    `json:"oid,omitempty"`
+	Comercializadora int    `json:"comercializadora,omitempty"`
+	Grupo            int    `json:"grupo,omitempty"`
+	SubGrupo         int    `json:"subgrupo,omitempty"`
+	Colector         int    `json:"colector,omitempty"`
+	Nombre           string `json:"nombre,omitempty"` //Codigo
+	Fecha            string `json:"fecha,omitempty"`
 }
 
 //Sistema Programa de Ventas de Loterias: MATICLO, MORPHEUS, POS, PARLEY
@@ -136,8 +146,53 @@ func (a *Agencia) Registrar() (jSon []byte, err error) {
 
 //Consultar una Agencia
 func (a *Agencia) Consultar() (jSon []byte, err error) {
+	var Agencia Agencia
+	s := `SELECT oid,
+		comer,  grupo,  subgr,  colec,  obse,  fneg,  lote,  parl,  trip, 
+		term,  qued,  part,  calc,  freq,  tipo FROM agencia`
+	sq, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for sq.Next() {
+		var obse, fneg, lote, parl, trip string
+		var comer, grupo, subgr, colec, oid, term, qued, part, calc, freq, tipo int
+		sq.Scan(&oid, &comer, &grupo, &subgr, &colec, &obse, &fneg, &lote, &parl, &trip, &term, &qued, &part, &calc, &freq, &tipo)
+		Agencia.Comercializadora = comer
+		Agencia.Grupo = grupo
+		Agencia.SubGrupo = subgr
+		Agencia.ID = oid
+		Agencia.Observacion = obse
+	}
 
 	return
+}
+
+//ConsultarCajas Returna la lista de las cajas
+func (a *Agencia) ConsultarCajas() []Caja {
+	var lst []Caja
+	s := `SELECT 
+	comer,  grupo,  subgr,  colec,  oida,  codi FROM zr_agencia`
+	sq, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		fmt.Println("Err.")
+	}
+	for sq.Next() {
+		var Caja Caja
+		var comer, grupo, subgr, colec, oida int
+		var codi string
+
+		sq.Scan(&comer, &grupo, &subgr, &colec, &oida, &codi)
+		Caja.Comercializadora = comer
+		Caja.Grupo = grupo
+		Caja.SubGrupo = subgr
+		Caja.Colector = colec
+		Caja.OidA = oida
+		Caja.Nombre = codi
+		lst = append(lst, Caja)
+	}
+
+	return lst
 }
 
 //Cantidad de gupos asociados a una comercializadora

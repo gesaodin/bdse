@@ -224,6 +224,8 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 			pago.Estatus = esta
 
 			lst = append(lst, pago)
+		} else {
+			//Registrar el error...
 		}
 	}
 
@@ -292,7 +294,7 @@ func (p *Pago) GenerarCierreDiarioCalculo(data Pago) (jSon []byte, err error) {
 			return
 		}
 		var G Grupo
-		G.CalcularParticipacionGlobal(data.Fecha)
+		G.CalcularParticipacionGlobalPP(data.Fecha)
 	}
 
 	jSon, _ = json.Marshal(r)

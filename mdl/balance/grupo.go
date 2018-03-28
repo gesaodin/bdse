@@ -8,10 +8,11 @@ import (
 	"github.com/gesaodin/bdse/util"
 )
 
+//Grupo
 type Grupo struct{}
 
-//ParticipacionSQLGlobal Consultando datos de participacion mayores a cero
-func (g *Grupo) ParticipacionSQLGlobal(fecha string) string {
+//ParticipacionSQLGlobalPP Consultando datos de participacion mayores a cero Por Programas
+func (g *Grupo) ParticipacionSQLGlobalPP(fecha string) string {
 	return `	
 		SELECT  oidg, obse,part,calc,freq, oids,venta,premio,comision, 
 		((venta-premio-comision)*part)/100 AS calculo	
@@ -46,10 +47,10 @@ func (g *Grupo) ParticipacionSQLGlobal(fecha string) string {
 }
 
 //CalcularParticipacionGlobal Función para ejecutar calculos de participaciones por agencia
-func (g *Grupo) CalcularParticipacionGlobal(fecha string) bool {
+func (g *Grupo) CalcularParticipacionGlobalPP(fecha string) bool {
 
 	// fmt.Println("Entrando en calculo")
-	s := g.ParticipacionSQLGlobal(fecha)
+	s := g.ParticipacionSQLGlobalPP(fecha)
 	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 	if err != nil {
@@ -97,13 +98,55 @@ func insertMovimientoG(grupo int, desc string, fecha string, monto string, tabla
 		) `
 }
 
-//ParticipacionSQLIndividual Consultando datos de participacion mayores a cero
-func (g *Grupo) ParticipacionSQLIndividual(fecha string) string {
-	return ``
+//ParticipacionSQLGlobalG Consultando datos de participacion mayores a cero
+func (g *Grupo) ParticipacionSQLGlobalG(fecha string) string {
+	return `	
+		SELECT grupo,obse,venta,premio,comision,part,calc, ((venta-premio-comision)*part)/100 AS calculo FROM (
+			SELECT  zr.grupo, SUM(vent) AS venta, SUM(prem) AS premio, 
+				SUM(comi) AS comision FROM (
+				SELECT agen, fech, vent,prem,comi, sist from loteria
+				UNION
+				SELECT agen, fech, vent,prem,comi, sist from parley
+				UNION
+				SELECT agen, fech, vent,prem,comi, sist from figura
+			) AS A
+			JOIN zr_agencia zr ON A.agen=zr.codi
+			JOIN agencia ON agencia.oid = zr.oida
+			JOIN sistema s ON s.oid=A.sist
+			WHERE A.fech = '` + fecha + `'
+			GROUP BY zr.grupo
+		) AS G
+		JOIN grupo gr ON G.grupo=gr.oid
+		WHERE calc=2 AND part>0	
+		ORDER BY gr.oid`
 }
 
-//CalcularParticipacionIndividual Función para ejecutar calculos de participaciones por agencia
-func (g *Grupo) CalcularParticipacionIndividual(fecha string) bool {
+//CalcularParticipacionGlobalG Función para ejecutar calculos de participaciones por agencia
+func (g *Grupo) CalcularParticipacionGlobalG(fecha string) bool {
+	s := g.ParticipacionSQLGlobalG(fecha)
+	//fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return false
+	}
+	for row.Next() {
+		var oidg int
+		var obse string
+		var venta, premio, comision, part, calc, mont sql.NullFloat64
+		row.Scan(&oidg, &obse, &venta, &premio, &comision, &part, &calc, &mont)
+		monto := util.ValidarNullFloat64(mont)
+		tabla := "movimiento_egreso"
+		if monto < 0 {
+			tabla = "movimiento_ingreso"
+			monto = monto * -1
+		}
+		smonto := strconv.FormatFloat(monto, 'f', 2, 64)
 
+		s := insertMovimientoG(oidg, obse, fecha, smonto, tabla)
+		_, err = sys.PostgreSQL.Query(s)
+		if err != nil {
+			return false
+		}
+	}
 	return true
 }

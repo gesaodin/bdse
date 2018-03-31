@@ -142,3 +142,35 @@ func (a *Agencia) ValidarCajas(fDesde string, fHasta string) (jSon []byte, e err
 	jSon, e = json.Marshal(lst)
 	return
 }
+
+func QuedaGlobalSQL(fecha string) string {
+	return `SELECT `
+}
+
+//
+func (a *Agencia) QuedaGlobal(fecha string) {
+
+}
+
+//
+func (a *Agencia) QuedaIndividual(fecha string) {
+
+}
+
+//
+func (a *Agencia) QuedaPorJugada(fecha string) {
+
+}
+
+func Frecuencia(tipo int) {
+	switch tipo {
+	case 1: //Diario
+		break
+	case 2: //Semanal
+		break
+	case 3: //Quincenal
+		break
+	case 4: //Mensual
+		break
+	}
+}

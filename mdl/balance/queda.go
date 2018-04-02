@@ -154,7 +154,7 @@ func (Q *Queda) AGlobal() string {
 	JOIN zr_agencia zr ON A.agen=zr.codi
 	JOIN agencia ON agencia.oid = zr.oida
 	JOIN sistema s ON s.oid=A.sist
-	WHERE A.fech  ` + Q.Fecha + `
+	WHERE A.fech ` + Q.Fecha + `
 	GROUP BY zr.grupo, agencia.oid, agencia.obse, s.oid,  s.arch
 	ORDER BY agencia.oid ) AS AGENCIA 
 	GROUP BY grupo, oid
@@ -218,5 +218,27 @@ func (Q *Queda) APorJugada() string {
 	WHERE saldo > 0 -- EN Agencia No por Grupo
 	-- AND qued > 0
 	-- AND freq = ` + Q.Tipo + ` ORDER BY N.oid	`
+}
 
+//validarFrecuencia de Calculo
+func validarFrecuencia(fecha string, freq int) (fech string) {
+	switch freq {
+	case 1:
+		//Diario
+		fech = "= '" + fecha + "' "
+		break
+	case 2:
+		//Semanal
+		fech = `BETWEEN ('` + fecha + `'::DATE + interval '1 day') - interval '1 week' AND '` + fecha + `'::TIMESTAMP`
+		break
+	case 3:
+		//Quincenal
+		fech = `BETWEEN ('` + fecha + `'::DATE + interval '1 day') - interval '2 week' AND '` + fecha + `'::TIMESTAMP`
+		break
+	case 4:
+		//Mensual
+		fech = `BETWEEN ('` + fecha + `'::DATE + interval '1 day') - interval '1 month' AND '` + fecha + `'::TIMESTAMP`
+		break
+	}
+	return
 }

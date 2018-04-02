@@ -3,6 +3,7 @@ package balance
 import (
 	"database/sql"
 	"encoding/json"
+	"fmt"
 	"strconv"
 
 	"github.com/gesaodin/bdse/sys"
@@ -74,7 +75,7 @@ func (a *Agencia) CalcularParticipacion(fecha string) bool {
 		// participacion := util.ValidarNullFloat64(part)
 		monto := util.ValidarNullFloat64(mont)
 		smonto := strconv.FormatFloat(monto, 'f', 2, 64)
-		s := insertMovimiento(grupo, oid, obse, fecha, smonto)
+		s := insertMovimiento(grupo, oid, obse, fecha, smonto, "PARTICIPACION")
 		_, err = sys.PostgreSQL.Query(s)
 		if err != nil {
 			return false
@@ -84,7 +85,7 @@ func (a *Agencia) CalcularParticipacion(fecha string) bool {
 	return true
 }
 
-func insertMovimiento(grupo int, agencia int, desc string, fecha string, monto string) string {
+func insertMovimiento(grupo int, agencia int, desc string, fecha string, monto string, modelo string) string {
 	return `INSERT INTO movimiento_egreso 
 		(comer,grupo,subgr,colec,agenc,agen,fech,fapr,fope,freg,tipo,cuen, oper,obse,mont) 
 	VALUES 
@@ -93,7 +94,7 @@ func insertMovimiento(grupo int, agencia int, desc string, fecha string, monto s
 			'` + desc + `',
 			'` + fecha + `'::DATE,'` + fecha + ` 00:00:00'::TIMESTAMP,
 			'` + fecha + ` 00:00:00'::TIMESTAMP + '1 day',now(), 
-			1, 0, '', 'PAGO POR PARTICIPACION - ` + fecha + `', ` + monto + `
+			1, 0, '', 'PAGO POR ` + modelo + ` - ` + fecha + `', ` + monto + `
 		) `
 }
 
@@ -143,34 +144,89 @@ func (a *Agencia) ValidarCajas(fDesde string, fHasta string) (jSon []byte, e err
 	return
 }
 
-func QuedaGlobalSQL(fecha string) string {
-	return `SELECT `
+/**************************************
+**  Casos vistos desde la agencia
+***************************************/
+
+//CQAGlobal Calcular Queda Global
+//Caso 1
+func (g *Grupo) CQAGlobal(fecha string, freq int) {
+	var Queda Queda
+	Queda.Fecha = validarFrecuencia(fecha, freq)
+	Queda.Tipo = strconv.Itoa(freq)
+	s := Queda.AGlobal()
+	fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for row.Next() {
+		var grupo, oid int
+		var obse, qued, freq string
+		var saldo sql.NullFloat64
+		row.Scan(&grupo, &oid, &obse, &qued, &freq, &saldo)
+		// monto := util.ValidarNullFloat64(saldo)
+		// smonto := strconv.FormatFloat(monto, 'f', 2, 64)
+		// s := insertMovimiento(grupo, oid, obse, fecha, smonto, "QUEDA")
+		// _, err = sys.PostgreSQL.Query(s)
+		// if err != nil {
+		// 	return
+		// }
+	}
 }
 
-//
-func (a *Agencia) QuedaGlobal(fecha string) {
-
+//CQAPorPrograma Calcular Queda Global
+//Caso 2
+func (g *Grupo) CQAPorPrograma(fecha string, freq int) {
+	var Queda Queda
+	Queda.Fecha = validarFrecuencia(fecha, freq)
+	Queda.Tipo = strconv.Itoa(freq)
+	s := Queda.APorPrograma()
+	fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for row.Next() {
+		var grupo, oid int
+		var obse, qued, freq, programa string
+		var saldo sql.NullFloat64
+		row.Scan(&grupo, &oid, &obse, &qued, &freq, &saldo, &programa)
+		// monto := util.ValidarNullFloat64(saldo)
+		// smonto := strconv.FormatFloat(monto, 'f', 2, 64)
+		// modelo := "QUEDA PROGRAMA (" + programa + ") "
+		// s := insertMovimiento(grupo, oid, obse, fecha, smonto, modelo)
+		// _, err = sys.PostgreSQL.Query(s)
+		// if err != nil {
+		// 	return
+		// }
+	}
 }
 
-//
-func (a *Agencia) QuedaIndividual(fecha string) {
-
-}
-
-//
-func (a *Agencia) QuedaPorJugada(fecha string) {
-
-}
-
-func Frecuencia(tipo int) {
-	switch tipo {
-	case 1: //Diario
-		break
-	case 2: //Semanal
-		break
-	case 3: //Quincenal
-		break
-	case 4: //Mensual
-		break
+//CQAPorJugada Calcular Queda Global
+//Caso 3
+func (g *Grupo) CQAPorJugada(fecha string, freq int) {
+	var Queda Queda
+	Queda.Fecha = validarFrecuencia(fecha, freq)
+	Queda.Tipo = strconv.Itoa(freq)
+	s := Queda.APorPrograma()
+	fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for row.Next() {
+		var grupo, oid int
+		var obse, qued, freq, archivo string
+		var saldo sql.NullFloat64
+		row.Scan(&grupo, &oid, &obse, &qued, &freq, &saldo, &archivo)
+		// monto := util.ValidarNullFloat64(saldo)
+		// smonto := strconv.FormatFloat(monto, 'f', 2, 64)
+		// modelo := "QUEDA ARCHIVO (" + archivo + ") "
+		// s := insertMovimiento(grupo, oid, obse, fecha, smonto, modelo)
+		// _, err = sys.PostgreSQL.Query(s)
+		// if err != nil {
+		// 	return
+		// }
 	}
 }

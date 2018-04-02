@@ -2,6 +2,7 @@ package balance
 
 import (
 	"database/sql"
+	"fmt"
 	"strconv"
 
 	"github.com/gesaodin/bdse/sys"
@@ -75,7 +76,7 @@ func (g *Grupo) CalcularParticipacionGlobalPP(fecha string) bool {
 		}
 		smonto := strconv.FormatFloat(monto, 'f', 2, 64)
 
-		s := insertMovimientoG(oidg, obse, fecha, smonto, tabla)
+		s := insertMovimientoG(oidg, obse, fecha, smonto, tabla, "PARTICIPACION ")
 		_, err = sys.PostgreSQL.Query(s)
 		if err != nil {
 			return false
@@ -85,7 +86,7 @@ func (g *Grupo) CalcularParticipacionGlobalPP(fecha string) bool {
 	return true
 }
 
-func insertMovimientoG(grupo int, desc string, fecha string, monto string, tabla string) string {
+func insertMovimientoG(grupo int, desc string, fecha string, monto string, tabla string, modelo string) string {
 	return `INSERT INTO  ` + tabla + `
 		(comer,grupo,subgr,colec,agenc,agen,fech,fapr,fope,freg,tipo,cuen, oper,obse,mont) 
 	VALUES 
@@ -94,7 +95,7 @@ func insertMovimientoG(grupo int, desc string, fecha string, monto string, tabla
 			'` + desc + `',
 			'` + fecha + `'::DATE,'` + fecha + ` 00:00:00'::TIMESTAMP,
 			'` + fecha + ` 00:00:00'::TIMESTAMP + '1 day',now(), 
-			1, 0, '', 'PAGO POR PARTICIPACION - ` + fecha + `', ` + monto + `
+			1, 0, '', 'PAGO POR ` + modelo + ` - ` + fecha + `', ` + monto + `
 		) `
 }
 
@@ -142,11 +143,42 @@ func (g *Grupo) CalcularParticipacionGlobalG(fecha string) bool {
 		}
 		smonto := strconv.FormatFloat(monto, 'f', 2, 64)
 
-		s := insertMovimientoG(oidg, obse, fecha, smonto, tabla)
+		s := insertMovimientoG(oidg, obse, fecha, smonto, tabla, "PARTICIPACION ")
 		_, err = sys.PostgreSQL.Query(s)
 		if err != nil {
 			return false
 		}
 	}
 	return true
+}
+
+/**************************************
+**  Casos vistos desde el Grupo
+***************************************/
+
+//CQGlobal Calcular Queda Global
+//Caso 1
+func (g *Grupo) CQGlobal(fecha string, freq int) {
+	var Queda Queda
+	Queda.Fecha = validarFrecuencia(fecha, freq)
+	Queda.Tipo = strconv.Itoa(freq)
+	s := Queda.AGlobal()
+	fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for row.Next() {
+		var grupo int
+		var obse, qued, freq string
+		var saldo sql.NullFloat64
+		row.Scan(&grupo, &obse, &qued, &freq, &saldo)
+		// monto := util.ValidarNullFloat64(saldo)
+		// smonto := strconv.FormatFloat(monto, 'f', 2, 64)
+		// s := insertMovimiento(grupo, oid, obse, fecha, smonto, "QUEDA")
+		// _, err = sys.PostgreSQL.Query(s)
+		// if err != nil {
+		// 	return
+		// }
+	}
 }

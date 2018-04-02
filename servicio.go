@@ -48,6 +48,8 @@ func init() {
 }
 
 func main() {
+	// var gr balance.Grupo
+	// gr.CQAGlobal("2017-11-30", 4)
 	// var archivo = util.Archivo{}
 	// archivo.PostgreSQL = sys.PostgreSQL
 	// archivo.LeerCodigosYCrearSaldos()

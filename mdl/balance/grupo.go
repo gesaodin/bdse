@@ -182,3 +182,86 @@ func (g *Grupo) CQGlobal(fecha string, freq int) {
 		// }
 	}
 }
+
+//CQIndividual Calcular Queda Individual
+//Caso 2
+func (g *Grupo) CQIndividual(fecha string, freq int) {
+	var Queda Queda
+	Queda.Fecha = validarFrecuencia(fecha, freq)
+	Queda.Tipo = strconv.Itoa(freq)
+	s := Queda.GIndividual()
+	fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for row.Next() {
+		var grupo int
+		var obse, qued, freq string
+		var saldo sql.NullFloat64
+		row.Scan(&grupo, &obse, &qued, &freq, &saldo)
+		// monto := util.ValidarNullFloat64(saldo)
+		// smonto := strconv.FormatFloat(monto, 'f', 2, 64)
+		// s := insertMovimiento(grupo, oid, obse, fecha, smonto, "QUEDA")
+		// _, err = sys.PostgreSQL.Query(s)
+		// if err != nil {
+		// 	return
+		// }
+	}
+}
+
+//CQPorPrograma Calcular Queda Por Programa
+//Caso 3
+func (g *Grupo) CQPorPrograma(fecha string, freq int) {
+	var Queda Queda
+	Queda.Fecha = validarFrecuencia(fecha, freq)
+	Queda.Tipo = strconv.Itoa(freq)
+	s := Queda.GPorPrograma()
+	fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for row.Next() {
+		var grupo int
+		var obse, qued, freq, programa string
+		var saldo sql.NullFloat64
+		row.Scan(&grupo, &obse, &qued, &freq, &saldo, &programa)
+		// monto := util.ValidarNullFloat64(saldo)
+		// smonto := strconv.FormatFloat(monto, 'f', 2, 64)
+		// modelo := "QUEDA POR PROGRAMA ( " + programa + ")"
+		// s := insertMovimiento(grupo, oid, obse, fecha, smonto, "QUEDA ")
+		// _, err = sys.PostgreSQL.Query(s)
+		// if err != nil {
+		// 	return
+		// }
+	}
+}
+
+//CQPorJugada Calcular Queda Por Jugada
+//Caso 3
+func (g *Grupo) CQPorJugada(fecha string, freq int) {
+	var Queda Queda
+	Queda.Fecha = validarFrecuencia(fecha, freq)
+	Queda.Tipo = strconv.Itoa(freq)
+	s := Queda.GPorJugada()
+	fmt.Println(s)
+	row, err := sys.PostgreSQL.Query(s)
+	if err != nil {
+		return
+	}
+	for row.Next() {
+		var grupo int
+		var obse, qued, freq, jugada string
+		var saldo sql.NullFloat64
+		row.Scan(&grupo, &obse, &qued, &freq, &saldo, &jugada)
+		// monto := util.ValidarNullFloat64(saldo)
+		// smonto := strconv.FormatFloat(monto, 'f', 2, 64)
+		// modelo := "QUEDA POR JUGADA ( " + jugada + ")"
+		// s := insertMovimiento(grupo, oid, obse, fecha, smonto, "QUEDA ")
+		// _, err = sys.PostgreSQL.Query(s)
+		// if err != nil {
+		// 	return
+		// }
+	}
+}

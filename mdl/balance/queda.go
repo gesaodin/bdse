@@ -32,8 +32,8 @@ func (Q *Queda) GGlobal() string {
 		GROUP BY grupo
 		ORDER BY grupo ) --Fin Join inicial
 		AS L ON A.oid=L.grupo
-		-- AND qued > 0
-		-- AND freq = ` + Q.Tipo
+		AND qued > 0
+		AND freq = ` + Q.Tipo
 }
 
 //GIndividual Caso 2:
@@ -64,8 +64,8 @@ func (Q *Queda) GIndividual() string {
 		ORDER BY grupo ) --Fin Join inicial
 		AS L ON A.oid=L.grupo
 		WHERE saldo > 0 -- EN Agencia No por Grupo
-		-- AND qued > 0
-		-- AND freq = ` + Q.Tipo
+		AND qued > 0
+		AND freq = ` + Q.Tipo
 }
 
 //GPorPrograma Caso 3:
@@ -94,9 +94,9 @@ func (Q *Queda) GPorPrograma() string {
 	ORDER BY zr.grupo
 	) --Fin Join inicial
 	AS L ON A.oid=L.grupo
-	--WHERE saldo > 0 -- EN Agencia No por Grupo
-	-- AND qued > 0
-	-- AND freq = ` + Q.Tipo
+	WHERE saldo > 0 -- EN Agencia No por Grupo
+	AND qued > 0
+	AND freq = ` + Q.Tipo
 }
 
 //GPorJugada Caso 4:
@@ -106,7 +106,7 @@ func (Q *Queda) GPorJugada() string {
 		SELECT 
 			L.grupo,qued,freq,saldo,L.arch
 		FROM zr_negociacion_grupo_jugada A
-		RIGHT JOIN (
+		JOIN (
 		
 		SELECT  zr.grupo, s.arch,
 		SUM(vent)- SUM(prem) - SUM(comi) AS saldo
@@ -125,9 +125,9 @@ func (Q *Queda) GPorJugada() string {
 		ORDER BY zr.grupo
 		) --Fin Join inicial
 		AS L ON A.oid=L.grupo
-		--WHERE saldo > 0 -- EN Agencia No por Grupo
-		-- AND qued > 0
-		-- AND freq = ` + Q.Tipo
+		WHERE saldo > 0 -- EN Agencia No por Grupo
+		AND qued > 0
+		AND freq = ` + Q.Tipo
 }
 
 /**************************************
@@ -161,15 +161,15 @@ func (Q *Queda) AGlobal() string {
 	ORDER BY oid ) --Fin Join inicial
 	AS L ON A.oid=L.oid
 	WHERE saldo > 0 -- EN Agencia No por Grupo
-	-- AND qued > 0
-	-- AND freq = ` + Q.Tipo
+	AND qued > 0
+	AND freq = ` + Q.Tipo
 }
 
 //APorPrograma Caso 2:
 //SOLO SALDOS ( + )
 func (Q *Queda) APorPrograma() string {
 	return `SELECT grupo, N.oid, N.obse, qued, freq, saldo,programa FROM zr_negociacion_agencia AS Z
-	RIGHT JOIN (
+	JOIN (
 	SELECT  zr.grupo, agencia.oid, agencia.obse, 
 	   SUM(vent)- SUM(prem) - SUM(comi) AS saldo, s.oid as programa, s.arch AS archivo 
 	FROM (
@@ -188,8 +188,8 @@ func (Q *Queda) APorPrograma() string {
 	ON Z.oida=N.oid
 	AND Z.oids=N.programa
 	WHERE saldo > 0 -- EN Agencia No por Grupo
-	-- AND qued > 0
-	-- AND freq = ` + Q.Tipo + ` ORDER BY N.oid	`
+	AND qued > 0
+	AND freq = ` + Q.Tipo + ` ORDER BY N.oid	`
 }
 
 //APorJugada Caso 3:
@@ -216,8 +216,8 @@ func (Q *Queda) APorJugada() string {
 	ON Z.oida=N.oid
 	AND Z.oidt=N.archivo
 	WHERE saldo > 0 -- EN Agencia No por Grupo
-	-- AND qued > 0
-	-- AND freq = ` + Q.Tipo + ` ORDER BY N.oid	`
+	AND qued > 0
+	AND freq = ` + Q.Tipo + ` ORDER BY N.oid	`
 }
 
 //validarFrecuencia de Calculo

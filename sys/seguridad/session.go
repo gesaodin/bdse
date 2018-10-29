@@ -30,7 +30,7 @@ func init() {
 	Stores.Options = &sessions.Options{
 		Domain:   ip,
 		Path:     "/",
-		MaxAge:   1800, //Media Hora en segundos
+		MaxAge:   3600, //Media Hora en segundos
 		HttpOnly: true,
 	}
 }

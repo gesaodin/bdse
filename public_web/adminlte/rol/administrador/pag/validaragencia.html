@@ -1,11 +1,11 @@
 <section class="content-header">
         <h1>
           Administración
-          <small>Validar codigos</small>
+          <small>Validar códigos</small>
         </h1>
         <ol class="breadcrumb">
           <li><a href="principal"><i class="fa fa-dashboard"></i> Principal</a></li>
-          <li >Reporte</li><li class="active">Validar Agencia</li>
+          <li >Reporte</li><li class="active">Validar Agencias</li>
         </ol>
       </section>
       <!-- Main content -->
@@ -18,9 +18,9 @@
                 <h3 class="box-title">Listado general de codigos</h3>
               </div>
               <div class="box-body">
-                <div class="row">        
-                 <div class="col-md-5"> 
-      
+                <div class="row">
+                 <div class="col-md-5">
+
                   <div class="input-group">
                     <button type="button" class="btn btn-default " id="daterange-btn">
                       <span><i class="fa fa-calendar -"></i>&nbsp;&nbsp;&nbsp;Seleccionar el rango para la busqueda&nbsp;&nbsp;&nbsp;</span>
@@ -28,20 +28,20 @@
                     </button>
                   </div>
                 </div>
-               
+
                 <div class="col-md-3 ">
                    <button type="button" onclick="LstVA()" class="btn btn-success " id="consultar" style="width:100%">
-                     <span><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Listar Archivos&nbsp;</span>
+                     <span><i class="fa fa-print"></i>&nbsp;&nbsp;&nbsp;Listar&nbsp;</span>
                    </button>
                 </div>
-              </div>  
+              </div>
               <br>
                 <table class="table table-bordered  table-striped table-hover" cellspacing="0" id="reporte" width="100%">
                   <thead>
                     <tr>
                       <th style="width: 5px">#</th>
-                      <th>Código</th>                      
-                      <th>Monto</th>                   
+                      <th>Código</th>
+                      <th>Monto</th>
                       <th>Sistema</th>
                       <th>Nombre Archivo</th>
                       <th>Cantidad</th>
@@ -52,14 +52,14 @@
                   <tfoot>
                     <tr>
                       <th></th>
-                      <th></th>         
+                      <th></th>
                       <th id="idmonto"></th>
                       <th></th>
                       <th></th>
                     </tr>
                   </tfoot>
                 </table>
-                
+
               </div>
               <div class="overlay" id="cargando">
                     <i class="fa fa-refresh fa-spin"></i>
@@ -67,7 +67,5 @@
             </div>
           </div>
         </div>
-      
+
       </section>
-      
-      

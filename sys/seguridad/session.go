@@ -26,9 +26,10 @@ type Session struct {
 var Stores = sessions.NewCookieStore([]byte("#za63qj2p-6pt33pSUz#"))
 
 func init() {
-	ip := ObtnerIP()
+	//ip := ObtnerIP()
+
 	Stores.Options = &sessions.Options{
-		Domain:   ip,
+		Domain:   "192.168.11.33",
 		Path:     "/",
 		MaxAge:   3600, //Media Hora en segundos
 		HttpOnly: true,

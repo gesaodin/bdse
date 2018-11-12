@@ -21,7 +21,7 @@ func MongoDBConexion() {
 //PostgresDBConexion Funcion de Conexion a Postgres
 func PostgresDBConexion() {
 	c := BaseDeDatos.CadenaDeConexion["postgres"]
-	cadena := "user=" + c.Usuario + " dbname=" + c.Basedatos + " password=" + c.Clave + " host=" + c.Host
+	cadena := "user=" + c.Usuario + " dbname=" + c.Basedatos + " password=" + c.Clave + " host=" + c.Host + " sslmode=disable"
 	PostgreSQL, _ = sql.Open("postgres", cadena)
 
 	if PostgreSQL.Ping() != nil {

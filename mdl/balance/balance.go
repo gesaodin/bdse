@@ -36,6 +36,7 @@ type Pago struct {
 	Venta          float64 `json:"venta,omitempty"`
 	Premio         float64 `json:"premio,omitempty"`
 	Comision       float64 `json:"comision,omitempty"`
+	ComisionB      float64 `json:"comisionb,omitempty"`
 	Saldo          float64 `json:"saldo,omitempty"`
 	Vienen         float64 `json:"vienen,omitempty"`
 	Van            float64 `json:"van,omitempty"`
@@ -812,6 +813,7 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 
 	lst := make(map[int]interface{})
 	var pago Pago
+	// var lstP []Pago
 	var venta, premio, comision, comisionb, saldo, saldovan float64
 
 	for row.Next() {
@@ -836,10 +838,11 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 		}
 
 		if oidAuxiliar != oid {
-			if comision == 0 {
-				pago.Comision = comisionb
-				pago.Saldo = saldo - pago.Comision
-			}
+			//fmt.Println("OID: ", oidAuxiliar, " ID: ", pago.Observacion, " VENTA: ", pago.Venta, " PREMIO: ", pago.Premio ,  " COMISION: ", pago.Comision, " SALDO: ", saldo )
+			// if comision == 0 {
+			// 	pago.Comision = comisionb
+			// 	pago.Saldo = saldo - pago.Comision
+			// }
 			er := pago.Entregado - pago.Recibido
 			movimiento := pago.Egreso - pago.Ingreso
 			pago.Van = pago.Saldo + pago.Vienen + er + movimiento
@@ -868,13 +871,15 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 				}
 			}
 			lst[oidAuxiliar] = pago
+			// lstP = append(lstP, pago)
 			oidAuxiliar = oid
 			venta, premio, comision, comisionb, saldo, saldovan = 0, 0, 0, 0, 0, 0
+
 		}
 		venta += vent
 		premio += prem
-		comisionb += comi
-		comision += comical
+		comision += comi
+		comisionb += comical
 		saldo += sald
 		saldovan += van
 		pago.Estatus = esta
@@ -906,10 +911,10 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 
 	}
 
-	if comision == 0 {
-		pago.Comision = comisionb
-		pago.Saldo = saldo - pago.Comision
-	}
+	// if comision == 0 {
+	// 	pago.Comision = comisionb
+	// 	pago.Saldo = saldo - pago.Comision
+	// }
 	er := pago.Entregado - pago.Recibido
 	movimiento := pago.Egreso - pago.Ingreso
 	pago.Van = pago.Saldo + pago.Vienen + er + movimiento
@@ -938,9 +943,12 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 			fmt.Println(err.Error())
 		}
 	}
-	lst[oidAuxiliar] = pago
 
+	lst[oidAuxiliar] = pago
+	// lstP = append(lstP, pago)
 	jSon, _ = json.Marshal(lst)
+
+
 	return
 }
 
@@ -962,12 +970,12 @@ func gCPGrupoDiario(fecha string) (s string) {
 				COALESCE(comision,0) AS comision,
 				--venta,premio,comision,
 				comisioncal,
-				COALESCE((venta-premio-comisioncal),0) AS saldo,
+				COALESCE((venta-premio-comision),0) AS saldo,
 				-- f.soid, --f.slote, f.sparl,f.squed, f.spart,
 				-- f.arch,f.fapr,
 				entregado,recibido,ingreso,egreso,prestamo, cuota,
 				COALESCE(vien,0) AS vien,
-				COALESCE(COALESCE((venta-premio-comisioncal),0) + vien + (entregado - recibido) + (ingreso-egreso+prestamo),0) AS van,
+				COALESCE(COALESCE((venta-premio-comision),0) + vien + (entregado - recibido) + (ingreso-egreso+prestamo),0) AS van,
 				COALESCE(cpc.esta,0) AS esta,cyp.fech, COALESCE(cyp.sald,0) AS cypsaldo
 				FROM
 
@@ -1063,7 +1071,7 @@ func gCPGrupoDiario(fecha string) (s string) {
 			-- + '-24:00:00'
 			--
 	`
-
+	// fmt.Println(s)
 	return
 }
 

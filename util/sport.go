@@ -106,9 +106,11 @@ func (a *Archivo) LeerSportXLSX(ch chan []byte, tipo string) (bool, string) {
 	}
 	fig := SParley
 	posicionarchivo := 8
+	intArchivo := 6
 	if tipo == "f" {
 		fig = SFigura
 		posicionarchivo = 28
+		intArchivo = 5
 	}
 	a.iniciarVariable(fig)
 
@@ -155,7 +157,9 @@ func (a *Archivo) LeerSportXLSX(ch chan []byte, tipo string) (bool, string) {
 					re := regexp.MustCompile(`[-()]`)
 					agen := re.Split(cel[1], -1)
 					agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[2], " ")
-					premio, comision := strings.Trim(cel[6], " "), strings.Trim(cel[3], " ")
+
+					premio := strings.Trim(cel[intArchivo], " ")
+					comision := strings.Trim(cel[3], " ")
 					insertar += coma
 					insertar += "('" + agencia + "'," + venta + "," + premio + "," + comision
 					insertar += ",1,'" + a.Fecha + "',Now()," + strconv.Itoa(posicionarchivo) + "," + strconv.Itoa(oid) + ")"

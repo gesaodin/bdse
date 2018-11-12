@@ -66,7 +66,7 @@ func (a *Archivo) LeerMaticloXLSX(ch chan []byte, tipo string) (bool, string) {
 					agen := re.Split(cel[2], -1)
 					// agencia, venta := strings.ToUpper(agen[0]), strings.Trim(cel[4], " ")
 					// premio, comision := strings.Trim(cel[6], " "), strings.Trim(cel[5], " ")
-					fmt.Println("Comision ", cel[5])
+					// fmt.Println("Comision ", cel[5])
 					agencia, venta := strings.ToUpper(agen[0]), RComaXPunto(cel[4])
 					premio, comision := RComaXPunto(cel[6]), RComaXPunto(cel[5])
 					insertar += coma

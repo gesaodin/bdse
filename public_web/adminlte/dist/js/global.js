@@ -463,7 +463,7 @@ function Reporte(t, oid, tbl) {
                 premio = v.pre == null ? 0 : v.pre;
                 comision = v.com == null ? 0 : v.com;
                 saldo = v.sal == null ? 0 : v.sal;
-                
+
                 tventa += venta;
                 tpremio += premio;
                 tcomision += comision;
@@ -681,7 +681,7 @@ function LstSaldoGPS() {
         });
         url = "api/reportesaldogeneral";
         if (parseInt($("#tipo option:selected").val()) == 2) url = "api/balancegeneral";
-        
+
         $.post(url, rfecha)
             .done(function (data) {
                 switch (parseInt($("#tipo option:selected").val())) {
@@ -900,7 +900,7 @@ function GCalc(){
     });
 
     $.post("api/balance/cierrediariocalculos", data)
-        .done(function (data) {            
+        .done(function (data) {
             $.notify(data.msj, "success");
             GC(0);
     });
@@ -928,6 +928,7 @@ function GC(tipo) {
     url = evalTipo();
     $.post(url, data)
         .done(function (data) {
+          // console.log(data);
             t.clear().draw();
             var i = 0;
             var tsaldoant = 0;
@@ -947,11 +948,11 @@ function GC(tipo) {
                 movimiento = (parseFloat(egreso) + parseFloat(cuota)) - (parseFloat(ingreso) + parseFloat(prestamo));
 
                 x = parseFloat(entregado) - parseFloat(recibido);
-                //console.log("SALDO: " + v.saldo + " X: " + x + " MOVIMIENTO : " + movimiento);
+                // console.log("SALDO: " + saldo + " " + v.saldo);
                 total = vienen + parseFloat(saldo) + movimiento + x;
 
-                 
-                
+
+
                 tsaldoant += vienen;
                 tsaldodia += saldo;
                 tmovimiento += movimiento;
@@ -1031,7 +1032,7 @@ function GC(tipo) {
             $("#tsaldototal").html(tsaldototal.toFixed(2));
             $("#cargando").hide();
             $("#divBotones").show();
-            
+
         })
 }
 
@@ -1121,7 +1122,7 @@ function GCD() {
     });
 
     $.post("api/balance/cierrediario", data)
-        .done(function (data) {            
+        .done(function (data) {
             $.notify(data.msj, "success");
             GC(0);
     });
@@ -1980,14 +1981,14 @@ function LstVA() {
                         v.archivo,
                         v.fecha
                     ]).draw(false);
-                    
+
                 });
-                
+
                 $("#idmonto").html(suma.toFixed(2));
                 $("#cargando").hide();
             });
 
-        
+
     } else {
         $.notify("Debe seleccionar un rango", "error");
     }

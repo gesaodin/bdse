@@ -90,3 +90,90 @@ rol/
     ├── papelera
     └── seguridad.json
 24 directories, 15 files
+
+
+
+truncate archivo;
+truncate figura;
+--select * from archivo;
+--select * from figura;
+update figura set vent=vent/100000, prem=prem/100000, comi=comi/100000 where sist=28;
+
+DROP TABLE public.figura;
+
+CREATE TABLE public.figura
+(
+    oid SERIAL PRIMARY KEY,
+    agen character varying(128) COLLATE pg_catalog."default",
+    vent numeric(15,3),
+    prem numeric(15,3),
+    comi numeric(15,3),
+    usua integer,
+    fech timestamp without time zone,
+    fcre timestamp without time zone,
+    sist integer,
+    arch integer
+)
+100109696926-d84numlq9i4hbl1ep6g922gkrr3odsvd.apps.googleusercontent.com
+com.googleusercontent.apps.d84numlq9i4hbl1ep6g922gkrr3odsvd-100109696926
+
+UPDATE public.cobrosypagos
+	SET fech='2018-08-19', vien=0, sald=0, movi=0, van=0, erec=0;
+
+UPDATE public.cobrosypagos_agencia
+	SET fech='2018-08-19', vien=0, sald=0, movi=0, van=0;
+
+UPDATE public.cobrosypagos_grupo
+	SET fech='2018-08-19', vien=0, sald=0, movi=0, van=0;
+7
+SELECT SUM(vent), SUM(prem), SUM(comi) FROM public.loteria where fech='2018-08-21';
+
+SELECT * FROM (
+SELECT SUM(vent-prem-comi), nomb FROM public.loteria  JOIN archivo
+ON loteria.arch=archivo.oid
+where loteria.fech='2018-08-21'
+GROUP BY archivo.nomb
+
+UNION ALL
+SELECT SUM(vent-prem-comi), nomb FROM public.figura  JOIN archivo
+ON figura.arch=archivo.oid
+where figura.fech='2018-08-21'
+GROUP BY archivo.nomb
+
+UNION ALL
+SELECT SUM(vent-prem-comi), nomb FROM public.parley  JOIN archivo
+ON parley.arch=archivo.oid
+where parley.fech='2018-08-21'
+GROUP BY archivo.nomb;
+
+APMEMMPPAP00500
+
+
+
+totales
+SELECT SUM(total) FROM (
+SELECT SUM(vent-prem-comi) as total, nomb FROM public.loteria  JOIN archivo
+ON loteria.arch=archivo.oid
+where loteria.fech='2018-08-21'
+GROUP BY archivo.nomb
+
+UNION ALL
+SELECT SUM(vent-prem-comi) as total, nomb FROM public.figura  JOIN archivo
+ON figura.arch=archivo.oid
+where figura.fech='2018-08-21'
+GROUP BY archivo.nomb
+
+UNION ALL
+SELECT SUM(vent-prem-comi) as total, nomb FROM public.parley  JOIN archivo
+ON parley.arch=archivo.oid
+where parley.fech='2018-08-21'
+GROUP BY archivo.nomb) AS a
+
+
+DELETE FROM public.zr_agencia	WHERE grupo=24 AND oida=49 and codi='APMEMMPPAP00500';
+DELETE FROM public.zr_agencia	WHERE grupo=24 AND oida=49 and codi='MAMEMMPPAP00500';
+DELETE FROM public.zr_agencia	WHERE grupo=24 AND oida=49 and codi='MMAMEMMPPAP00500';
+
+
+569632136978-vu2no137pijm1cse0d6l68hlkjq2klut.apps.googleusercontent.com
+com.googleusercontent.apps.569632136978-vu2no137pijm1cse0d6l68hlkjq2klut

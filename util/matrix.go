@@ -72,8 +72,8 @@ func (a *Archivo) LeerMatrix(ch chan []byte, tipo string) (bool, string) {
 			} //FIN DEL MAYOR A 7 FILAS
 
 		} //FIN DE LA FILA
-		// fmt.Println(insertar)
 	}
+	fmt.Println(insertar)
 	m.Tipo = 33
 	m.Msj = "E#" + a.NombreDelArchivo + " Sin Registros"
 	if a.Salvar {

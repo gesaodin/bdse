@@ -34,7 +34,7 @@ func (a *Archivo) LeerMatrix(ch chan []byte, tipo string) (bool, string) {
 	excelFileName := a.Ruta + a.NombreDelArchivo
 	xlFile, err := xlsx.OpenFile(excelFileName)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Error en el formato del excel ( *.xlsx ): ", err.Error())
 	}
 	for _, sheet := range xlFile.Sheets {
 

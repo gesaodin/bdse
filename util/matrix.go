@@ -53,7 +53,7 @@ func (a *Archivo) LeerMatrix(ch chan []byte, tipo string) (bool, string) {
 				l := len(cel)
 
 				if l == 8 {
-					if contar > 1 {
+					if contar > 2 {
 						coma = ","
 					} else {
 						coma = ""
@@ -73,7 +73,7 @@ func (a *Archivo) LeerMatrix(ch chan []byte, tipo string) (bool, string) {
 
 		} //FIN DE LA FILA
 	}
-	fmt.Println(insertar)
+	//fmt.Println(insertar)
 	m.Tipo = 33
 	m.Msj = "E#" + a.NombreDelArchivo + " Sin Registros"
 	if a.Salvar {

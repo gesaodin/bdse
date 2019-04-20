@@ -926,6 +926,8 @@ function GC(tipo) {
         fecha: fecha
     });
     url = evalTipo();
+    console.log(url);
+    
     $.post(url, data)
         .done(function (data) {
           // console.log(data);

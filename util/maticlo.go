@@ -12,7 +12,6 @@ import (
 )
 
 func (a *Archivo) LeerMaticloXLSX(ch chan []byte, tipo string) (bool, string) {
-
 	fig := SLoteria
 	posicionarchivo := 5
 	if tipo == "f" {
@@ -27,6 +26,7 @@ func (a *Archivo) LeerMaticloXLSX(ch chan []byte, tipo string) (bool, string) {
 	oid, b := a.CrearTraza(posicionarchivo, a.ConvertirTablaNumero(fig))
 	if b != nil {
 		m.Msj = "E# Maticlot : " + a.NombreDelArchivo + " " + b.Error()
+		fmt.Println("E# Maticlot : " + a.NombreDelArchivo + " " + b.Error())
 		m.Tipo = 33
 		m.Tiempo = time.Now()
 		j, _ := json.Marshal(m)
@@ -37,7 +37,7 @@ func (a *Archivo) LeerMaticloXLSX(ch chan []byte, tipo string) (bool, string) {
 	excelFileName := a.Ruta + a.NombreDelArchivo
 	xlFile, err := xlsx.OpenFile(excelFileName)
 	if err != nil {
-		fmt.Println(err)
+		fmt.Println("Formato del excel ( *.xlsx ): ", err)
 	}
 	for _, sheet := range xlFile.Sheets {
 
@@ -82,11 +82,13 @@ func (a *Archivo) LeerMaticloXLSX(ch chan []byte, tipo string) (bool, string) {
 	}
 	m.Tipo = 33
 	m.Msj = "E#" + a.NombreDelArchivo + " Sin Registros"
+	fmt.Println("Funcionando XD", insertar)
 	if a.Salvar {
 		r, err := a.PostgreSQL.Exec(insertar)
 		if err != nil {
 			m.Tipo = 33
 			m.Msj = "E#" + a.NombreDelArchivo + err.Error()
+			fmt.Println(m.Msj)
 		} else {
 			m.Tipo = 1
 			i, _ := r.RowsAffected()

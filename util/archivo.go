@@ -85,7 +85,7 @@ func (a *Archivo) CrearTraza(tipo int, tabla string) (oid int, err error) {
 	s := "INSERT INTO archivo (esta,nomb,fech, fcre,urls,resp,publ,tipo, tabl) VALUES "
 	s += "(0,'" + nomb + "','" + a.Fecha + "','" + fcre + "','" + urls + "'," + resp + ",1,"
 	s += strconv.Itoa(tipo) + "," + tabla + ") RETURNING oid"
-
+	//fmt.Println(s)
 	sq, err := a.PostgreSQL.Query(s)
 	if err != nil {
 		return 0, err

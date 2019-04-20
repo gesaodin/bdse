@@ -178,7 +178,7 @@ func (p *Pago) ListarPagos(data Pago) (jSon []byte, err error) {
 func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 	var s string
 	fecha := time.Now().String()[0:10]
-
+	//fmt.Println(data.Agencia)
 	if data.Agencia != "" {
 		s = generarCobrosYPagosAgencia(data)
 		// fmt.Println("Agencia")
@@ -190,7 +190,7 @@ func (p *Pago) GenerarCobrosYPagos(data Pago) (jSon []byte, err error) {
 		}
 
 	}
-	// fmt.Println(s)
+	//fmt.Println(s)
 	row, err := sys.PostgreSQL.Query(s)
 
 	if err != nil {
@@ -820,8 +820,8 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 		var oid, esta int
 		var nomb, fvien sql.NullString
 
-		var vent, prem, comi, comical, sald, vien, van float64
-		var entr, reci, ingr, egre, pres, cuot, cypsaldo float64
+		var vent, prem, comi, comical, sald, vien, van sql.NullFloat64
+		var entr, reci, ingr, egre, pres, cuot, cypsaldo sql.NullFloat64
 
 		i++
 		e := row.Scan(&oid, &nomb, &calculo, &frecuencia, &vent, &prem,
@@ -876,12 +876,12 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 			venta, premio, comision, comisionb, saldo, saldovan = 0, 0, 0, 0, 0, 0
 
 		}
-		venta += vent
-		premio += prem
-		comision += comi
-		comisionb += comical
-		saldo += sald
-		saldovan += van
+		venta += util.ValidarNullFloat64(vent)
+		premio += util.ValidarNullFloat64(prem)
+		comision += util.ValidarNullFloat64(comi)
+		comisionb += util.ValidarNullFloat64(comical)
+		saldo += util.ValidarNullFloat64(sald)
+		saldovan += util.ValidarNullFloat64(van)
 		pago.Estatus = esta
 		pago.Observacion = util.ValidarNullString(nomb)
 		auxiliarFecha := util.ValidarNullString(fvien)
@@ -894,13 +894,13 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 		// 	pago.Estatus = 1
 		// }
 		pago.Fecha = auxiliarFecha
-		pago.Entregado = entr
-		pago.Recibido = reci
-		pago.Ingreso = ingr
-		pago.Egreso = egre
-		pago.Prestamo = pres
-		pago.Cuota = cuot
-		pago.Vienen = vien
+		pago.Entregado = util.ValidarNullFloat64(entr)
+		pago.Recibido = util.ValidarNullFloat64(reci)
+		pago.Ingreso = util.ValidarNullFloat64(ingr)
+		pago.Egreso = util.ValidarNullFloat64(egre)
+		pago.Prestamo = util.ValidarNullFloat64(pres)
+		pago.Cuota = util.ValidarNullFloat64(cuot)
+		pago.Vienen = util.ValidarNullFloat64(vien)
 
 		//pago.Van = saldovan
 
@@ -947,7 +947,6 @@ func (p *Pago) GenerarCobrosYPagosGrupo() (jSon []byte, err error) {
 	lst[oidAuxiliar] = pago
 	// lstP = append(lstP, pago)
 	jSon, _ = json.Marshal(lst)
-
 
 	return
 }

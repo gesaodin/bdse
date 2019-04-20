@@ -29,7 +29,7 @@ func init() {
 	//ip := ObtnerIP()
 
 	Stores.Options = &sessions.Options{
-		Domain:   "192.168.11.33",
+		Domain:   "192.168.6.45",
 		Path:     "/",
 		MaxAge:   3600, //Media Hora en segundos
 		HttpOnly: true,

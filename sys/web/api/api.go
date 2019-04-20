@@ -97,7 +97,7 @@ func (p *Pago) GenerarCobrosYPagos(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte("Error en la Cookies"))
 		return
 	}
-	//fmt.Println("Entrando...")
+	// fmt.Println("Entrando...")
 	j, e := pago.GenerarCobrosYPagos(dataJSON)
 	if e != nil {
 		w.WriteHeader(http.StatusForbidden)
